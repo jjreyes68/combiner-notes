@@ -4,227 +4,335 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Control Room v2</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<title>RNWBL — Field Operations</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0e0f11;--bg2:#16181c;--bg3:#1e2126;--bg4:#252930;--border:#2e3138;--border2:#3a3f4a;--text:#e8eaf0;--text2:#9199a8;--text3:#5a6070;--green:#2ecc8a;--green-dim:#1a3d2e;--amber:#f0a500;--amber-dim:#3a2800;--red:#e85555;--red-dim:#3a1515;--blue:#4d9eff;--blue-dim:#0d2240;--purple:#9b7fff;--purple-dim:#221a40;--font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;}
+:root {
+  --bg:#f5f4f2;--bg2:#ffffff;--bg3:#eeece9;--bg4:#e4e1dc;
+  --border:#ddd9d3;--border2:#c8c3bb;
+  --text:#1a1917;--text2:#6b6760;--text3:#9e9a94;
+  --green:#1a6e4a;--green-bg:#e8f5ee;--green-mid:#2d9e6b;
+  --amber:#b36b00;--amber-bg:#fff4e0;
+  --red:#b33000;--red-bg:#feeee8;
+  --blue:#1a4d8a;--blue-bg:#e8f0fb;
+  --purple:#5a3a8a;--purple-bg:#f0eaf8;
+  --accent:#c0392b;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  --radius:8px;--radius-lg:12px;
+  --shadow:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.06);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh;}
-::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-.nav{display:flex;align-items:center;gap:3px;padding:7px 12px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap;}
-.nav-brand{font-family:var(--mono);font-size:12px;color:var(--green);margin-right:8px;letter-spacing:.05em;white-space:nowrap;}
-.nav-tab{padding:5px 12px;border-radius:5px;font-size:13px;color:var(--text2);cursor:pointer;border:none;background:transparent;font-family:var(--font);transition:all .15s;white-space:nowrap;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* NAV */
+.nav{display:flex;align-items:center;gap:2px;padding:0 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:nowrap;height:48px;position:sticky;top:0;z-index:50;box-shadow:var(--shadow-sm);}
+.nav-brand{display:flex;align-items:center;gap:8px;margin-right:12px;}
+.nav-brand-logo{width:24px;height:24px;flex-shrink:0;}
+.nav-brand-text{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--accent);letter-spacing:.08em;white-space:nowrap;}
+.nav-tab{padding:6px 13px;border-radius:6px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border:none;background:transparent;font-family:var(--font);transition:all .15s;white-space:nowrap;letter-spacing:-.01em;}
 .nav-tab:hover{background:var(--bg3);color:var(--text);}
-.nav-tab.active{background:var(--bg3);color:var(--text);border:1px solid var(--border2);}
+.nav-tab.active{background:var(--bg3);color:var(--text);box-shadow:var(--shadow-sm);border:1px solid var(--border);}
 .nav-spacer{flex:1;}
-.nav-time{font-family:var(--mono);font-size:11px;color:var(--text3);}
-.view{display:none;padding:14px;}
+.nav-time{font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;}
+
+/* VIEWS */
+.view{display:none;padding:16px;}
 .view.active{display:block;}
-/* TIMER */
-.timer-strip{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:12px;flex-wrap:wrap;}
-.timer-big{font-family:var(--mono);font-size:26px;font-weight:500;color:var(--green);min-width:65px;}
+
+/* TIMER STRIP */
+.timer-strip{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 16px;margin-bottom:14px;flex-wrap:wrap;box-shadow:var(--shadow-sm);}
+.timer-big{font-family:var(--mono);font-size:26px;font-weight:500;color:var(--green);min-width:70px;}
 .timer-big.urgent{color:var(--red);animation:pulse 1s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-.timer-bar-wrap{flex:1;min-width:80px;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;}
-.timer-bar-fill{height:100%;background:var(--green);border-radius:3px;transition:width 1s linear;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.timer-bar-wrap{flex:1;min-width:80px;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.timer-bar-fill{height:100%;background:var(--green-mid);border-radius:3px;transition:width 1s linear;}
 .timer-bar-fill.urgent{background:var(--red);}
-.cycles-badge{font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;}
-/* GRID */
-.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.cycles-badge{font-family:var(--mono);font-size:11px;color:var(--text3);white-space:nowrap;background:var(--bg3);padding:3px 9px;border-radius:10px;}
+
+/* COLS */
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
 @media(max-width:800px){.cols3{grid-template-columns:1fr 1fr;}}
 @media(max-width:500px){.cols3{grid-template-columns:1fr;}}
+
 /* CARD */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;}
-.card-title{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;box-shadow:var(--shadow-sm);}
+.card-title{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;}
+
 /* BUTTONS */
-.tbtn{padding:5px 12px;border-radius:5px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-size:12px;cursor:pointer;font-family:var(--font);}
-.tbtn:hover{border-color:var(--green);color:var(--green);}
-.tbtn.active-btn{border-color:var(--green);color:var(--green);}
-.btn-primary{padding:6px 16px;background:var(--green-dim);border:1px solid var(--green);border-radius:5px;color:var(--green);font-size:13px;cursor:pointer;font-family:var(--font);}
-.btn-primary:hover{background:var(--green);color:#000;}
-.btn-cancel{padding:6px 16px;background:transparent;border:1px solid var(--border2);border-radius:5px;color:var(--text2);font-size:13px;cursor:pointer;font-family:var(--font);}
+.tbtn{padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:12px;cursor:pointer;font-family:var(--font);font-weight:500;transition:all .15s;box-shadow:var(--shadow-sm);}
+.tbtn:hover{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.tbtn.active-btn{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.btn-primary{padding:7px 16px;background:var(--green);border:1px solid var(--green);border-radius:6px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .15s;}
+.btn-primary:hover{background:var(--green-mid);border-color:var(--green-mid);}
+.btn-cancel{padding:7px 16px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .15s;}
 .btn-cancel:hover{border-color:var(--text2);color:var(--text);}
-.btn-danger{padding:6px 14px;background:transparent;border:1px solid var(--red-dim);border-radius:5px;color:var(--red);font-size:12px;cursor:pointer;font-family:var(--font);}
-.btn-danger:hover{background:var(--red-dim);}
-.btn-amber{padding:5px 12px;border-radius:5px;border:1px solid var(--amber-dim);background:transparent;color:var(--amber);font-size:12px;cursor:pointer;font-family:var(--font);}
-.btn-amber:hover{background:var(--amber-dim);}
-/* TASKS */
-.task-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;background:var(--bg3);margin-bottom:4px;}
-.task-cb{width:14px;height:14px;accent-color:var(--green);cursor:pointer;flex-shrink:0;}
+.btn-danger{padding:6px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--red);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .15s;}
+.btn-danger:hover{background:var(--red-bg);border-color:var(--red);}
+.btn-amber{padding:6px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--amber);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .15s;}
+.btn-amber:hover{background:var(--amber-bg);}
+
+/* TASK ITEMS */
+.task-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;background:var(--bg3);margin-bottom:5px;border:1px solid transparent;transition:all .15s;}
+.task-item:hover{border-color:var(--border2);}
+.task-cb{width:15px;height:15px;accent-color:var(--green);cursor:pointer;flex-shrink:0;}
 .task-label{flex:1;font-size:13px;color:var(--text);}
 .task-item.done .task-label{text-decoration:line-through;color:var(--text3);}
-.task-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:0 2px;}
-.task-del:hover{color:var(--red);}
-.rec-badge{font-size:10px;padding:2px 6px;border-radius:10px;font-weight:500;background:var(--green-dim);color:var(--green);white-space:nowrap;}
+.task-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 3px;line-height:1;border-radius:4px;opacity:.5;transition:all .15s;}
+.task-del:hover{color:var(--red);opacity:1;background:var(--red-bg);}
+.rec-badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;background:var(--green-bg);color:var(--green);white-space:nowrap;}
 .rec-badge.done{background:var(--bg4);color:var(--text3);}
-.add-row{display:flex;gap:5px;margin-top:7px;}
-.add-row input{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:6px 9px;color:var(--text);font-family:var(--font);font-size:13px;}
-.add-row input:focus{outline:none;border-color:var(--green);}
-.add-row button{padding:5px 11px;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;color:var(--green);font-size:13px;cursor:pointer;font-family:var(--font);}
-.add-row button:hover{border-color:var(--green);background:var(--green-dim);}
-/* CHECKLIST */
-.cl-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px;}
-.cl-tab{font-size:11px;padding:2px 9px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;}
-.cl-tab.active{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
-.prog-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
-.prog-bar{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;}
-.prog-fill{height:100%;background:var(--green);border-radius:2px;transition:width .3s;}
-.prog-txt{font-size:11px;color:var(--text3);font-family:var(--mono);min-width:28px;text-align:right;}
+.task-timer-badge{font-family:var(--mono);font-size:11px;color:var(--amber);background:var(--amber-bg);padding:2px 7px;border-radius:10px;white-space:nowrap;}
+.task-timer-badge.expired{color:var(--red);background:var(--red-bg);}
+
+/* ADD ROW */
+.add-row{display:flex;gap:6px;margin-top:9px;}
+.add-row input,.add-inp{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--font);font-size:13px;transition:border-color .15s;}
+.add-row input:focus,.add-inp:focus{outline:none;border-color:var(--green-mid);background:var(--bg2);}
+.add-row button{padding:6px 12px;background:var(--green-bg);border:1px solid var(--green);border-radius:6px;color:var(--green);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;}
+.add-row button:hover{background:var(--green);color:#fff;}
+
+/* ADHOC TIMER */
+.adhoc-add-row{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;}
+.adhoc-add-row input{flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--font);font-size:13px;transition:border-color .15s;}
+.adhoc-add-row input:focus{outline:none;border-color:var(--green-mid);background:var(--bg2);}
+.adhoc-timer-inp{width:64px!important;flex:none!important;text-align:center;}
+.adhoc-add-row .add-btn{padding:6px 12px;background:var(--green-bg);border:1px solid var(--green);border-radius:6px;color:var(--green);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:all .15s;}
+.adhoc-add-row .add-btn:hover{background:var(--green);color:#fff;}
+.adhoc-timer-label{font-size:11px;color:var(--text3);padding:7px 0 7px 2px;white-space:nowrap;align-self:center;}
+
+/* CHECKLIST REDESIGN */
+.cl-header{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.cl-list-select-wrap{flex:1;position:relative;}
+.cl-list-select{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-family:var(--font);font-size:13px;font-weight:500;appearance:none;cursor:pointer;}
+.cl-list-select:focus{outline:none;border-color:var(--green-mid);}
+.cl-add-list-row{display:flex;gap:5px;margin-bottom:8px;}
+.cl-add-list-row input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-family:var(--font);font-size:13px;}
+.cl-add-list-row input:focus{outline:none;border-color:var(--green-mid);background:var(--bg2);}
+.cl-add-list-row button{padding:5px 10px;background:var(--blue-bg);border:1px solid var(--blue);border-radius:6px;color:var(--blue);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.cl-del-list-btn{padding:5px 9px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--red);font-size:12px;cursor:pointer;transition:all .15s;flex-shrink:0;}
+.cl-del-list-btn:hover{background:var(--red-bg);border-color:var(--red);}
+.prog-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.prog-bar{flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--green-mid);border-radius:3px;transition:width .3s;}
+.prog-txt{font-size:11px;color:var(--text3);font-family:var(--mono);min-width:30px;text-align:right;}
+.cl-add-item-row{display:flex;gap:5px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.cl-add-item-row input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--font);font-size:13px;}
+.cl-add-item-row input:focus{outline:none;border-color:var(--green-mid);background:var(--bg2);}
+.cl-add-item-row button{padding:6px 13px;background:var(--green-bg);border:1px solid var(--green);border-radius:6px;color:var(--green);font-size:13px;font-weight:600;cursor:pointer;}
+.cl-add-item-row button:hover{background:var(--green);color:#fff;}
+
 /* NOTES */
-.notes-layout{display:grid;grid-template-columns:210px 1fr;gap:10px;min-height:500px;}
-@media(max-width:640px){.notes-layout{grid-template-columns:1fr;}}
-.notes-sidebar{display:flex;flex-direction:column;gap:6px;}
-.notes-list{display:flex;flex-direction:column;gap:3px;flex:1;max-height:420px;overflow-y:auto;}
-.note-entry{padding:7px 9px;border-radius:5px;border:1px solid transparent;cursor:pointer;background:var(--bg3);}
+.notes-layout{display:grid;grid-template-columns:220px 1fr;gap:12px;}
+@media(max-width:600px){.notes-layout{grid-template-columns:1fr;}}
+.notes-sidebar{display:flex;flex-direction:column;gap:8px;}
+.notes-list{display:flex;flex-direction:column;gap:4px;flex:1;overflow-y:auto;}
+.note-entry{padding:8px 10px;border-radius:7px;border:1px solid transparent;cursor:pointer;background:var(--bg2);box-shadow:var(--shadow-sm);transition:all .15s;}
 .note-entry:hover{border-color:var(--border2);}
-.note-entry.active{border-color:var(--blue);background:var(--blue-dim);}
-.note-ts{font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:1px;}
+.note-entry.active{border-color:var(--blue);background:var(--blue-bg);}
+.note-entry-time{font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:2px;}
 .note-entry-title{font-size:12px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.note-editor{display:flex;flex-direction:column;gap:7px;}
-.note-editor textarea{flex:1;min-height:300px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:11px;color:var(--text);font-family:var(--mono);font-size:13px;resize:vertical;line-height:1.7;}
-.note-editor textarea:focus{outline:none;border-color:var(--blue);}
-.note-title-inp{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:6px 11px;color:var(--text);font-family:var(--font);font-size:14px;font-weight:500;width:100%;}
-.note-title-inp:focus{outline:none;border-color:var(--blue);}
+/* NOTES EDITOR — fills available space */
+.note-editor-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);}
+.note-editor-card textarea{flex:1;width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;color:var(--text);font-family:var(--mono);font-size:13px;resize:none;line-height:1.75;min-height:300px;}
+.note-editor-card textarea:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.note-title-input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-family:var(--font);font-size:15px;font-weight:600;width:100%;}
+.note-title-input:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+
 /* TEMPLATES */
-.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:7px;margin-bottom:12px;}
-.tpl-btn{padding:8px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--font);text-align:left;transition:all .15s;position:relative;}
-.tpl-btn:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-dim);}
-.tpl-icon{font-size:14px;display:block;margin-bottom:2px;}
-.tpl-name{font-weight:500;display:block;font-size:12px;}
-.tpl-desc{font-size:10px;color:var(--text3);margin-top:1px;display:block;}
-.tpl-edit-dot{position:absolute;top:5px;right:6px;font-size:13px;color:var(--text3);opacity:0;transition:opacity .15s;}
-.tpl-btn:hover .tpl-edit-dot{opacity:1;}
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px;margin-bottom:14px;}
+.tpl-btn{padding:9px 11px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--font);text-align:left;transition:all .15s;box-shadow:var(--shadow-sm);}
+.tpl-btn:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-bg);}
+.tpl-icon{font-size:16px;display:block;margin-bottom:4px;}
+.tpl-name{font-weight:600;display:block;color:var(--text);font-size:12px;}
+.tpl-desc{font-size:11px;color:var(--text3);margin-top:2px;display:block;}
+
 /* TAGS */
-.tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:10px;font-weight:500;margin-right:3px;}
-.tag-incident{background:var(--red-dim);color:var(--red);}
-.tag-response{background:var(--purple-dim);color:var(--purple);}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;margin-right:3px;}
+.tag-incident{background:var(--red-bg);color:var(--red);}
+.tag-response{background:var(--purple-bg);color:var(--purple);}
 .tag-obs{background:var(--bg4);color:var(--text2);}
-.tag-task{background:var(--green-dim);color:var(--green);}
+.tag-task{background:var(--green-bg);color:var(--green);}
+
 /* LOG */
-.log-entry{display:flex;gap:9px;padding:7px 9px;border-radius:5px;background:var(--bg3);margin-bottom:4px;border-left:3px solid var(--border2);}
+.log-entry{display:flex;gap:10px;padding:9px 11px;border-radius:7px;background:var(--bg2);margin-bottom:5px;border-left:3px solid var(--border2);box-shadow:var(--shadow-sm);transition:all .15s;}
+.log-entry:hover{border-color:var(--border2);box-shadow:0 2px 8px rgba(0,0,0,.08);}
 .log-entry.incident{border-left-color:var(--red);}
 .log-entry.response{border-left-color:var(--purple);}
 .log-entry.task{border-left-color:var(--green);}
 .log-entry.note{border-left-color:var(--blue);}
 .log-entry.scan{border-left-color:var(--amber);}
-.log-time{font-family:var(--mono);font-size:11px;color:var(--text3);min-width:80px;padding-top:1px;white-space:nowrap;}
+.log-time{font-family:var(--mono);font-size:11px;color:var(--text3);min-width:50px;padding-top:2px;}
 .log-body{flex:1;}
 .log-title{font-size:13px;color:var(--text);font-weight:500;}
 .log-detail{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.5;}
-/* SITES */
-.sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:8px;}
-.site-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:11px;}
+
+/* SCAN SITES */
+.sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:10px;}
+.site-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:13px;box-shadow:var(--shadow-sm);transition:all .15s;}
+.site-card:hover{box-shadow:var(--shadow);}
 .site-card.ok{border-left:3px solid var(--green);}
 .site-card.due{border-left:3px solid var(--amber);}
 .site-card.overdue{border-left:3px solid var(--red);}
 .site-card.never{border-left:3px solid var(--text3);}
-.site-header{display:flex;align-items:center;gap:5px;margin-bottom:6px;flex-wrap:wrap;}
-.site-name{font-size:13px;font-weight:500;color:var(--text);flex:1;}
-.sbadge{font-size:10px;padding:2px 6px;border-radius:10px;font-weight:500;white-space:nowrap;}
-.sbadge-nerc{background:#1a2a3a;color:#4d9eff;}
-.sbadge-adhoc{background:#2a1a3a;color:#9b7fff;}
-.sbadge-ok{background:var(--green-dim);color:var(--green);}
-.sbadge-due{background:var(--amber-dim);color:var(--amber);}
-.sbadge-overdue{background:var(--red-dim);color:var(--red);}
-.sbadge-never{background:var(--bg4);color:var(--text3);}
-.site-meta{font-size:11px;color:var(--text3);margin-bottom:6px;font-family:var(--mono);}
+.site-header{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.site-name{font-size:13px;font-weight:600;color:var(--text);flex:1;}
+.site-badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;}
+.badge-nerc{background:#e8f0fb;color:var(--blue);}
+.badge-ok{background:var(--green-bg);color:var(--green);}
+.badge-due{background:var(--amber-bg);color:var(--amber);}
+.badge-overdue{background:var(--red-bg);color:var(--red);}
+.badge-never{background:var(--bg4);color:var(--text3);}
+.site-meta{font-size:11px;color:var(--text3);margin-bottom:7px;font-family:var(--mono);}
 .site-actions{display:flex;gap:5px;flex-wrap:wrap;}
-.scan-btn{padding:4px 10px;border-radius:4px;border:1px solid var(--green);background:var(--green-dim);color:var(--green);font-size:11px;cursor:pointer;font-family:var(--font);}
-.scan-btn:hover{background:var(--green);color:#000;}
-.site-ref{font-size:11px;color:var(--text3);margin-top:6px;font-style:italic;border-top:1px solid var(--border);padding-top:5px;}
-.filter-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center;}
-.filter-btn{padding:4px 11px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--font);}
-.filter-btn.active{border-color:var(--blue);color:var(--blue);background:var(--blue-dim);}
-.stat-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px;}
-.stat-chip{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 11px;}
-.stat-chip .sv{font-family:var(--mono);font-size:17px;font-weight:500;color:var(--text);display:block;}
-.stat-chip .sl{font-size:11px;color:var(--text3);}
-.section-header{font-size:11px;font-weight:500;color:var(--amber);letter-spacing:.07em;text-transform:uppercase;margin:12px 0 6px;display:flex;align-items:center;gap:6px;}
+.scan-btn{padding:5px 11px;border-radius:5px;border:1px solid var(--green);background:var(--green-bg);color:var(--green);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;}
+.scan-btn:hover{background:var(--green);color:#fff;}
+.site-note-preview{font-size:11px;color:var(--text3);margin-top:7px;border-top:1px solid var(--border);padding-top:7px;font-style:italic;line-height:1.5;}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.filter-btn{padding:5px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .15s;}
+.filter-btn.active{border-color:var(--blue);color:var(--blue);background:var(--blue-bg);}
+.stat-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.stat-chip{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;box-shadow:var(--shadow-sm);}
+.stat-chip .s-val{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--text);display:block;}
+.stat-chip .s-lbl{font-size:11px;color:var(--text3);}
+
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);display:flex;align-items:flex-start;justify-content:center;z-index:100;padding:20px;overflow-y:auto;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:14px;backdrop-filter:blur(3px);}
 .modal-overlay.hidden{display:none;}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:18px;width:480px;max-width:100%;margin:auto;}
-.modal-title{font-size:15px;font-weight:500;margin-bottom:12px;color:var(--text);}
-.modal label{font-size:12px;color:var(--text2);display:block;margin-bottom:3px;margin-top:9px;}
-.modal input,.modal select,.modal textarea,.minp{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:6px 9px;color:var(--text);font-family:var(--font);font-size:13px;}
-.modal input:focus,.modal select:focus,.modal textarea:focus,.minp:focus{outline:none;border-color:var(--blue);}
-.modal textarea{min-height:65px;resize:vertical;font-family:var(--mono);}
-.modal select option{background:var(--bg3);}
-.modal-actions{display:flex;gap:7px;margin-top:14px;justify-content:flex-end;flex-wrap:wrap;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;width:460px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.14);}
+.modal-title{font-size:15px;font-weight:600;margin-bottom:14px;color:var(--text);}
+.modal label{font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:3px;margin-top:10px;}
+.modal input,.modal select,.modal textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--font);font-size:13px;transition:border-color .15s;}
+.modal input:focus,.modal select:focus,.modal textarea:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.modal textarea{min-height:80px;resize:vertical;font-family:var(--mono);}
+.modal select option{background:var(--bg2);}
+.modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;}
+
 /* HANDOFF */
-.handoff-box{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:14px;font-family:var(--mono);font-size:12px;line-height:1.8;color:var(--text2);white-space:pre-wrap;max-height:400px;overflow-y:auto;}
-/* FIELD BUILDER */
-.field-row{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--bg3);border-radius:5px;margin-bottom:4px;}
-.field-row input{flex:1;background:var(--bg4);border:1px solid var(--border2);border-radius:4px;padding:4px 8px;color:var(--text);font-family:var(--font);font-size:12px;}
-.field-row input:focus{outline:none;border-color:var(--blue);}
-.field-row select{background:var(--bg4);border:1px solid var(--border2);border-radius:4px;padding:4px 6px;color:var(--text);font-family:var(--font);font-size:12px;}
-.field-row .fmove{cursor:grab;color:var(--text3);font-size:14px;padding:0 2px;}
+.handoff-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:var(--mono);font-size:12px;line-height:1.9;color:var(--text2);white-space:pre-wrap;max-height:420px;overflow-y:auto;}
+
 /* TOAST */
-.toast{position:fixed;bottom:18px;right:18px;background:var(--red);color:#fff;padding:9px 16px;border-radius:6px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;font-family:var(--mono);}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:200;font-family:var(--mono);box-shadow:0 4px 20px rgba(0,0,0,.2);}
 .toast.show{opacity:1;}
-.empty{font-size:12px;color:var(--text3);text-align:center;padding:14px 0;}
-select{background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:5px 8px;color:var(--text);font-family:var(--font);font-size:13px;}
-select option{background:var(--bg3);}
-input[type=checkbox]{accent-color:var(--green);}
-.hf-options{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0;}
-.hf-opt{display:flex;align-items:center;gap:7px;padding:6px 10px;background:var(--bg3);border-radius:5px;font-size:13px;cursor:pointer;}
-.hf-opt input{width:14px;height:14px;flex-shrink:0;}
+.empty{font-size:12px;color:var(--text3);text-align:center;padding:16px 0;}
+
+select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;color:var(--text);font-family:var(--font);font-size:13px;}
+select option{background:var(--bg2);}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.page-title{font-size:17px;font-weight:600;color:var(--text);letter-spacing:-.02em;}
+
+/* INTEL PAGE */
+.intel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.intel-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px;}
+.intel-card-header{display:flex;align-items:flex-start;gap:10px;}
+.intel-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
+.intel-card-title{font-size:14px;font-weight:600;color:var(--text);}
+.intel-card-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-top:2px;}
+.intel-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;display:inline-block;margin-top:4px;}
+.intel-tag-green{background:var(--green-bg);color:var(--green);}
+.intel-tag-blue{background:var(--blue-bg);color:var(--blue);}
+.intel-tag-amber{background:var(--amber-bg);color:var(--amber);}
+.intel-tag-purple{background:var(--purple-bg);color:var(--purple);}
+.intel-tag-red{background:var(--red-bg);color:var(--red);}
+.intel-card-content{border-top:1px solid var(--border);padding-top:10px;}
+.intel-field{margin-bottom:8px;}
+.intel-field label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px;}
+.intel-field input,.intel-field select,.intel-field textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--font);font-size:13px;}
+.intel-field input:focus,.intel-field select:focus,.intel-field textarea:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.intel-field textarea{min-height:65px;resize:vertical;font-family:var(--mono);font-size:12px;line-height:1.6;}
+.intel-card-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.intel-btn{padding:6px 13px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .15s;}
+.intel-btn:hover{border-color:var(--text2);color:var(--text);}
+.intel-btn-primary{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+.intel-btn-primary:hover{background:var(--green)!important;color:#fff!important;border-color:var(--green)!important;}
+.intel-btn-red{border-color:var(--red);color:var(--red);background:var(--red-bg);}
+.intel-btn-red:hover{background:var(--red)!important;color:#fff!important;}
+.intel-status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.dot-green{background:var(--green-mid);}
+.dot-amber{background:var(--amber);}
+.dot-red{background:var(--red);}
+.dot-grey{background:var(--text3);}
+.feature-list{display:flex;flex-direction:column;gap:5px;}
+.feature-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);padding:6px 8px;background:var(--bg3);border-radius:5px;}
+.feature-item .fi-icon{font-size:13px;flex-shrink:0;}
+.escalation-matrix{width:100%;border-collapse:collapse;}
+.escalation-matrix th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);padding:5px 8px;background:var(--bg3);border-bottom:1px solid var(--border);text-align:left;}
+.escalation-matrix td{font-size:12px;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text2);}
+.escalation-matrix tr:last-child td{border-bottom:none;}
+.weather-section{display:flex;align-items:center;gap:12px;}
+.weather-icon{font-size:32px;}
+.weather-info{flex:1;}
+.weather-temp{font-size:22px;font-weight:600;font-family:var(--mono);color:var(--text);}
+.weather-desc{font-size:12px;color:var(--text2);margin-top:2px;}
+.wind-indicator{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;color:var(--text2);}
 </style>
 </head>
 <body>
 
 <div class="nav">
-  <div class="nav-brand">◈ CTRL ROOM</div>
-  <button class="nav-tab active" onclick="switchView('ops',this)">Ops</button>
+  <div class="nav-brand">
+    <svg class="nav-brand-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 2L4 14h8l-1 8 9-12h-8l1-8z" fill="var(--accent)" stroke="var(--accent)" stroke-width="1" stroke-linejoin="round"/>
+    </svg>
+    <span class="nav-brand-text">RNWBL OPS</span>
+  </div>
+  <button class="nav-tab active" onclick="switchView('notes',this)">Notepad</button>
   <button class="nav-tab" onclick="switchView('scans',this)">Scans</button>
-  <button class="nav-tab" onclick="switchView('notes',this)">Notes</button>
+  <button class="nav-tab" onclick="switchView('ops',this)">Ops</button>
   <button class="nav-tab" onclick="switchView('log',this)">Log</button>
+  <button class="nav-tab" onclick="switchView('intel',this)">Field Intel</button>
   <div class="nav-spacer"></div>
   <div class="nav-time" id="nav-clock"></div>
 </div>
 
-<!-- OPS -->
-<div class="view active" id="view-ops">
+<!-- NOTEPAD VIEW -->
+<div class="view active" id="view-notes">
+  <div class="tpl-grid" id="tpl-grid"></div>
+  <div class="notes-layout">
+    <div class="notes-sidebar">
+      <div class="card-title" style="padding:0 2px;">Notes log</div>
+      <button class="tbtn" style="text-align:center;width:100%;padding:8px;" onclick="newBlankNote()">+ New note</button>
+      <div class="notes-list" id="notes-list"></div>
+    </div>
+    <div class="note-editor-card">
+      <div id="note-no-sel" style="color:var(--text3);font-size:13px;padding:24px;text-align:center;">Select a note or use a template above</div>
+      <div id="note-form" style="display:none;flex-direction:column;gap:9px;flex:1;">
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
+          <input class="note-title-input" id="note-title" placeholder="Note title..." style="flex:1;min-width:120px;">
+          <select id="note-tag" style="min-width:130px;">
+            <option value="obs">Observation</option>
+            <option value="incident">Incident</option>
+            <option value="response">Response</option>
+            <option value="task">Task note</option>
+          </select>
+          <button class="btn-primary" onclick="saveNote()">Save</button>
+          <button class="btn-cancel" onclick="deleteNote()">Delete</button>
+        </div>
+        <textarea id="note-body" placeholder="Start typing..."></textarea>
+        <div style="font-size:11px;color:var(--text3);" id="note-meta"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCANS VIEW -->
+<div class="view" id="view-scans">
   <div class="timer-strip">
     <div class="timer-big" id="timer-disp">30:00</div>
     <div class="timer-bar-wrap"><div class="timer-bar-fill" id="timer-fill" style="width:100%"></div></div>
     <span class="cycles-badge" id="cycles-badge">0 cycles</span>
     <button class="tbtn" id="timer-btn" onclick="toggleTimer()">Start</button>
     <button class="tbtn" onclick="resetTimer()">Reset</button>
-  </div>
-  <div class="cols3">
-    <div class="card">
-      <div class="card-title">Recurring tasks</div>
-      <div id="rec-list"></div>
-      <div class="add-row"><input id="rec-inp" placeholder="Add recurring task..." onkeydown="if(event.key==='Enter')addRec()"><button onclick="addRec()">+</button></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Ad hoc tasks</div>
-      <div id="adhoc-list" style="max-height:250px;overflow-y:auto;"></div>
-      <div class="add-row"><input id="adhoc-inp" placeholder="Quick capture..." onkeydown="if(event.key==='Enter')addAdhoc()"><button onclick="addAdhoc()">+</button></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Checklists</div>
-      <div class="cl-tabs" id="cl-tabs"></div>
-      <div class="prog-row" id="cl-prog-row" style="display:none"><div class="prog-bar"><div class="prog-fill" id="cl-prog-fill" style="width:0%"></div></div><div class="prog-txt" id="cl-prog-txt">0/0</div></div>
-      <div id="cl-items" style="max-height:190px;overflow-y:auto;"></div>
-      <div class="add-row" style="margin-top:7px;flex-wrap:wrap;gap:4px;">
-        <input id="cl-list-inp" placeholder="New list..." onkeydown="if(event.key==='Enter')addClList()" style="max-width:105px;flex:none;">
-        <button onclick="addClList()" style="font-size:11px;">+ List</button>
-        <input id="cl-item-inp" placeholder="Add item..." onkeydown="if(event.key==='Enter')addClItem()" style="flex:1;display:none;">
-        <button id="cl-item-btn" onclick="addClItem()" style="display:none;font-size:11px;">+</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SCANS -->
-<div class="view" id="view-scans">
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
-    <button class="btn-primary" onclick="openAddSite()">+ Add site</button>
-    <button class="tbtn" onclick="scanAllNERC()">Scan all NERC</button>
-    <div class="nav-spacer"></div>
     <span id="scan-next-due" style="font-family:var(--mono);font-size:11px;color:var(--text3);"></span>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+    <button class="btn-primary" onclick="openModal('modal-add-site')">+ Add site</button>
+    <button class="tbtn" onclick="scanAll()">Scan all NERC</button>
   </div>
   <div class="stat-row" id="scan-stats"></div>
   <div class="filter-row">
@@ -233,129 +341,255 @@ input[type=checkbox]{accent-color:var(--green);}
     <button class="filter-btn" onclick="setSiteFilter('due',this)">Due soon</button>
     <button class="filter-btn" onclick="setSiteFilter('ok',this)">OK</button>
     <button class="filter-btn" onclick="setSiteFilter('nerc',this)">NERC only</button>
-    <button class="filter-btn" onclick="setSiteFilter('nonadhoc',this)">Regular only</button>
   </div>
-  <div id="sites-grid"></div>
+  <div class="sites-grid" id="sites-grid"></div>
 </div>
 
-<!-- NOTES -->
-<div class="view" id="view-notes">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
-    <div style="font-size:11px;color:var(--text3);">Templates</div>
-    <button class="btn-amber" onclick="openTplManager()">⚙ Edit templates</button>
-  </div>
-  <div class="tpl-grid" id="tpl-grid"></div>
-  <div class="notes-layout">
-    <div class="notes-sidebar">
-      <div class="card-title" style="padding:0 2px;">Notes log</div>
-      <button class="tbtn" style="text-align:center;width:100%;" onclick="newBlankNote()">+ New note</button>
-      <div class="notes-list" id="notes-list"></div>
+<!-- OPS VIEW -->
+<div class="view" id="view-ops">
+  <div class="cols3">
+    <div class="card">
+      <div class="card-title">Recurring tasks</div>
+      <div id="rec-list"></div>
+      <div class="add-row">
+        <input id="rec-inp" placeholder="Add recurring task..." onkeydown="if(event.key==='Enter')addRec()">
+        <button onclick="addRec()">+</button>
+      </div>
     </div>
-    <div class="card note-editor">
-      <div id="note-no-sel" style="color:var(--text3);font-size:13px;padding:20px;text-align:center;">Select a note or use a template above</div>
-      <div id="note-form" style="display:none;flex-direction:column;gap:7px;">
-        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-          <input class="note-title-inp" id="note-title" placeholder="Note title..." style="flex:1;min-width:120px;">
-          <select id="note-tag">
-            <option value="obs">Observation</option>
-            <option value="incident">Incident</option>
-            <option value="response">Response</option>
-            <option value="task">Task note</option>
-          </select>
-          <button class="btn-primary" onclick="saveNote()">Save</button>
-          <button class="btn-cancel" onclick="deleteNote()">Del</button>
+    <div class="card">
+      <div class="card-title">Ad hoc tasks</div>
+      <div id="adhoc-list" style="max-height:260px;overflow-y:auto;"></div>
+      <div class="adhoc-add-row">
+        <input id="adhoc-inp" placeholder="Task description..." onkeydown="if(event.key==='Enter')addAdhoc()">
+        <input id="adhoc-timer-inp" class="adhoc-timer-inp add-inp" type="number" min="0" placeholder="min" title="Optional timer (minutes)">
+        <span class="adhoc-timer-label">min</span>
+        <button class="add-btn" onclick="addAdhoc()">+ Add</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Checklists</div>
+      <!-- New list creation row -->
+      <div class="cl-add-list-row">
+        <input id="cl-list-inp" placeholder="New checklist name..." onkeydown="if(event.key==='Enter')addClList()">
+        <button onclick="addClList()">+ New list</button>
+      </div>
+      <!-- Active list selector + delete -->
+      <div class="cl-header" id="cl-header" style="display:none;">
+        <div class="cl-list-select-wrap">
+          <select class="cl-list-select" id="cl-list-select" onchange="switchClFromSelect()"></select>
         </div>
-        <textarea id="note-body" placeholder="Start typing..."></textarea>
-        <div style="font-size:11px;color:var(--text3);font-family:var(--mono);" id="note-meta"></div>
+        <button class="cl-del-list-btn" onclick="delActiveClList()" title="Delete this checklist">🗑 Delete list</button>
+      </div>
+      <div class="prog-row" id="cl-prog-row" style="display:none">
+        <div class="prog-bar"><div class="prog-fill" id="cl-prog-fill" style="width:0%"></div></div>
+        <div class="prog-txt" id="cl-prog-txt">0/0</div>
+      </div>
+      <div id="cl-items" style="max-height:180px;overflow-y:auto;"></div>
+      <div class="cl-add-item-row" id="cl-add-item-row" style="display:none;">
+        <input id="cl-item-inp" placeholder="Add item to this checklist..." onkeydown="if(event.key==='Enter')addClItem()">
+        <button onclick="addClItem()">+ Item</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- LOG -->
+<!-- LOG VIEW -->
 <div class="view" id="view-log">
   <div class="stat-row" id="log-stats"></div>
-  <div style="display:flex;gap:7px;margin-bottom:10px;align-items:center;flex-wrap:wrap;">
+  <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap;">
     <select id="log-filter" onchange="renderLog()">
       <option value="all">All entries</option>
-      <option value="incident">Incidents only</option>
-      <option value="response">Responses only</option>
-      <option value="task">Tasks only</option>
-      <option value="note">Notes only</option>
-      <option value="scan">Scans only</option>
+      <option value="incident">Incidents</option>
+      <option value="response">Responses</option>
+      <option value="task">Tasks</option>
+      <option value="note">Notes</option>
+      <option value="scan">Scans</option>
     </select>
-    <button class="tbtn" onclick="openHandoffConfig()">🔄 Shift handoff</button>
+    <button class="tbtn" onclick="openHandoff()">↺ Shift handoff</button>
     <button class="btn-danger" onclick="clearLog()">Clear log</button>
   </div>
   <div id="log-list" style="max-height:520px;overflow-y:auto;"></div>
 </div>
 
-<!-- MODAL: DYNAMIC TEMPLATE FORM -->
-<div class="modal-overlay hidden" id="modal-tpl-form">
-  <div class="modal" style="width:500px;">
-    <div class="modal-title" id="tpl-form-title">Log entry</div>
-    <div id="tpl-form-fields"></div>
+<!-- FIELD INTEL VIEW -->
+<div class="view" id="view-intel">
+  <div class="page-header">
+    <div class="page-title">Field Intel</div>
+    <span style="font-size:12px;color:var(--text3);">Situational awareness tools for field operators</span>
+  </div>
+  <div class="intel-grid">
+
+    <!-- Weather & Wind Conditions -->
+    <div class="intel-card">
+      <div class="intel-card-header">
+        <span class="intel-icon">🌤</span>
+        <div>
+          <div class="intel-card-title">Site Weather & Wind</div>
+          <div class="intel-card-desc">Real-time conditions relevant to wind farm performance and crew safety.</div>
+          <span class="intel-tag intel-tag-green">Live</span>
+        </div>
+      </div>
+      <div class="intel-card-content">
+        <div class="intel-field">
+          <label>Site / Location</label>
+          <input id="wx-location" placeholder="e.g. Site Alpha, GPS coords..." value="">
+        </div>
+        <div id="wx-display" style="margin-top:8px;">
+          <div class="weather-section">
+            <div class="weather-icon" id="wx-icon">—</div>
+            <div class="weather-info">
+              <div class="weather-temp" id="wx-temp">—</div>
+              <div class="weather-desc" id="wx-desc">Enter a location and fetch conditions</div>
+              <div class="wind-indicator">
+                <span>💨</span><span id="wx-wind">Wind: —</span>
+                <span style="margin-left:8px;">👁</span><span id="wx-vis">Vis: —</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="intel-card-actions" style="margin-top:8px;">
+          <button class="intel-btn intel-btn-primary" onclick="fetchWeather()">Fetch conditions</button>
+          <button class="intel-btn" onclick="logWeather()">Log to notes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crew Status Board -->
+    <div class="intel-card">
+      <div class="intel-card-header">
+        <span class="intel-icon">👷</span>
+        <div>
+          <div class="intel-card-title">Crew Status Board</div>
+          <div class="intel-card-desc">Track field crew locations, status, and last check-in times.</div>
+          <span class="intel-tag intel-tag-blue">Tracking</span>
+        </div>
+      </div>
+      <div class="intel-card-content">
+        <div id="crew-list" style="display:flex;flex-direction:column;gap:5px;max-height:160px;overflow-y:auto;margin-bottom:8px;"></div>
+        <div style="display:flex;gap:5px;">
+          <input id="crew-name-inp" class="intel-field" style="flex:1;" placeholder="Crew member name..." onkeydown="if(event.key==='Enter')addCrewMember()">
+          <button class="intel-btn intel-btn-primary" onclick="addCrewMember()">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Escalation Quick-Dial -->
+    <div class="intel-card">
+      <div class="intel-card-header">
+        <span class="intel-icon">📞</span>
+        <div>
+          <div class="intel-card-title">Escalation Contacts</div>
+          <div class="intel-card-desc">Key contacts by severity tier. Add site-specific contacts for fast escalation.</div>
+          <span class="intel-tag intel-tag-red">Emergency ready</span>
+        </div>
+      </div>
+      <div class="intel-card-content">
+        <table class="escalation-matrix">
+          <thead><tr><th>Tier</th><th>Role</th><th>Contact</th></tr></thead>
+          <tbody id="escalation-tbody">
+            <tr><td><span class="intel-tag intel-tag-red">1</span></td><td>Site Supervisor</td><td><input style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 7px;font-size:12px;width:100%;color:var(--text);" placeholder="Name / number"></td></tr>
+            <tr><td><span class="intel-tag intel-tag-amber">2</span></td><td>Operations Manager</td><td><input style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 7px;font-size:12px;width:100%;color:var(--text);" placeholder="Name / number"></td></tr>
+            <tr><td><span class="intel-tag intel-tag-blue">3</span></td><td>Control Center</td><td><input style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 7px;font-size:12px;width:100%;color:var(--text);" placeholder="Name / number"></td></tr>
+          </tbody>
+        </table>
+        <div class="intel-card-actions" style="margin-top:8px;">
+          <button class="intel-btn intel-btn-primary" onclick="logEscalationContacts()">Save to log</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pre-Shift Safety Check -->
+    <div class="intel-card">
+      <div class="intel-card-header">
+        <span class="intel-icon">🦺</span>
+        <div>
+          <div class="intel-card-title">Pre-Shift Safety Check</div>
+          <div class="intel-card-desc">Quick PPE and site safety verification before starting a shift.</div>
+          <span class="intel-tag intel-tag-amber">Safety</span>
+        </div>
+      </div>
+      <div class="intel-card-content">
+        <div id="safety-check-list" style="display:flex;flex-direction:column;gap:5px;"></div>
+        <div class="intel-card-actions" style="margin-top:10px;">
+          <button class="intel-btn intel-btn-primary" onclick="completeSafetyCheck()">✓ Complete &amp; log</button>
+          <button class="intel-btn" onclick="resetSafetyCheck()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Equipment Status Tracker -->
+    <div class="intel-card">
+      <div class="intel-card-header">
+        <span class="intel-icon">⚙️</span>
+        <div>
+          <div class="intel-card-title">Equipment Status</div>
+          <div class="intel-card-desc">Log turbine, inverter, or BOS equipment issues for handoff and maintenance tracking.</div>
+          <span class="intel-tag intel-tag-purple">Maintenance</span>
+        </div>
+      </div>
+      <div class="intel-card-content">
+        <div id="equipment-list" style="display:flex;flex-direction:column;gap:5px;max-height:140px;overflow-y:auto;margin-bottom:8px;"></div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;">
+          <input id="equip-name-inp" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;color:var(--text);" placeholder="Equipment ID / name...">
+          <select id="equip-status-inp" style="min-width:90px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;color:var(--text);">
+            <option value="ok">✅ OK</option>
+            <option value="caution">⚠️ Caution</option>
+            <option value="down">🔴 Down</option>
+          </select>
+          <button class="intel-btn intel-btn-primary" onclick="addEquipment()">+ Log</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Observation Quick-Log -->
+    <div class="intel-card">
+      <div class="intel-card-header">
+        <span class="intel-icon">📡</span>
+        <div>
+          <div class="intel-card-title">NERC Compliance Checklist</div>
+          <div class="intel-card-desc">Pre-built NERC CIP/O&P compliance items. Check off and log with timestamp.</div>
+          <span class="intel-tag intel-tag-blue">NERC</span>
+        </div>
+      </div>
+      <div class="intel-card-content">
+        <div id="nerc-check-list" style="display:flex;flex-direction:column;gap:5px;"></div>
+        <div class="intel-card-actions" style="margin-top:10px;">
+          <button class="intel-btn intel-btn-primary" onclick="completeNERCCheck()">✓ Submit compliance log</button>
+          <button class="intel-btn" onclick="resetNERCCheck()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- HANDOFF MODAL -->
+<div class="modal-overlay hidden" id="modal-handoff">
+  <div class="modal" style="width:520px;">
+    <div class="modal-title">↺ Shift handoff summary</div>
+    <div class="handoff-box" id="handoff-content"></div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('modal-tpl-form')">Cancel</button>
-      <button class="btn-primary" onclick="submitTplForm()">Save</button>
+      <button class="tbtn" onclick="copyHandoff()">Copy text</button>
+      <button class="btn-cancel" onclick="closeModal('modal-handoff')">Close</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: TEMPLATE MANAGER -->
-<div class="modal-overlay hidden" id="modal-tpl-manager">
-  <div class="modal" style="width:540px;">
-    <div class="modal-title">⚙ Template manager</div>
-    <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap;">
-      <select id="tpl-select-edit" onchange="loadTplForEdit()" style="flex:1;"></select>
-      <button class="btn-primary" onclick="newTemplate()">+ New</button>
-      <button class="btn-danger" onclick="deleteTemplate()">Delete</button>
-    </div>
-    <label>Template name</label>
-    <input class="minp" id="tpl-edit-name" placeholder="Template name">
-    <label>Icon (emoji)</label>
-    <input class="minp" id="tpl-edit-icon" placeholder="🗒" style="width:70px;">
-    <label>Tag type</label>
-    <select id="tpl-edit-tag" style="width:100%;">
-      <option value="obs">Observation</option>
-      <option value="incident">Incident</option>
-      <option value="response">Response</option>
-      <option value="task">Task note</option>
-    </select>
-    <label>Log to shift summary?</label>
-    <select id="tpl-edit-loggable" style="width:100%;">
-      <option value="1">Yes — include in log and handoff</option>
-      <option value="0">No — notes only</option>
-    </select>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;margin-bottom:6px;">
-      <div style="font-size:12px;color:var(--text2);">Fields <span style="color:var(--text3);font-size:11px;">(drag to reorder)</span></div>
-      <button class="tbtn" style="font-size:11px;" onclick="addTplField()">+ Add field</button>
-    </div>
-    <div id="tpl-field-list" style="max-height:260px;overflow-y:auto;"></div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('modal-tpl-manager')">Cancel</button>
-      <button class="btn-primary" onclick="saveTplEdits()">Save template</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: ADD/EDIT SITE -->
+<!-- ADD SITE MODAL -->
 <div class="modal-overlay hidden" id="modal-add-site">
   <div class="modal">
     <div class="modal-title" id="site-modal-title">Add site</div>
     <input type="hidden" id="site-edit-id">
     <label>Site name</label>
-    <input class="minp" id="site-name" placeholder="e.g. BYPS1, Station Alpha...">
+    <input id="site-name" placeholder="e.g. Station Alpha, Gate B...">
     <label>NERC site?</label>
-    <select id="site-nerc" style="width:100%;"><option value="1">Yes — NERC</option><option value="0">No — Regular</option></select>
-    <label>Ad-hoc (no interval)?</label>
-    <select id="site-adhoc" style="width:100%;"><option value="0">No — scheduled interval</option><option value="1">Yes — ad-hoc only</option></select>
+    <select id="site-nerc"><option value="0">No</option><option value="1">Yes</option></select>
     <label>Scan interval (minutes)</label>
-    <input class="minp" id="site-interval" type="number" value="30" min="1">
-    <label>Due-soon threshold (min before overdue)</label>
-    <input class="minp" id="site-threshold" type="number" value="5" min="1">
+    <input id="site-interval" type="number" value="30" min="1">
+    <label>Due-soon threshold (minutes before overdue)</label>
+    <input id="site-threshold" type="number" value="5" min="1">
     <label>Reference notes</label>
-    <textarea id="site-notes" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:6px 9px;color:var(--text);font-family:var(--mono);font-size:13px;min-height:65px;resize:vertical;" placeholder="Baseline values, contacts, what to check..."></textarea>
+    <textarea id="site-notes" placeholder="Baseline values, what to check, key contacts..."></textarea>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-add-site')">Cancel</button>
       <button class="btn-primary" onclick="saveSite()">Save site</button>
@@ -363,13 +597,13 @@ input[type=checkbox]{accent-color:var(--green);}
   </div>
 </div>
 
-<!-- MODAL: SCAN NOTE -->
+<!-- SCAN NOTE MODAL -->
 <div class="modal-overlay hidden" id="modal-scan-note">
   <div class="modal">
     <div class="modal-title" id="scan-note-title">Log scan</div>
     <input type="hidden" id="scan-note-site-id">
     <label>Scan notes (optional)</label>
-    <textarea id="scan-note-body" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:6px 9px;color:var(--text);font-family:var(--mono);font-size:13px;min-height:70px;resize:vertical;" placeholder="All clear, or describe anomalies..."></textarea>
+    <textarea id="scan-note-body" placeholder="All clear, or note any anomalies..."></textarea>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-scan-note')">Cancel</button>
       <button class="btn-primary" onclick="confirmScan()">Log scan</button>
@@ -377,30 +611,61 @@ input[type=checkbox]{accent-color:var(--green);}
   </div>
 </div>
 
-<!-- MODAL: HANDOFF CONFIG -->
-<div class="modal-overlay hidden" id="modal-handoff-cfg">
-  <div class="modal" style="width:520px;">
-    <div class="modal-title">🔄 Configure shift handoff</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Choose what to include in this handoff:</div>
-    <div class="hf-options" id="hf-options"></div>
-    <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px;">Extra notes for next operator</label>
-    <textarea id="hf-extra" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:8px;color:var(--text);font-family:var(--mono);font-size:12px;min-height:65px;resize:vertical;" placeholder="Anything the next operator needs to know..."></textarea>
+<!-- INCIDENT MODAL -->
+<div class="modal-overlay hidden" id="modal-incident">
+  <div class="modal">
+    <div class="modal-title">🚨 Incident report</div>
+    <label>Location / zone</label>
+    <input id="inc-location" placeholder="Zone, gate, site name...">
+    <label>Severity</label>
+    <select id="inc-severity"><option>Low</option><option>Medium</option><option selected>High</option><option>Critical</option></select>
+    <label>Reported by</label>
+    <input id="inc-reporter" placeholder="Name or radio ID...">
+    <label>Description</label>
+    <textarea id="inc-desc" placeholder="What happened?"></textarea>
+    <label>Action taken</label>
+    <textarea id="inc-action" placeholder="What did you do?"></textarea>
+    <label>Follow-up required?</label>
+    <select id="inc-followup"><option value="no">No</option><option value="yes">Yes — open item</option></select>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('modal-handoff-cfg')">Cancel</button>
-      <button class="tbtn" onclick="previewHandoff()">Preview</button>
-      <button class="btn-primary" onclick="saveHandoffAsNote()">Save as note</button>
+      <button class="btn-cancel" onclick="closeModal('modal-incident')">Cancel</button>
+      <button class="btn-primary" onclick="saveIncident()">Log incident</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: HANDOFF PREVIEW -->
-<div class="modal-overlay hidden" id="modal-handoff">
-  <div class="modal" style="width:540px;">
-    <div class="modal-title">🔄 Shift handoff</div>
-    <div class="handoff-box" id="handoff-content"></div>
+<!-- RESPONSE MODAL -->
+<div class="modal-overlay hidden" id="modal-response">
+  <div class="modal">
+    <div class="modal-title">✅ Correct response log</div>
+    <label>Situation / trigger</label>
+    <input id="res-situation" placeholder="What prompted this?">
+    <label>Who was notified</label>
+    <input id="res-notified" placeholder="Names, teams, channels...">
+    <label>Procedure followed</label>
+    <textarea id="res-procedure" placeholder="Steps taken..."></textarea>
+    <label>Resolution / outcome</label>
+    <textarea id="res-outcome" placeholder="What was the result?"></textarea>
+    <label>Escalation</label>
+    <select id="res-escalation"><option>No escalation</option><option>Yes — escalated</option><option>Yes — pending</option></select>
     <div class="modal-actions">
-      <button class="tbtn" onclick="copyHandoff()">Copy</button>
-      <button class="btn-cancel" onclick="closeModal('modal-handoff')">Close</button>
+      <button class="btn-cancel" onclick="closeModal('modal-response')">Cancel</button>
+      <button class="btn-primary" onclick="saveResponse()">Log response</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADHOC TIMER MODAL -->
+<div class="modal-overlay hidden" id="modal-task-timer">
+  <div class="modal" style="width:320px;">
+    <div class="modal-title" id="task-timer-modal-title">Task timer</div>
+    <input type="hidden" id="task-timer-task-id">
+    <div style="text-align:center;padding:16px 0;">
+      <div style="font-family:var(--mono);font-size:40px;font-weight:500;color:var(--amber);" id="task-timer-display">00:00</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:6px;" id="task-timer-desc"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-task-timer')">Close</button>
     </div>
   </div>
 </div>
@@ -408,139 +673,90 @@ input[type=checkbox]{accent-color:var(--green);}
 <div class="toast" id="toast"></div>
 
 <script>
-const SK='ctrlroom_v5';
-
-// DEFAULT SITES from screenshot
-const DEFAULT_SITES=[
-  {name:'BYPS1',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'Condor Bess',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'COSO Bess',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'GDWL',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'Goleta',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'Harq 1',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'Harq 2 Combo',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'Kuna BESS',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'LNDL',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'Northstar',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'ORGN',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'Peregrine Bess',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'RKRG',nerc:true,adhoc:false,interval:30,threshold:5,notes:''},
-  {name:'CFLTS',nerc:true,adhoc:true,interval:30,threshold:5,notes:''},
-  {name:'FRDN',nerc:true,adhoc:true,interval:30,threshold:5,notes:''},
-  {name:'MRCP',nerc:true,adhoc:true,interval:30,threshold:5,notes:''},
-  {name:'PDMT',nerc:true,adhoc:true,interval:30,threshold:5,notes:''},
-  {name:'VIDL',nerc:true,adhoc:true,interval:30,threshold:5,notes:''},
-  {name:'Tropico',nerc:false,adhoc:true,interval:30,threshold:5,notes:''},
-];
-
-// DEFAULT TEMPLATES
-const DEFAULT_TEMPLATES=[
-  {id:'incident',icon:'🚨',name:'Incident report',tag:'incident',loggable:true,fields:[
-    {id:'f1',label:'Location / zone',type:'text',required:true,placeholder:'Zone, gate, site name...'},
-    {id:'f2',label:'Severity',type:'select',required:true,options:'Low,Medium,High,Critical',defaultVal:'High'},
-    {id:'f3',label:'Reported by',type:'text',required:false,placeholder:'Name or radio ID...'},
-    {id:'f4',label:'Description',type:'textarea',required:true,placeholder:'What happened?'},
-    {id:'f5',label:'Action taken',type:'textarea',required:false,placeholder:'What did you do?'},
-    {id:'f6',label:'Follow-up required?',type:'select',required:false,options:'No,Yes — open item',defaultVal:'No'},
-  ]},
-  {id:'response',icon:'✅',name:'Correct response',tag:'response',loggable:true,fields:[
-    {id:'f1',label:'Situation / trigger',type:'text',required:true,placeholder:'What prompted this?'},
-    {id:'f2',label:'Who was notified',type:'text',required:false,placeholder:'Names, teams, channels...'},
-    {id:'f3',label:'Procedure followed',type:'textarea',required:false,placeholder:'Steps taken...'},
-    {id:'f4',label:'Resolution / outcome',type:'textarea',required:false,placeholder:'What was the result?'},
-    {id:'f5',label:'Escalation',type:'select',required:false,options:'No escalation,Yes — escalated,Yes — pending',defaultVal:'No escalation'},
-  ]},
-  {id:'obs',icon:'📋',name:'Observation',tag:'obs',loggable:false,fields:[
-    {id:'f1',label:'Location',type:'text',required:false,placeholder:'Where?'},
-    {id:'f2',label:'Observation',type:'textarea',required:true,placeholder:'What did you observe?'},
-    {id:'f3',label:'Action taken',type:'text',required:false,placeholder:'Any action?'},
-  ]},
-  {id:'callback',icon:'📞',name:'Callback / follow-up',tag:'task',loggable:true,fields:[
-    {id:'f1',label:'Contact',type:'text',required:true,placeholder:'Name or number...'},
-    {id:'f2',label:'Reason',type:'text',required:false,placeholder:'Why are you calling back?'},
-    {id:'f3',label:'Follow up by',type:'text',required:false,placeholder:'Time or deadline...'},
-  ]},
-  {id:'handoff',icon:'🔄',name:'Shift handoff',tag:'obs',loggable:false,fields:[]},
-];
-
-let S={
-  recTasks:[],adhocTasks:[],checklists:{},activeList:null,
-  notes:[],activeNote:null,
+const SK = 'ctrlroom_v5';
+let S = {
+  recTasks:[], adhocTasks:[], checklists:{}, activeList:null,
+  notes:[], activeNote:null,
   logEntries:[],
-  sites:[],siteFilter:'all',
-  templates:null,
-  timerRunning:false,timerElapsed:0,timerCycles:0,
-  shiftStart:Date.now(),
-  activeTplEdit:null,
+  sites:[], siteFilter:'all',
+  timerRunning:false, timerElapsed:0, timerCycles:0,
+  shiftStart: Date.now(),
+  crewMembers:[], equipmentLog:[],
+  escalationContacts:{tier1:'',tier2:'',tier3:''}
 };
 
-// current template form state
-let _tplFormId=null;
-let _tplEditFields=[];
-
-function save(){
-  try{localStorage.setItem(SK,JSON.stringify(S));}catch(e){}
-  try{window.storage&&window.storage.set(SK,JSON.stringify(S));}catch(e){}
+function save() {
+  try { localStorage.setItem(SK, JSON.stringify(S)); } catch(e) {}
+  try { window.storage && window.storage.set(SK, JSON.stringify(S)); } catch(e) {}
 }
-
-async function load(){
-  let raw=null;
-  try{raw=localStorage.getItem(SK);}catch(e){}
-  if(!raw){try{const r=await window.storage.get(SK);if(r)raw=r.value;}catch(e){}}
-  if(raw){
-    try{
-      const p=JSON.parse(raw);
-      S={...S,...p};
-      if(!S.checklists)S.checklists={};
-      if(!S.notes)S.notes=[];
-      if(!S.logEntries)S.logEntries=[];
-      if(!S.timerCycles)S.timerCycles=0;
-      if(!S.shiftStart)S.shiftStart=Date.now();
-      if(!S.templates)S.templates=JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
-      // Seed sites if none
-      if(!S.sites||S.sites.length===0){
-        S.sites=DEFAULT_SITES.map((s,i)=>({...s,id:Date.now()+i,lastScan:null,scanCount:0}));
-      }
-    }catch(e){}
-  } else {
-    S.templates=JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
-    S.sites=DEFAULT_SITES.map((s,i)=>({...s,id:Date.now()+i,lastScan:null,scanCount:0}));
+async function load() {
+  let raw = null;
+  try { raw = localStorage.getItem(SK); } catch(e) {}
+  if (!raw) { try { const r = await window.storage.get(SK); if(r) raw=r.value; } catch(e) {} }
+  if (raw) {
+    try {
+      const p = JSON.parse(raw);
+      S = {...S,...p};
+      if(!S.checklists) S.checklists={};
+      if(!S.notes) S.notes=[];
+      if(!S.logEntries) S.logEntries=[];
+      if(!S.sites) S.sites=[];
+      if(!S.timerCycles) S.timerCycles=0;
+      if(!S.shiftStart) S.shiftStart=Date.now();
+      if(!S.crewMembers) S.crewMembers=[];
+      if(!S.equipmentLog) S.equipmentLog=[];
+      if(!S.escalationContacts) S.escalationContacts={tier1:'',tier2:'',tier3:''};
+    } catch(e) {}
   }
   renderAll();
-  if(S.timerRunning)startTimerInterval();
-  setInterval(()=>{if(document.getElementById('view-scans').classList.contains('active'))renderSites();},30000);
+  if (S.timerRunning) startTimerInterval();
+  setInterval(refreshScanStatuses, 30000);
+  refreshScanStatuses();
+  initSafetyCheck();
+  initNERCCheck();
+  renderCrewList();
+  renderEquipmentList();
+  restoreAdhocTimers();
+  // restore escalation contacts
+  const rows = document.querySelectorAll('#escalation-tbody tr');
+  const tiers = ['tier1','tier2','tier3'];
+  rows.forEach((row,i)=>{
+    const inp = row.querySelector('input');
+    if(inp) inp.value = S.escalationContacts[tiers[i]]||'';
+  });
 }
 
 // CLOCK
-function updateClock(){document.getElementById('nav-clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
-setInterval(updateClock,1000);updateClock();
+function updateClock() {
+  document.getElementById('nav-clock').textContent = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(updateClock,1000); updateClock();
 
-function ts(d){return new Date(d||Date.now()).toLocaleString([],{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});}
-function tsShort(d){return new Date(d||Date.now()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
-function tsDate(d){return new Date(d||Date.now()).toLocaleDateString([],{month:'short',day:'numeric'});}
-
-// VIEW
-function switchView(v,el){
+// VIEW SWITCH
+function switchView(v, el) {
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
-  if(el)el.classList.add('active');
-  if(v==='log')renderLog();
-  if(v==='scans'){renderSites();}
+  if(el) el.classList.add('active');
+  if(v==='log') renderLog();
+  if(v==='scans') { refreshScanStatuses(); renderSites(); }
 }
 
-// TIMER
+// TIMER (now on scans page)
 let timerInt=null;
 const TOTAL=30*60;
-function toggleTimer(){if(S.timerRunning)stopTimer();else{S.timerRunning=true;save();startTimerInterval();}}
-function startTimerInterval(){
+function toggleTimer() {
+  if(S.timerRunning){stopTimer();}
+  else{S.timerRunning=true;save();startTimerInterval();}
+}
+function startTimerInterval() {
   document.getElementById('timer-btn').textContent='Stop';
   document.getElementById('timer-btn').classList.add('active-btn');
   timerInt=setInterval(()=>{
     S.timerElapsed++;
     if(S.timerElapsed>=TOTAL){
       S.timerElapsed=0;S.timerCycles++;
-      addLog({type:'task',title:'Cycle #'+S.timerCycles+' complete',detail:''});
+      addLog({type:'task',title:'30-min cycle #'+S.timerCycles+' completed',detail:''});
       fireAlert('Cycle #'+S.timerCycles+' — time to scan!');
     }
     save();updateTimerUI();
@@ -554,8 +770,9 @@ function updateTimerUI(){
   disp.textContent=String(Math.floor(rem/60)).padStart(2,'0')+':'+String(rem%60).padStart(2,'0');
   const urgent=rem<=120;
   disp.classList.toggle('urgent',urgent);
-  document.getElementById('timer-fill').style.width=((rem/TOTAL)*100).toFixed(1)+'%';
-  document.getElementById('timer-fill').classList.toggle('urgent',urgent);
+  const fill=document.getElementById('timer-fill');
+  fill.style.width=((rem/TOTAL)*100).toFixed(1)+'%';
+  fill.classList.toggle('urgent',urgent);
   document.getElementById('cycles-badge').textContent=S.timerCycles+' cycle'+(S.timerCycles!==1?'s':'');
 }
 
@@ -574,51 +791,136 @@ function renderRec(){
   </div>`).join('');
 }
 
-// ADHOC TASKS
+// ADHOC with optional timer
+let adhocTimerIntervals={};
 function addAdhoc(){
   const v=document.getElementById('adhoc-inp').value.trim();if(!v)return;
-  const now=Date.now();
-  S.adhocTasks.push({id:now,name:v,done:false,ts:now});
+  const minRaw=parseInt(document.getElementById('adhoc-timer-inp').value)||0;
+  const task={id:Date.now(),name:v,done:false,timerMin:minRaw>0?minRaw:null,timerStart:minRaw>0?Date.now():null};
+  S.adhocTasks.push(task);
   document.getElementById('adhoc-inp').value='';
-  addLog({type:'task',title:'Task added: '+v,detail:''});
+  document.getElementById('adhoc-timer-inp').value='';
+  addLog({type:'task',title:'Task added: '+v,detail:minRaw>0?minRaw+'min timer set':''});
   save();renderAdhoc();
+  if(task.timerMin) startAdhocTimer(task.id);
+}
+function startAdhocTimer(id){
+  if(adhocTimerIntervals[id]) clearInterval(adhocTimerIntervals[id]);
+  adhocTimerIntervals[id]=setInterval(()=>{renderAdhoc();},30000);
+}
+function restoreAdhocTimers(){
+  S.adhocTasks.forEach(t=>{if(t.timerMin&&t.timerStart&&!t.done)startAdhocTimer(t.id);});
+}
+function getAdhocTimerDisplay(task){
+  if(!task.timerMin||!task.timerStart) return null;
+  const elapsedMs=Date.now()-task.timerStart;
+  const totalMs=task.timerMin*60000;
+  const remMs=totalMs-elapsedMs;
+  if(remMs<=0) return {label:'Overdue',expired:true};
+  const remMin=Math.ceil(remMs/60000);
+  return {label:remMin+'min left',expired:false};
 }
 function toggleAdhoc(id){
-  const t=S.adhocTasks.find(x=>x.id===id);
-  if(t){t.done=!t.done;t.doneTs=t.done?Date.now():null;if(t.done)addLog({type:'task',title:'Task done: '+t.name,detail:''});}
+  const t=S.adhocTasks.find(x=>x.id===id);if(t){t.done=!t.done;if(t.done){addLog({type:'task',title:'Task done: '+t.name,detail:''});if(adhocTimerIntervals[id]){clearInterval(adhocTimerIntervals[id]);delete adhocTimerIntervals[id];}}}
   save();renderAdhoc();
 }
-function delAdhoc(id){S.adhocTasks=S.adhocTasks.filter(x=>x.id!==id);save();renderAdhoc();}
+function delAdhoc(id){
+  if(adhocTimerIntervals[id]){clearInterval(adhocTimerIntervals[id]);delete adhocTimerIntervals[id];}
+  S.adhocTasks=S.adhocTasks.filter(x=>x.id!==id);save();renderAdhoc();
+}
+function openTaskTimer(id){
+  const t=S.adhocTasks.find(x=>x.id===id);if(!t||!t.timerMin)return;
+  document.getElementById('task-timer-modal-title').textContent=esc(t.name);
+  document.getElementById('task-timer-task-id').value=id;
+  document.getElementById('task-timer-desc').textContent=t.timerMin+'min timer';
+  updateTaskTimerDisplay(id);
+  openModal('modal-task-timer');
+  // live update while modal open
+  if(window._taskTimerModalInt) clearInterval(window._taskTimerModalInt);
+  window._taskTimerModalInt=setInterval(()=>{
+    const modal=document.getElementById('modal-task-timer');
+    if(!modal.classList.contains('hidden'))updateTaskTimerDisplay(id);
+    else clearInterval(window._taskTimerModalInt);
+  },1000);
+}
+function updateTaskTimerDisplay(id){
+  const t=S.adhocTasks.find(x=>x.id===id);if(!t)return;
+  const ti=getAdhocTimerDisplay(t);
+  const disp=document.getElementById('task-timer-display');
+  if(!ti){disp.textContent='No timer';return;}
+  if(ti.expired){disp.textContent='OVERDUE';disp.style.color='var(--red)';return;}
+  const remMs=Math.max(0,(t.timerMin*60000)-(Date.now()-t.timerStart));
+  const m=Math.floor(remMs/60000),s=Math.floor((remMs%60000)/1000);
+  disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  disp.style.color='var(--amber)';
+}
 function renderAdhoc(){
   const el=document.getElementById('adhoc-list');
   if(!S.adhocTasks.length){el.innerHTML='<div class="empty">No tasks yet</div>';return;}
-  el.innerHTML=S.adhocTasks.map(t=>`<div class="task-item${t.done?' done':''}">
-    <input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleAdhoc(${t.id})">
-    <span class="task-label">${esc(t.name)}</span>
-    <button class="task-del" onclick="delAdhoc(${t.id})">✕</button>
-  </div>`).join('');
+  el.innerHTML=S.adhocTasks.map(t=>{
+    const ti=getAdhocTimerDisplay(t);
+    return `<div class="task-item${t.done?' done':''}">
+      <input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleAdhoc(${t.id})">
+      <span class="task-label">${esc(t.name)}</span>
+      ${ti?`<span class="task-timer-badge${ti.expired?' expired':''}" onclick="openTaskTimer(${t.id})" style="cursor:pointer;">${ti.label}</span>`:''}
+      <button class="task-del" onclick="delAdhoc(${t.id})">✕</button>
+    </div>`;
+  }).join('');
 }
 
-// CHECKLISTS
-function addClList(){const v=document.getElementById('cl-list-inp').value.trim();if(!v)return;if(!S.checklists[v])S.checklists[v]=[];S.activeList=v;document.getElementById('cl-list-inp').value='';save();renderCl();}
-function switchCl(name){S.activeList=name;renderCl();}
-function delClList(name){delete S.checklists[name];if(S.activeList===name)S.activeList=Object.keys(S.checklists)[0]||null;save();renderCl();}
-function addClItem(){if(!S.activeList)return;const v=document.getElementById('cl-item-inp').value.trim();if(!v)return;S.checklists[S.activeList].push({id:Date.now(),name:v,done:false});document.getElementById('cl-item-inp').value='';save();renderCl();}
+// CHECKLISTS — redesigned: dropdown selector, separate delete button
+function addClList(){
+  const v=document.getElementById('cl-list-inp').value.trim();
+  if(!v)return;
+  if(!S.checklists[v])S.checklists[v]=[];
+  S.activeList=v;
+  document.getElementById('cl-list-inp').value='';
+  save();renderCl();
+}
+function switchClFromSelect(){
+  const sel=document.getElementById('cl-list-select');
+  S.activeList=sel.value||null;
+  renderCl();
+}
+function delActiveClList(){
+  if(!S.activeList)return;
+  if(!confirm('Delete checklist "'+S.activeList+'"?'))return;
+  delete S.checklists[S.activeList];
+  S.activeList=Object.keys(S.checklists)[0]||null;
+  save();renderCl();
+}
+function addClItem(){
+  if(!S.activeList)return;
+  const v=document.getElementById('cl-item-inp').value.trim();
+  if(!v)return;
+  S.checklists[S.activeList].push({id:Date.now(),name:v,done:false});
+  document.getElementById('cl-item-inp').value='';
+  save();renderCl();
+}
 function toggleCl(id){if(!S.activeList)return;const t=S.checklists[S.activeList].find(x=>x.id===id);if(t)t.done=!t.done;save();renderCl();}
 function delCl(id){if(!S.activeList)return;S.checklists[S.activeList]=S.checklists[S.activeList].filter(x=>x.id!==id);save();renderCl();}
 function renderCl(){
   const keys=Object.keys(S.checklists);
-  document.getElementById('cl-tabs').innerHTML=keys.map(k=>`<span class="cl-tab${S.activeList===k?' active':''}" onclick="switchCl('${esc(k)}')">${esc(k)} <span onclick="event.stopPropagation();delClList('${esc(k)}')" style="opacity:.5;cursor:pointer;">✕</span></span>`).join('');
-  const has=S.activeList&&S.checklists[S.activeList];
-  document.getElementById('cl-item-inp').style.display=has?'block':'none';
-  document.getElementById('cl-item-btn').style.display=has?'inline-block':'none';
-  const pr=document.getElementById('cl-prog-row');
+  const header=document.getElementById('cl-header');
+  const addItemRow=document.getElementById('cl-add-item-row');
+  const progRow=document.getElementById('cl-prog-row');
   const el=document.getElementById('cl-items');
-  if(!has){el.innerHTML='<div class="empty">Create or select a list</div>';pr.style.display='none';return;}
+  if(!keys.length){
+    header.style.display='none';addItemRow.style.display='none';progRow.style.display='none';
+    el.innerHTML='<div class="empty">Create your first checklist above</div>';return;
+  }
+  // Ensure activeList is valid
+  if(!S.activeList||!S.checklists[S.activeList]) S.activeList=keys[0];
+  header.style.display='flex';
+  // Populate dropdown
+  const sel=document.getElementById('cl-list-select');
+  sel.innerHTML=keys.map(k=>`<option value="${esc(k)}"${S.activeList===k?' selected':''}>${esc(k)}</option>`).join('');
   const list=S.checklists[S.activeList];
   const done=list.filter(x=>x.done).length,total=list.length;
-  if(total>0){pr.style.display='flex';document.getElementById('cl-prog-fill').style.width=Math.round(done/total*100)+'%';document.getElementById('cl-prog-txt').textContent=done+'/'+total;}else pr.style.display='none';
-  el.innerHTML=!list.length?'<div class="empty">No items</div>':list.map(t=>`<div class="task-item${t.done?' done':''}">
+  if(total>0){progRow.style.display='flex';document.getElementById('cl-prog-fill').style.width=Math.round(done/total*100)+'%';document.getElementById('cl-prog-txt').textContent=done+'/'+total;}
+  else progRow.style.display='none';
+  addItemRow.style.display='flex';
+  el.innerHTML=!list.length?'<div class="empty">No items yet — add one below</div>':list.map(t=>`<div class="task-item${t.done?' done':''}">
     <input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleCl(${t.id})">
     <span class="task-label">${esc(t.name)}</span>
     <button class="task-del" onclick="delCl(${t.id})">✕</button>
@@ -626,290 +928,163 @@ function renderCl(){
 }
 
 // SITES
-function siteStatus(s){
-  if(s.adhoc||!s.lastScan)return s.lastScan?'ok':'never';
-  const m=(Date.now()-s.lastScan)/60000,iv=s.interval||30,th=s.threshold||5;
-  if(m>iv)return'overdue';
-  if(m>iv-th)return'due';
-  return'ok';
+function siteStatus(site) {
+  if(!site.lastScan) return 'never';
+  const elapsedMin=(Date.now()-site.lastScan)/60000;
+  const interval=site.interval||30;
+  const threshold=site.threshold||5;
+  if(elapsedMin>interval) return 'overdue';
+  if(elapsedMin>interval-threshold) return 'due';
+  return 'ok';
 }
-function statusLabel(s){return{ok:'OK',due:'Due soon',overdue:'OVERDUE',never:'Never scanned'}[s]||s;}
-function statusBadgeClass(s){return{ok:'sbadge-ok',due:'sbadge-due',overdue:'sbadge-overdue',never:'sbadge-never'}[s]||'sbadge-never';}
-function timeSince(ts){if(!ts)return'—';const m=Math.floor((Date.now()-ts)/60000);if(m<1)return'just now';if(m<60)return m+'min ago';return Math.floor(m/60)+'h '+m%60+'m ago';}
-
+function siteStatusLabel(s){return{ok:'OK',due:'Due soon',overdue:'OVERDUE',never:'Never scanned'}[s]||s;}
+function siteStatusBadgeClass(s){return{ok:'badge-ok',due:'badge-due',overdue:'badge-overdue',never:'badge-never'}[s]||'badge-never';}
+function refreshScanStatuses(){renderSites();renderScanStats();}
 function setSiteFilter(f,el){
   S.siteFilter=f;
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   if(el)el.classList.add('active');
   renderSites();
 }
-
-function renderSites(){
+function renderScanStats(){
   const total=S.sites.length;
   const ok=S.sites.filter(s=>siteStatus(s)==='ok').length;
   const due=S.sites.filter(s=>siteStatus(s)==='due').length;
-  const ov=S.sites.filter(s=>siteStatus(s)==='overdue').length;
-  const nv=S.sites.filter(s=>siteStatus(s)==='never').length;
+  const overdue=S.sites.filter(s=>siteStatus(s)==='overdue').length;
+  const never=S.sites.filter(s=>siteStatus(s)==='never').length;
   document.getElementById('scan-stats').innerHTML=`
-    <div class="stat-chip"><span class="sv">${total}</span><span class="sl">Sites</span></div>
-    <div class="stat-chip"><span class="sv" style="color:var(--green)">${ok}</span><span class="sl">OK</span></div>
-    <div class="stat-chip"><span class="sv" style="color:var(--amber)">${due}</span><span class="sl">Due soon</span></div>
-    <div class="stat-chip"><span class="sv" style="color:var(--red)">${ov}</span><span class="sl">Overdue</span></div>
-    <div class="stat-chip"><span class="sv" style="color:var(--text3)">${nv}</span><span class="sl">Never scanned</span></div>`;
-  const sorted=S.sites.filter(s=>{
-    const f=S.siteFilter;
-    if(f==='all')return true;
-    if(f==='nerc')return s.nerc;
-    if(f==='nonadhoc')return!s.adhoc;
-    return siteStatus(s)===f;
-  }).sort((a,b)=>{const o={overdue:0,due:1,never:2,ok:3};return(o[siteStatus(a)]||0)-(o[siteStatus(b)]||0);});
-
-  // Split NERC scheduled / NERC adhoc / non-NERC
-  const nercSched=sorted.filter(s=>s.nerc&&!s.adhoc);
-  const nercAdhoc=sorted.filter(s=>s.nerc&&s.adhoc);
-  const nonNerc=sorted.filter(s=>!s.nerc);
-
-  let html='';
-  if(nercSched.length){html+=`<div class="section-header">⚡ NERC sites</div><div class="sites-grid">${nercSched.map(siteCard).join('')}</div>`;}
-  if(nercAdhoc.length){html+=`<div class="section-header">⚡ NERC — ad-hoc</div><div class="sites-grid">${nercAdhoc.map(siteCard).join('')}</div>`;}
-  if(nonNerc.length){html+=`<div class="section-header">◻ Regular / non-NERC</div><div class="sites-grid">${nonNerc.map(siteCard).join('')}</div>`;}
-  if(!sorted.length)html='<div class="empty">No sites match filter</div>';
-
-  // Next due
-  const pending=S.sites.filter(s=>s.lastScan&&!s.adhoc&&siteStatus(s)==='ok').sort((a,b)=>{
-    const ar=(a.interval||30)-((Date.now()-a.lastScan)/60000);
-    const br=(b.interval||30)-((Date.now()-b.lastScan)/60000);
-    return ar-br;
+    <div class="stat-chip"><span class="s-val">${total}</span><span class="s-lbl">Sites</span></div>
+    <div class="stat-chip"><span class="s-val" style="color:var(--green)">${ok}</span><span class="s-lbl">OK</span></div>
+    <div class="stat-chip"><span class="s-val" style="color:var(--amber)">${due}</span><span class="s-lbl">Due soon</span></div>
+    <div class="stat-chip"><span class="s-val" style="color:var(--red)">${overdue}</span><span class="s-lbl">Overdue</span></div>
+    <div class="stat-chip"><span class="s-val" style="color:var(--text3)">${never}</span><span class="s-lbl">Never</span></div>`;
+  const pending=S.sites.filter(s=>s.lastScan&&siteStatus(s)==='ok').sort((a,b)=>{
+    const aRem=(a.interval||30)-((Date.now()-a.lastScan)/60000);
+    const bRem=(b.interval||30)-((Date.now()-b.lastScan)/60000);
+    return aRem-bRem;
   });
-  if(pending.length){const n=pending[0];const rm=Math.max(0,(n.interval||30)-((Date.now()-n.lastScan)/60000));document.getElementById('scan-next-due').textContent='Next: '+n.name+' ~'+Math.ceil(rm)+'min';}
-  else document.getElementById('scan-next-due').textContent='';
-
-  document.getElementById('sites-grid').innerHTML=html;
+  if(pending.length){
+    const next=pending[0];
+    const remMin=Math.max(0,((next.interval||30)-((Date.now()-next.lastScan)/60000)));
+    document.getElementById('scan-next-due').textContent='Next: '+esc(next.name)+' in ~'+Math.ceil(remMin)+'min';
+  } else {
+    document.getElementById('scan-next-due').textContent='';
+  }
 }
-
-function siteCard(s){
-  const st=siteStatus(s);
-  return`<div class="site-card ${st}">
-    <div class="site-header">
-      <span class="site-name">${esc(s.name)}</span>
-      ${s.nerc?'<span class="sbadge sbadge-nerc">NERC</span>':''}
-      ${s.adhoc?'<span class="sbadge sbadge-adhoc">Ad-hoc</span>':''}
-      <span class="sbadge ${statusBadgeClass(st)}">${statusLabel(st)}</span>
-    </div>
-    <div class="site-meta">${s.adhoc?'Ad-hoc':'Interval: '+(s.interval||30)+'min'} · Last: ${timeSince(s.lastScan)} · Scans: ${s.scanCount||0}</div>
-    <div class="site-actions">
-      <button class="scan-btn" onclick="openScanNote(${s.id})">Scan Now</button>
-      <button class="tbtn" style="font-size:11px;padding:3px 8px;" onclick="editSite(${s.id})">Edit</button>
-      <button class="tbtn" style="font-size:11px;padding:3px 8px;color:var(--red);border-color:var(--red-dim);" onclick="deleteSite(${s.id})">Del</button>
-    </div>
-    ${s.notes?`<div class="site-ref">${esc(s.notes.substring(0,100))}${s.notes.length>100?'…':''}</div>`:''}
-  </div>`;
+function renderSites(){
+  renderScanStats();
+  let sites=[...S.sites];
+  const f=S.siteFilter;
+  if(f==='nerc') sites=sites.filter(s=>s.nerc);
+  else if(f!=='all') sites=sites.filter(s=>siteStatus(s)===f);
+  const order={overdue:0,due:1,never:2,ok:3};
+  sites.sort((a,b)=>(order[siteStatus(a)]||0)-(order[siteStatus(b)]||0));
+  const el=document.getElementById('sites-grid');
+  if(!sites.length){el.innerHTML='<div class="empty" style="grid-column:1/-1;">No sites'+(f!=='all'?' matching filter':' added yet')+'</div>';return;}
+  el.innerHTML=sites.map(site=>{
+    const status=siteStatus(site);
+    const lastStr=site.lastScan?timeSince(site.lastScan):'—';
+    const intervalStr=(site.interval||30)+'min interval';
+    return `<div class="site-card ${status}">
+      <div class="site-header">
+        <span class="site-name">${esc(site.name)}</span>
+        ${site.nerc?'<span class="site-badge badge-nerc">NERC</span>':''}
+        <span class="site-badge ${siteStatusBadgeClass(status)}">${siteStatusLabel(status)}</span>
+      </div>
+      <div class="site-meta">Last: ${lastStr} · ${intervalStr}</div>
+      <div class="site-actions">
+        <button class="scan-btn" onclick="openScanNote(${site.id})">Log scan</button>
+        <button class="tbtn" style="font-size:11px;padding:3px 9px;" onclick="editSite(${site.id})">Edit</button>
+        <button class="tbtn" style="font-size:11px;padding:3px 9px;color:var(--red);border-color:var(--red);" onclick="deleteSite(${site.id})">Del</button>
+      </div>
+      ${site.notes?`<div class="site-note-preview">${esc(site.notes.substring(0,80))}${site.notes.length>80?'…':''}</div>`:''}
+    </div>`;
+  }).join('');
 }
-
-function openAddSite(){
-  document.getElementById('site-modal-title').textContent='Add site';
-  document.getElementById('site-edit-id').value='';
-  ['site-name'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('site-nerc').value='1';
-  document.getElementById('site-adhoc').value='0';
-  document.getElementById('site-interval').value='30';
-  document.getElementById('site-threshold').value='5';
-  document.getElementById('site-notes').value='';
-  openModal('modal-add-site');
+function timeSince(ts){
+  const m=Math.floor((Date.now()-ts)/60000);
+  if(m<1)return'just now';if(m<60)return m+'min ago';
+  return Math.floor(m/60)+'h '+m%60+'m ago';
 }
 function openScanNote(id){
-  const s=S.sites.find(x=>x.id===id);if(!s)return;
-  document.getElementById('scan-note-title').textContent='Log scan — '+s.name;
+  const site=S.sites.find(s=>s.id===id);if(!site)return;
+  document.getElementById('scan-note-title').textContent='Log scan — '+site.name;
   document.getElementById('scan-note-site-id').value=id;
   document.getElementById('scan-note-body').value='';
   openModal('modal-scan-note');
 }
 function confirmScan(){
   const id=parseInt(document.getElementById('scan-note-site-id').value);
-  const s=S.sites.find(x=>x.id===id);if(!s)return;
+  const site=S.sites.find(s=>s.id===id);if(!site)return;
   const note=document.getElementById('scan-note-body').value.trim();
-  s.lastScan=Date.now();s.scanCount=(s.scanCount||0)+1;
-  addLog({type:'scan',title:'Scan: '+s.name,detail:note||'All clear'});
-  closeModal('modal-scan-note');save();renderSites();showToast('Scan logged','#f0a500');
+  site.lastScan=Date.now();
+  addLog({type:'scan',title:'Scan: '+site.name,detail:note||'All clear'});
+  closeModal('modal-scan-note');
+  save();renderSites();showToast('Scan logged');
 }
-function scanAllNERC(){
-  const nerc=S.sites.filter(s=>s.nerc&&!s.adhoc);
-  if(!nerc.length){showToast('No scheduled NERC sites','#9199a8');return;}
-  const now=Date.now();
-  nerc.forEach(s=>{s.lastScan=now;s.scanCount=(s.scanCount||0)+1;});
+function scanAll(){
+  const nerc=S.sites.filter(s=>s.nerc);
+  if(!nerc.length){showToast('No NERC sites added');return;}
+  nerc.forEach(s=>s.lastScan=Date.now());
   addLog({type:'scan',title:'Scan all NERC ('+nerc.length+' sites)',detail:nerc.map(s=>s.name).join(', ')});
-  save();renderSites();showToast('All NERC scanned','#f0a500');
+  save();renderSites();showToast('All NERC sites scanned');
 }
 function saveSite(){
   const name=document.getElementById('site-name').value.trim();if(!name)return;
   const editId=document.getElementById('site-edit-id').value;
-  const d={name,nerc:document.getElementById('site-nerc').value==='1',adhoc:document.getElementById('site-adhoc').value==='1',interval:parseInt(document.getElementById('site-interval').value)||30,threshold:parseInt(document.getElementById('site-threshold').value)||5,notes:document.getElementById('site-notes').value.trim()};
-  if(editId){const s=S.sites.find(x=>x.id===parseInt(editId));if(s)Object.assign(s,d);}
-  else S.sites.push({id:Date.now(),lastScan:null,scanCount:0,...d});
-  closeModal('modal-add-site');save();renderSites();showToast('Site saved','#2ecc8a');
+  const siteData={name,nerc:document.getElementById('site-nerc').value==='1',interval:parseInt(document.getElementById('site-interval').value)||30,threshold:parseInt(document.getElementById('site-threshold').value)||5,notes:document.getElementById('site-notes').value.trim()};
+  if(editId){const site=S.sites.find(s=>s.id===parseInt(editId));if(site)Object.assign(site,siteData);}
+  else S.sites.push({id:Date.now(),lastScan:null,...siteData});
+  closeModal('modal-add-site');save();renderSites();showToast('Site saved');
 }
 function editSite(id){
-  const s=S.sites.find(x=>x.id===id);if(!s)return;
+  const site=S.sites.find(s=>s.id===id);if(!site)return;
   document.getElementById('site-modal-title').textContent='Edit site';
   document.getElementById('site-edit-id').value=id;
-  document.getElementById('site-name').value=s.name;
-  document.getElementById('site-nerc').value=s.nerc?'1':'0';
-  document.getElementById('site-adhoc').value=s.adhoc?'1':'0';
-  document.getElementById('site-interval').value=s.interval||30;
-  document.getElementById('site-threshold').value=s.threshold||5;
-  document.getElementById('site-notes').value=s.notes||'';
+  document.getElementById('site-name').value=site.name;
+  document.getElementById('site-nerc').value=site.nerc?'1':'0';
+  document.getElementById('site-interval').value=site.interval||30;
+  document.getElementById('site-threshold').value=site.threshold||5;
+  document.getElementById('site-notes').value=site.notes||'';
   openModal('modal-add-site');
 }
 function deleteSite(id){if(confirm('Delete this site?')){S.sites=S.sites.filter(s=>s.id!==id);save();renderSites();}}
 
-// =====================
-// TEMPLATES (fully editable)
-// =====================
-function getTemplates(){return S.templates||DEFAULT_TEMPLATES;}
-
+// TEMPLATES
+const TEMPLATES=[
+  {id:'incident',icon:'🚨',name:'Incident report',desc:'Location, severity, action',tag:'incident'},
+  {id:'response',icon:'✅',name:'Correct response',desc:'Procedure, notify, outcome',tag:'response'},
+  {id:'obs',icon:'📋',name:'Observation',desc:'Quick freeform note',tag:'obs',quick:'Time: {time}\nLocation: \nObservation: \nAction taken: '},
+  {id:'callback',icon:'📞',name:'Callback / follow-up',desc:'Who to call back',tag:'task',quick:'Time: {time}\nContact: \nReason: \nFollow up by: '},
+  {id:'handoff',icon:'↺',name:'Shift handoff',desc:'Auto-summary of your shift',tag:'obs'},
+];
 function renderTemplates(){
-  const tpls=getTemplates();
-  document.getElementById('tpl-grid').innerHTML=tpls.map(t=>
-    `<button class="tpl-btn" onclick="useTpl('${t.id}')">
-      <span class="tpl-icon">${t.icon||'📝'}</span>
-      <span class="tpl-name">${esc(t.name)}</span>
-      <span class="tpl-desc">${t.tag}</span>
-      <span class="tpl-edit-dot">✎</span>
-    </button>`
-  ).join('');
+  document.getElementById('tpl-grid').innerHTML=TEMPLATES.map(t=>`<button class="tpl-btn" onclick="useTemplate('${t.id}')"><span class="tpl-icon">${t.icon}</span><span class="tpl-name">${t.name}</span><span class="tpl-desc">${t.desc}</span></button>`).join('');
+}
+function useTemplate(id){
+  if(id==='incident'){openModal('modal-incident');return;}
+  if(id==='response'){openModal('modal-response');return;}
+  if(id==='handoff'){openHandoffAsNote();return;}
+  const tpl=TEMPLATES.find(t=>t.id===id);if(!tpl)return;
+  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  newNote(tpl.name+' — '+now, tpl.quick.replace('{time}',now), tpl.tag);
 }
 
-function useTpl(id){
-  if(id==='handoff'){openHandoffConfig();return;}
-  const tpl=getTemplates().find(t=>t.id===id);if(!tpl)return;
-  if(!tpl.fields||!tpl.fields.length){
-    // Freeform note
-    const now=tsShort();
-    newNote(tpl.name+' — '+now,'Time: '+now+'\n\n',tpl.tag);
-    return;
-  }
-  _tplFormId=id;
-  document.getElementById('tpl-form-title').textContent=tpl.icon+' '+tpl.name;
-  const container=document.getElementById('tpl-form-fields');
-  container.innerHTML=tpl.fields.map(f=>{
-    const req=f.required?'*':'';
-    if(f.type==='select'){
-      const opts=(f.options||'').split(',').map(o=>`<option${o===f.defaultVal?' selected':''}>${esc(o.trim())}</option>`).join('');
-      return`<label>${esc(f.label)}${req}</label><select id="tplf_${f.id}" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:6px 9px;color:var(--text);font-family:var(--font);font-size:13px;">${opts}</select>`;
-    }
-    if(f.type==='textarea'){
-      return`<label>${esc(f.label)}${req}</label><textarea id="tplf_${f.id}" placeholder="${esc(f.placeholder||'')}" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:6px 9px;color:var(--text);font-family:var(--mono);font-size:13px;min-height:60px;resize:vertical;"></textarea>`;
-    }
-    return`<label>${esc(f.label)}${req}</label><input id="tplf_${f.id}" type="text" placeholder="${esc(f.placeholder||'')}" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:6px 9px;color:var(--text);font-family:var(--font);font-size:13px;">`;
-  }).join('');
-  openModal('modal-tpl-form');
-}
-
-function submitTplForm(){
-  const tpl=getTemplates().find(t=>t.id===_tplFormId);if(!tpl)return;
-  const now=new Date();
-  const nowStr=ts(now);
-  let body='Time: '+nowStr+'\n';
-  let hasRequired=true;
-  tpl.fields.forEach(f=>{
-    const el=document.getElementById('tplf_'+f.id);
-    if(!el)return;
-    const val=el.value.trim();
-    if(f.required&&!val){hasRequired=false;el.style.borderColor='var(--red)';return;}
-    el.style.borderColor='';
-    body+=f.label+': '+val+'\n';
-  });
-  if(!hasRequired){showToast('Fill required fields (*)','#e85555');return;}
-  const title=tpl.name+' — '+tsShort(now);
-  const isFollowup=tpl.fields.find(f=>f.label.toLowerCase().includes('follow')&&document.getElementById('tplf_'+f.id)?.value.toLowerCase().includes('yes'));
-  newNote(title,body,tpl.tag);
-  if(tpl.loggable){
-    addLog({type:tpl.tag==='incident'?'incident':tpl.tag==='response'?'response':tpl.tag==='task'?'task':'note',title,detail:body.substring(0,120),followup:!!isFollowup});
-  }
-  closeModal('modal-tpl-form');
-  showToast('Saved','#2ecc8a');
-}
-
-// TEMPLATE MANAGER
-function openTplManager(){
-  refreshTplSelect();
-  if(getTemplates().length>0)loadTplForEdit(getTemplates()[0].id);
-  openModal('modal-tpl-manager');
-}
-function refreshTplSelect(){
-  const sel=document.getElementById('tpl-select-edit');
-  sel.innerHTML=getTemplates().map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('');
-  if(S.activeTplEdit)sel.value=S.activeTplEdit;
-}
-function loadTplForEdit(id){
-  const tid=id||document.getElementById('tpl-select-edit').value;
-  const tpl=getTemplates().find(t=>t.id===tid);if(!tpl)return;
-  S.activeTplEdit=tid;
-  document.getElementById('tpl-edit-name').value=tpl.name;
-  document.getElementById('tpl-edit-icon').value=tpl.icon||'📝';
-  document.getElementById('tpl-edit-tag').value=tpl.tag||'obs';
-  document.getElementById('tpl-edit-loggable').value=tpl.loggable?'1':'0';
-  _tplEditFields=JSON.parse(JSON.stringify(tpl.fields||[]));
-  renderTplFields();
-}
-function renderTplFields(){
-  document.getElementById('tpl-field-list').innerHTML=_tplEditFields.map((f,i)=>`
-    <div class="field-row" id="tplrow_${i}">
-      <span class="fmove">⠿</span>
-      <input value="${esc(f.label)}" placeholder="Field label" oninput="_tplEditFields[${i}].label=this.value">
-      <select onchange="_tplEditFields[${i}].type=this.value;renderTplFields()">
-        <option${f.type==='text'?' selected':''}>text</option>
-        <option${f.type==='textarea'?' selected':''}>textarea</option>
-        <option${f.type==='select'?' selected':''}>select</option>
-      </select>
-      ${f.type==='select'?`<input value="${esc(f.options||'')}" placeholder="opt1,opt2,..." oninput="_tplEditFields[${i}].options=this.value" style="max-width:130px;">`:''}
-      <label style="font-size:11px;color:var(--text2);display:flex;align-items:center;gap:3px;white-space:nowrap;"><input type="checkbox" ${f.required?'checked':''} onchange="_tplEditFields[${i}].required=this.checked"> Req</label>
-      <button class="task-del" onclick="_tplEditFields.splice(${i},1);renderTplFields()">✕</button>
-    </div>`).join('');
-}
-function addTplField(){
-  _tplEditFields.push({id:'f'+Date.now(),label:'New field',type:'text',required:false,placeholder:'',options:''});
-  renderTplFields();
-}
-function newTemplate(){
-  const id='tpl'+Date.now();
-  getTemplates().push({id,icon:'📝',name:'New template',tag:'obs',loggable:false,fields:[]});
-  save();refreshTplSelect();loadTplForEdit(id);
-}
-function deleteTemplate(){
-  const tid=document.getElementById('tpl-select-edit').value;
-  if(getTemplates().length<=1){showToast('Need at least 1 template','#9199a8');return;}
-  S.templates=getTemplates().filter(t=>t.id!==tid);
-  save();refreshTplSelect();loadTplForEdit();renderTemplates();
-}
-function saveTplEdits(){
-  const tid=S.activeTplEdit;
-  const tpl=getTemplates().find(t=>t.id===tid);if(!tpl)return;
-  tpl.name=document.getElementById('tpl-edit-name').value||'Template';
-  tpl.icon=document.getElementById('tpl-edit-icon').value||'📝';
-  tpl.tag=document.getElementById('tpl-edit-tag').value;
-  tpl.loggable=document.getElementById('tpl-edit-loggable').value==='1';
-  tpl.fields=JSON.parse(JSON.stringify(_tplEditFields));
-  save();renderTemplates();closeModal('modal-tpl-manager');showToast('Template saved','#2ecc8a');
-}
-
-// NOTES — fully timestamped
+// NOTES
 function newBlankNote(){newNote('New note','','obs');}
 function newNote(title,body,tag){
-  const now=Date.now();
-  const note={id:now,title:title||'New note',body:body||'',tag:tag||'obs',created:now,modified:now};
+  const note={id:Date.now(),title:title||'New note',body:body||'',tag:tag||'obs',ts:Date.now()};
   S.notes.unshift(note);S.activeNote=note.id;
   save();renderNotes();loadNoteForm(note);
-  switchView('notes',document.querySelectorAll('.nav-tab')[2]);
 }
-function selectNote(id){S.activeNote=id;const n=S.notes.find(x=>x.id===id);renderNotes();if(n)loadNoteForm(n);}
+function selectNote(id){S.activeNote=id;const note=S.notes.find(n=>n.id===id);renderNotes();loadNoteForm(note);}
 function loadNoteForm(note){
   document.getElementById('note-no-sel').style.display='none';
   const f=document.getElementById('note-form');f.style.display='flex';
   document.getElementById('note-title').value=note.title;
   document.getElementById('note-body').value=note.body;
-  document.getElementById('note-tag').value=note.tag||'obs';
-  document.getElementById('note-meta').textContent='Created: '+ts(note.created)+' · Modified: '+ts(note.modified);
+  document.getElementById('note-tag').value=note.tag;
+  document.getElementById('note-meta').textContent='Saved '+new Date(note.ts).toLocaleString();
 }
 function saveNote(){
   if(!S.activeNote)return;
@@ -917,11 +1092,10 @@ function saveNote(){
   note.title=document.getElementById('note-title').value||'Untitled';
   note.body=document.getElementById('note-body').value;
   note.tag=document.getElementById('note-tag').value;
-  note.modified=Date.now();
-  document.getElementById('note-meta').textContent='Created: '+ts(note.created)+' · Modified: '+ts(note.modified);
-  // Only log if not already logged via template
-  addLog({type:note.tag==='incident'?'incident':note.tag==='response'?'response':'note',title:'[edited] '+note.title,detail:note.body.substring(0,100)});
-  save();renderNotes();showToast('Saved','#2ecc8a');
+  note.ts=Date.now();
+  document.getElementById('note-meta').textContent='Saved '+new Date(note.ts).toLocaleString();
+  addLog({type:note.tag==='incident'?'incident':note.tag==='response'?'response':'note',title:note.title,detail:note.body.substring(0,100)});
+  save();renderNotes();showToast('Saved');
 }
 function deleteNote(){
   if(!S.activeNote)return;
@@ -931,34 +1105,106 @@ function deleteNote(){
   if(S.activeNote)loadNoteForm(S.notes.find(n=>n.id===S.activeNote));
   else{document.getElementById('note-form').style.display='none';document.getElementById('note-no-sel').style.display='block';}
 }
-const TAG_LABELS={obs:'Obs',incident:'Incident',response:'Response',task:'Task'};
+const TAG_LABELS={obs:'Observation',incident:'Incident',response:'Response',task:'Task note'};
 const TAG_CLS={obs:'tag-obs',incident:'tag-incident',response:'tag-response',task:'tag-task'};
 function renderNotes(){
   const el=document.getElementById('notes-list');
   if(!S.notes.length){el.innerHTML='<div class="empty">No notes yet</div>';return;}
   el.innerHTML=S.notes.map(n=>`<div class="note-entry${S.activeNote===n.id?' active':''}" onclick="selectNote(${n.id})">
-    <div class="note-ts">${ts(n.created)}</div>
+    <div class="note-entry-time">${new Date(n.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
     <div class="note-entry-title">${esc(n.title)}</div>
     <div style="margin-top:2px;"><span class="tag ${TAG_CLS[n.tag]||'tag-obs'}">${TAG_LABELS[n.tag]||n.tag}</span></div>
   </div>`).join('');
 }
 
-// LOG
-function addLog(entry){
-  S.logEntries.unshift({...entry,ts:Date.now(),id:Date.now()+'_'+Math.random()});
-  if(S.logEntries.length>600)S.logEntries=S.logEntries.slice(0,600);
-  save();
+// INCIDENT / RESPONSE
+function saveIncident(){
+  const loc=document.getElementById('inc-location').value;
+  const sev=document.getElementById('inc-severity').value;
+  const rep=document.getElementById('inc-reporter').value;
+  const desc=document.getElementById('inc-desc').value;
+  const action=document.getElementById('inc-action').value;
+  const followup=document.getElementById('inc-followup').value;
+  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const title='['+sev+'] Incident — '+(loc||'unknown location');
+  const body='Time: '+now+'\nLocation: '+loc+'\nSeverity: '+sev+'\nReported by: '+rep+'\nDescription: '+desc+'\nAction taken: '+action+'\nFollow-up required: '+followup;
+  newNote(title,body,'incident');
+  addLog({type:'incident',title,detail:sev+' at '+(loc||'?')+'. '+(desc||'').substring(0,80),followup:followup==='yes'});
+  closeModal('modal-incident');
+  ['inc-location','inc-reporter','inc-desc','inc-action'].forEach(id=>{document.getElementById(id).value='';});
+  showToast('Incident logged');
+  switchView('notes',document.querySelectorAll('.nav-tab')[0]);
 }
+function saveResponse(){
+  const sit=document.getElementById('res-situation').value;
+  const notif=document.getElementById('res-notified').value;
+  const proc=document.getElementById('res-procedure').value;
+  const out=document.getElementById('res-outcome').value;
+  const esc2=document.getElementById('res-escalation').value;
+  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const title='Response — '+(sit||'situation')+' at '+now;
+  const body='Time: '+now+'\nSituation: '+sit+'\nNotified: '+notif+'\nProcedure: '+proc+'\nOutcome: '+out+'\nEscalation: '+esc2;
+  newNote(title,body,'response');
+  addLog({type:'response',title,detail:'Notified: '+notif+'. '+(out||'').substring(0,80)});
+  closeModal('modal-response');
+  ['res-situation','res-notified','res-procedure','res-outcome'].forEach(id=>{document.getElementById(id).value='';});
+  showToast('Response logged');
+  switchView('notes',document.querySelectorAll('.nav-tab')[0]);
+}
+
+// HANDOFF
+function buildHandoffText(){
+  const now=new Date();
+  const shiftStartStr=new Date(S.shiftStart).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const shiftEndStr=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const todayEntries=S.logEntries.filter(e=>e.ts>=S.shiftStart);
+  const incidents=todayEntries.filter(e=>e.type==='incident');
+  const responses=todayEntries.filter(e=>e.type==='response');
+  const tasks=todayEntries.filter(e=>e.type==='task'&&e.title.startsWith('Task done:'));
+  const cycles=S.timerCycles;
+  const scans=todayEntries.filter(e=>e.type==='scan');
+  const openIncidents=incidents.filter(e=>e.followup);
+  const openTasks=S.adhocTasks.filter(t=>!t.done);
+  const overdueSites=S.sites.filter(s=>siteStatus(s)==='overdue');
+  const dueSites=S.sites.filter(s=>siteStatus(s)==='due');
+  const clKeys=Object.keys(S.checklists);
+  const clStatus=clKeys.map(k=>{const list=S.checklists[k];const done=list.filter(x=>x.done).length;return k+': '+done+'/'+list.length;});
+  let lines=[];
+  lines.push('SHIFT HANDOFF SUMMARY');
+  lines.push('─────────────────────');
+  lines.push('Shift: '+shiftStartStr+' → '+shiftEndStr);
+  lines.push('Cycles completed: '+cycles);
+  lines.push('');
+  const hasOpen=openIncidents.length||openTasks.length||overdueSites.length||dueSites.length;
+  lines.push('⚠ OPEN ITEMS'+(hasOpen?'':' — none'));
+  if(openIncidents.length){lines.push('');lines.push('  Incidents requiring follow-up:');openIncidents.forEach(e=>lines.push('  • '+e.title+(e.detail?' — '+e.detail.substring(0,60):'')));}
+  if(openTasks.length){lines.push('');lines.push('  Incomplete tasks:');openTasks.forEach(t=>lines.push('  • '+t.name));}
+  if(overdueSites.length){lines.push('');lines.push('  Overdue scans:');overdueSites.forEach(s=>lines.push('  • '+s.name+(s.nerc?' [NERC]':'')+' — last '+timeSince(s.lastScan||0)));}
+  if(dueSites.length){lines.push('');lines.push('  Due soon:');dueSites.forEach(s=>lines.push('  • '+s.name+(s.nerc?' [NERC]':'')));}
+  lines.push('');
+  lines.push('✓ ACTIVITY THIS SHIFT');
+  lines.push('  Incidents logged: '+incidents.length);
+  lines.push('  Responses logged: '+responses.length);
+  lines.push('  Tasks completed:  '+tasks.length);
+  lines.push('  Scans logged:     '+scans.length);
+  if(clStatus.length){lines.push('');lines.push('  Checklists:');clStatus.forEach(s=>lines.push('  • '+s));}
+  if(incidents.length){lines.push('');lines.push('  Incident log:');incidents.forEach(e=>{const t=new Date(e.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});lines.push('  ['+t+'] '+e.title);if(e.detail)lines.push('          '+e.detail.substring(0,80));});}
+  lines.push('');lines.push('──────────────────────');lines.push('Generated '+now.toLocaleString());
+  return lines.join('\n');
+}
+function openHandoffAsNote(){const text=buildHandoffText();const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});newNote('Shift handoff — '+now,text,'obs');switchView('notes',document.querySelectorAll('.nav-tab')[0]);}
+function openHandoff(){document.getElementById('handoff-content').textContent=buildHandoffText();openModal('modal-handoff');}
+function copyHandoff(){try{navigator.clipboard.writeText(document.getElementById('handoff-content').textContent);showToast('Copied!');}catch(e){showToast('Select and copy manually');}}
+
+// LOG
+function addLog(entry){S.logEntries.unshift({...entry,ts:Date.now(),id:Date.now()});if(S.logEntries.length>500)S.logEntries=S.logEntries.slice(0,500);save();}
 function renderLog(){
   const filter=document.getElementById('log-filter').value;
   const entries=filter==='all'?S.logEntries:S.logEntries.filter(e=>e.type===filter);
   const el=document.getElementById('log-list');
-  el.innerHTML=!entries.length?'<div class="empty">No entries</div>':entries.map(e=>`<div class="log-entry ${e.type||'note'}">
-    <div class="log-time">${ts(e.ts)}</div>
-    <div class="log-body">
-      <div class="log-title">${esc(e.title||'')}</div>
-      ${e.detail?`<div class="log-detail">${esc(e.detail)}</div>`:''}
-    </div>
+  el.innerHTML=!entries.length?'<div class="empty">No entries yet</div>':entries.map(e=>`<div class="log-entry ${e.type||'note'}">
+    <div class="log-time">${new Date(e.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
+    <div class="log-body"><div class="log-title">${esc(e.title||'')}</div>${e.detail?`<div class="log-detail">${esc(e.detail)}</div>`:''}</div>
   </div>`).join('');
   const total=S.logEntries.length;
   const inc=S.logEntries.filter(e=>e.type==='incident').length;
@@ -966,122 +1212,172 @@ function renderLog(){
   const tsk=S.logEntries.filter(e=>e.type==='task').length;
   const scn=S.logEntries.filter(e=>e.type==='scan').length;
   document.getElementById('log-stats').innerHTML=`
-    <div class="stat-chip"><span class="sv">${total}</span><span class="sl">Total</span></div>
-    <div class="stat-chip"><span class="sv" style="color:var(--red)">${inc}</span><span class="sl">Incidents</span></div>
-    <div class="stat-chip"><span class="sv" style="color:var(--purple)">${res}</span><span class="sl">Responses</span></div>
-    <div class="stat-chip"><span class="sv" style="color:var(--green)">${tsk}</span><span class="sl">Tasks</span></div>
-    <div class="stat-chip"><span class="sv" style="color:var(--amber)">${scn}</span><span class="sl">Scans</span></div>`;
+    <div class="stat-chip"><span class="s-val">${total}</span><span class="s-lbl">Total</span></div>
+    <div class="stat-chip"><span class="s-val" style="color:var(--red)">${inc}</span><span class="s-lbl">Incidents</span></div>
+    <div class="stat-chip"><span class="s-val" style="color:var(--purple)">${res}</span><span class="s-lbl">Responses</span></div>
+    <div class="stat-chip"><span class="s-val" style="color:var(--green)">${tsk}</span><span class="s-lbl">Tasks</span></div>
+    <div class="stat-chip"><span class="s-val" style="color:var(--amber)">${scn}</span><span class="s-lbl">Scans</span></div>`;
 }
 function clearLog(){if(confirm('Clear all log entries?')){S.logEntries=[];save();renderLog();}}
-
-// HANDOFF — configurable
-const HF_OPTIONS=[
-  {id:'open_incidents',label:'Open incidents (follow-up required)',default:true},
-  {id:'open_tasks',label:'Incomplete ad-hoc tasks',default:true},
-  {id:'overdue_sites',label:'Overdue / due-soon scans',default:true},
-  {id:'all_incidents',label:'All incidents this shift',default:true},
-  {id:'all_responses',label:'All responses this shift',default:true},
-  {id:'tasks_done',label:'Completed tasks count',default:true},
-  {id:'scan_summary',label:'Scan activity summary',default:true},
-  {id:'checklist_status',label:'Checklist completion status',default:true},
-  {id:'cycle_count',label:'Timer cycles completed',default:false},
-  {id:'all_notes',label:'All notes (titles)',default:false},
-];
-
-function openHandoffConfig(){
-  const container=document.getElementById('hf-options');
-  container.innerHTML=HF_OPTIONS.map(o=>`<label class="hf-opt">
-    <input type="checkbox" id="hfo_${o.id}" ${o.default?'checked':''}>
-    ${esc(o.label)}
-  </label>`).join('');
-  document.getElementById('hf-extra').value='';
-  openModal('modal-handoff-cfg');
-}
-
-function buildHandoff(){
-  const opts={};
-  HF_OPTIONS.forEach(o=>{const el=document.getElementById('hfo_'+o.id);opts[o.id]=el?el.checked:o.default;});
-  const extra=document.getElementById('hf-extra').value.trim();
-  const now=new Date();
-  const shiftStartStr=ts(S.shiftStart);
-  const shiftEndStr=ts(now);
-  const since=S.shiftStart;
-  const todayE=S.logEntries.filter(e=>e.ts>=since);
-  const incidents=todayE.filter(e=>e.type==='incident');
-  const responses=todayE.filter(e=>e.type==='response');
-  const tasks=todayE.filter(e=>e.type==='task'&&e.title.startsWith('Task done:'));
-  const scans=todayE.filter(e=>e.type==='scan');
-  const openInc=incidents.filter(e=>e.followup);
-  const openTasks=S.adhocTasks.filter(t=>!t.done);
-  const overdueSites=S.sites.filter(s=>siteStatus(s)==='overdue');
-  const dueSites=S.sites.filter(s=>siteStatus(s)==='due');
-  const clKeys=Object.keys(S.checklists);
-
-  let lines=[];
-  lines.push('SHIFT HANDOFF SUMMARY');
-  lines.push('─────────────────────────────');
-  lines.push('Shift start : '+shiftStartStr);
-  lines.push('Handoff time: '+shiftEndStr);
-  if(opts.cycle_count)lines.push('Cycles      : '+S.timerCycles);
-  lines.push('');
-
-  const hasOpen=(opts.open_incidents&&openInc.length)||(opts.open_tasks&&openTasks.length)||(opts.overdue_sites&&(overdueSites.length||dueSites.length));
-  lines.push('⚠  OPEN ITEMS'+(hasOpen?'':' — none'));
-  if(opts.open_incidents&&openInc.length){lines.push('');lines.push('  Incidents requiring follow-up ('+openInc.length+'):');openInc.forEach(e=>{lines.push('  ['+ts(e.ts)+'] '+e.title);if(e.detail)lines.push('      '+e.detail.substring(0,100));});}
-  if(opts.open_tasks&&openTasks.length){lines.push('');lines.push('  Incomplete tasks ('+openTasks.length+'):');openTasks.forEach(t=>lines.push('  • '+t.name));}
-  if(opts.overdue_sites){if(overdueSites.length){lines.push('');lines.push('  Overdue scans:');overdueSites.forEach(s=>lines.push('  • '+s.name+(s.nerc?' [NERC]':'')+' — last '+timeSince(s.lastScan)));}
-  if(dueSites.length){lines.push('');lines.push('  Due soon:');dueSites.forEach(s=>lines.push('  • '+s.name+(s.nerc?' [NERC]':'')));}}
-
-  lines.push('');
-  lines.push('✓  ACTIVITY THIS SHIFT');
-  if(opts.all_incidents){lines.push('  Incidents: '+incidents.length+(incidents.length?'':' — none'));if(incidents.length){incidents.forEach(e=>{lines.push('  ['+ts(e.ts)+'] '+e.title);if(e.detail)lines.push('      '+e.detail.substring(0,100));});}}
-  if(opts.all_responses){lines.push('  Responses: '+responses.length+(responses.length?'':' — none'));if(responses.length){responses.forEach(e=>{lines.push('  ['+ts(e.ts)+'] '+e.title);if(e.detail)lines.push('      '+e.detail.substring(0,100));});}}
-  if(opts.tasks_done)lines.push('  Tasks completed: '+tasks.length);
-  if(opts.scan_summary)lines.push('  Scans logged: '+scans.length);
-  if(opts.checklist_status&&clKeys.length){lines.push('');lines.push('  Checklists:');clKeys.forEach(k=>{const l=S.checklists[k];const d=l.filter(x=>x.done).length;lines.push('  • '+k+': '+d+'/'+l.length+' done');});}
-  if(opts.all_notes){const shiftNotes=S.notes.filter(n=>n.created>=since);if(shiftNotes.length){lines.push('');lines.push('  Notes ('+shiftNotes.length+'):');shiftNotes.forEach(n=>lines.push('  ['+ts(n.created)+'] '+n.title));}}
-
-  if(extra){lines.push('');lines.push('  Notes for next operator:');lines.push('  '+extra);}
-  lines.push('');
-  lines.push('──────────────────────────────');
-  lines.push('Generated: '+ts(now));
-  return lines.join('\n');
-}
-
-function previewHandoff(){
-  const text=buildHandoff();
-  document.getElementById('handoff-content').textContent=text;
-  openModal('modal-handoff');
-}
-function saveHandoffAsNote(){
-  const text=buildHandoff();
-  const now=new Date();
-  closeModal('modal-handoff-cfg');
-  // Reset shift start
-  S.shiftStart=Date.now();
-  save();
-  newNote('Shift handoff — '+tsShort(now),text,'obs');
-  showToast('Handoff saved as note','#2ecc8a');
-}
-function copyHandoff(){
-  try{navigator.clipboard.writeText(document.getElementById('handoff-content').textContent);showToast('Copied!','#2ecc8a');}catch(e){showToast('Select & copy manually','#9199a8');}
-}
 
 // MODAL
 function openModal(id){document.getElementById(id).classList.remove('hidden');}
 function closeModal(id){document.getElementById(id).classList.add('hidden');}
 
 // UTILS
-function fireAlert(msg){
-  showToast(msg,'#e85555');
-  try{const ctx=new AudioContext();[880,660].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;g.gain.setValueAtTime(.25,ctx.currentTime+i*.15);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.15+.4);o.start(ctx.currentTime+i*.15);o.stop(ctx.currentTime+i*.15+.4);});}catch(e){}
-}
-function showToast(msg,color){
-  const t=document.getElementById('toast');t.textContent=msg;t.style.background=color||'var(--red)';
-  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
-}
+function fireAlert(msg){showToast(msg);try{const ctx=new AudioContext();[880,660].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;g.gain.setValueAtTime(.25,ctx.currentTime+i*.15);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.15+.4);o.start(ctx.currentTime+i*.15);o.stop(ctx.currentTime+i*.15+.4);});}catch(e){}}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function renderAll(){renderRec();renderAdhoc();renderCl();renderNotes();renderTemplates();updateTimerUI();renderSites();}
+
+// ── FIELD INTEL FEATURES ──────────────────────────────────────────
+
+// Weather
+async function fetchWeather(){
+  const loc=document.getElementById('wx-location').value.trim();
+  if(!loc){showToast('Enter a location first');return;}
+  document.getElementById('wx-desc').textContent='Fetching...';
+  try{
+    const res=await fetch(`https://wttr.in/${encodeURIComponent(loc)}?format=j1`);
+    const d=await res.json();
+    const cur=d.current_condition[0];
+    const tempF=cur.temp_F;
+    const desc=cur.weatherDesc[0].value;
+    const wind=cur.windspeedMiles+'mph '+cur.winddir16Point;
+    const vis=cur.visibility+'mi';
+    const humidity=cur.humidity+'%';
+    document.getElementById('wx-temp').textContent=tempF+'°F';
+    document.getElementById('wx-desc').textContent=desc+' · Humidity '+humidity;
+    document.getElementById('wx-wind').textContent='Wind: '+wind;
+    document.getElementById('wx-vis').textContent='Vis: '+vis;
+    document.getElementById('wx-icon').textContent=getWeatherEmoji(desc);
+  }catch(e){
+    document.getElementById('wx-desc').textContent='Could not fetch — check location';
+  }
+}
+function getWeatherEmoji(desc){
+  const d=desc.toLowerCase();
+  if(d.includes('thunder'))return'⛈';if(d.includes('rain')||d.includes('drizzle'))return'🌧';
+  if(d.includes('snow'))return'❄️';if(d.includes('cloud'))return'☁️';
+  if(d.includes('overcast'))return'🌥';if(d.includes('fog')||d.includes('mist'))return'🌫';
+  if(d.includes('sunny')||d.includes('clear'))return'☀️';return'🌤';
+}
+function logWeather(){
+  const temp=document.getElementById('wx-temp').textContent;
+  const desc=document.getElementById('wx-desc').textContent;
+  const wind=document.getElementById('wx-wind').textContent;
+  const loc=document.getElementById('wx-location').value.trim()||'site';
+  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  newNote('Weather — '+loc+' @ '+now,'Location: '+loc+'\nTime: '+now+'\nTemp: '+temp+'\n'+desc+'\n'+wind,'obs');
+  switchView('notes',document.querySelectorAll('.nav-tab')[0]);
+  showToast('Weather logged to Notepad');
+}
+
+// Crew
+function addCrewMember(){
+  const name=document.getElementById('crew-name-inp').value.trim();if(!name)return;
+  S.crewMembers.push({id:Date.now(),name,status:'In field',checkin:Date.now()});
+  document.getElementById('crew-name-inp').value='';
+  save();renderCrewList();
+}
+function cycleCrewStatus(id){
+  const statuses=['In field','On break','Off site','Stand-by'];
+  const m=S.crewMembers.find(x=>x.id===id);if(!m)return;
+  const idx=statuses.indexOf(m.status);
+  m.status=statuses[(idx+1)%statuses.length];
+  m.checkin=Date.now();
+  save();renderCrewList();
+}
+function removeCrewMember(id){S.crewMembers=S.crewMembers.filter(x=>x.id!==id);save();renderCrewList();}
+function renderCrewList(){
+  const el=document.getElementById('crew-list');
+  if(!S.crewMembers.length){el.innerHTML='<div class="empty">No crew added</div>';return;}
+  const statusColors={'In field':'var(--green)','On break':'var(--amber)','Off site':'var(--text3)','Stand-by':'var(--blue)'};
+  el.innerHTML=S.crewMembers.map(m=>`<div class="task-item">
+    <span class="task-label">${esc(m.name)}</span>
+    <span style="font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;background:var(--bg4);color:${statusColors[m.status]||'var(--text2)'};cursor:pointer;" onclick="cycleCrewStatus(${m.id})">${m.status}</span>
+    <button class="task-del" onclick="removeCrewMember(${m.id})">✕</button>
+  </div>`).join('');
+}
+
+// Equipment
+function addEquipment(){
+  const name=document.getElementById('equip-name-inp').value.trim();if(!name)return;
+  const status=document.getElementById('equip-status-inp').value;
+  S.equipmentLog.push({id:Date.now(),name,status,ts:Date.now()});
+  document.getElementById('equip-name-inp').value='';
+  addLog({type:'task',title:'Equipment: '+name+' — '+status,detail:''});
+  save();renderEquipmentList();
+}
+function removeEquipment(id){S.equipmentLog=S.equipmentLog.filter(x=>x.id!==id);save();renderEquipmentList();}
+function renderEquipmentList(){
+  const el=document.getElementById('equipment-list');
+  if(!S.equipmentLog.length){el.innerHTML='<div class="empty">No equipment logged</div>';return;}
+  const icons={ok:'✅',caution:'⚠️',down:'🔴'};
+  el.innerHTML=S.equipmentLog.map(e=>`<div class="task-item">
+    <span style="font-size:14px;">${icons[e.status]||'?'}</span>
+    <span class="task-label">${esc(e.name)}</span>
+    <span style="font-size:10px;color:var(--text3);font-family:var(--mono);">${timeSince(e.ts)}</span>
+    <button class="task-del" onclick="removeEquipment(${e.id})">✕</button>
+  </div>`).join('');
+}
+
+// Safety check
+const SAFETY_ITEMS=['Hard hat worn','High-vis vest on','Safety glasses','Steel-toe boots','Gloves available','First aid kit accessible','Buddy check complete','Radio/comms operational','Weather conditions acceptable','Site hazards reviewed'];
+let safetyState={};
+function initSafetyCheck(){
+  SAFETY_ITEMS.forEach(item=>{if(safetyState[item]===undefined)safetyState[item]=false;});
+  renderSafetyCheck();
+}
+function renderSafetyCheck(){
+  document.getElementById('safety-check-list').innerHTML=SAFETY_ITEMS.map(item=>`<div class="task-item${safetyState[item]?' done':''}">
+    <input type="checkbox" class="task-cb" ${safetyState[item]?'checked':''} onchange="toggleSafetyItem('${item.replace(/'/g,"\\'")}')">
+    <span class="task-label">${item}</span>
+  </div>`).join('');
+}
+function toggleSafetyItem(item){safetyState[item]=!safetyState[item];renderSafetyCheck();}
+function completeSafetyCheck(){
+  const done=SAFETY_ITEMS.filter(i=>safetyState[i]).length;
+  const total=SAFETY_ITEMS.length;
+  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  addLog({type:'task',title:'Pre-shift safety check — '+done+'/'+total+' items',detail:done===total?'All clear':'Incomplete — review before proceeding'});
+  newNote('Safety check @ '+now,'Items: '+done+'/'+total+'\n'+SAFETY_ITEMS.map(i=>(safetyState[i]?'✓':'✗')+' '+i).join('\n'),'obs');
+  switchView('notes',document.querySelectorAll('.nav-tab')[0]);
+  showToast('Safety check logged');
+}
+function resetSafetyCheck(){SAFETY_ITEMS.forEach(i=>safetyState[i]=false);renderSafetyCheck();}
+
+// NERC Checklist
+const NERC_ITEMS=['Physical access log reviewed','Electronic access controls verified','Security perimeter inspected','Unauthorized access attempts checked','Backup communications tested','SCADA/EMS communication verified','Protection relay status confirmed','Transmission constraint monitoring active','Outage coordination reviewed','Operator log current and complete'];
+let nercState={};
+function initNERCCheck(){NERC_ITEMS.forEach(item=>{if(nercState[item]===undefined)nercState[item]=false;});renderNERCCheck();}
+function renderNERCCheck(){
+  document.getElementById('nerc-check-list').innerHTML=NERC_ITEMS.map(item=>`<div class="task-item${nercState[item]?' done':''}">
+    <input type="checkbox" class="task-cb" ${nercState[item]?'checked':''} onchange="toggleNERCItem('${item.replace(/'/g,"\\'")}')">
+    <span class="task-label" style="font-size:12px;">${item}</span>
+  </div>`).join('');
+}
+function toggleNERCItem(item){nercState[item]=!nercState[item];renderNERCCheck();}
+function completeNERCCheck(){
+  const done=NERC_ITEMS.filter(i=>nercState[i]).length;
+  const total=NERC_ITEMS.length;
+  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  addLog({type:'scan',title:'NERC compliance check — '+done+'/'+total,detail:done===total?'All items verified':'Incomplete — review required'});
+  newNote('NERC compliance @ '+now,'Items: '+done+'/'+total+'\n'+NERC_ITEMS.map(i=>(nercState[i]?'✓':'✗')+' '+i).join('\n'),'obs');
+  switchView('notes',document.querySelectorAll('.nav-tab')[0]);
+  showToast('NERC check submitted');
+}
+function resetNERCCheck(){NERC_ITEMS.forEach(i=>nercState[i]=false);renderNERCCheck();}
+
+// Escalation contacts save
+function logEscalationContacts(){
+  const rows=document.querySelectorAll('#escalation-tbody tr');
+  const tiers=['tier1','tier2','tier3'];
+  rows.forEach((row,i)=>{const inp=row.querySelector('input');if(inp)S.escalationContacts[tiers[i]]=inp.value;});
+  save();
+  addLog({type:'task',title:'Escalation contacts updated',detail:'Tier 1: '+S.escalationContacts.tier1});
+  showToast('Contacts saved');
+}
 
 load();
 </script>
