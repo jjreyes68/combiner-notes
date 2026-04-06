@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -317,8 +315,8 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
         <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
           <input class="note-title-inp" id="note-title" placeholder="Note title..." style="flex:1;min-width:120px;">
           <select id="note-tag" style="min-width:130px;">
-            <option value="obs">Observation</option><option value="incident">Incident</option>
-            <option value="response">Response</option><option value="task">Task note</option>
+            <option value="trip">Site Trip</option>
+            <option value="obs">Observation</option>
           </select>
           <button class="btn-p" onclick="saveNote()">Save</button>
           <button class="btn-c" onclick="deleteNote()">Delete</button>
@@ -509,18 +507,17 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 
 <div class="overlay hidden" id="modal-incident">
   <div class="modal">
-    <h3>🚨 Incident report</h3>
-    <label>Location / zone</label><input id="inc-location" placeholder="Zone, gate, site name...">
-    <label>Severity</label>
-    <select id="inc-severity"><option>Low</option><option>Medium</option><option selected>High</option><option>Critical</option></select>
-    <label>Reported by</label><input id="inc-reporter" placeholder="Name or radio ID...">
-    <label>Description</label><textarea id="inc-desc" placeholder="What happened?"></textarea>
-    <label>Action taken</label><textarea id="inc-action" placeholder="What did you do?"></textarea>
+    <h3>🏭 Site Trip</h3>
+    <label>Site / Location</label><input id="inc-location" placeholder="Site name, zone, address...">
+    <label>Purpose of visit</label><input id="inc-purpose" placeholder="Inspection, maintenance, commissioning...">
+    <label>Personnel on site</label><input id="inc-personnel" placeholder="Names or IDs of personnel present...">
+    <label>Conditions / Findings</label><textarea id="inc-desc" placeholder="What was observed or found on site?"></textarea>
+    <label>Actions taken</label><textarea id="inc-action" placeholder="Work performed, issues addressed..."></textarea>
     <label>Follow-up required?</label>
     <select id="inc-followup"><option value="no">No</option><option value="yes">Yes — open item</option></select>
     <div class="m-actions">
       <button class="btn-c" onclick="closeModal('modal-incident')">Cancel</button>
-      <button class="btn-p" onclick="saveIncident()">Log incident</button>
+      <button class="btn-p" onclick="saveIncident()">Log site trip</button>
     </div>
   </div>
 </div>
@@ -598,6 +595,27 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
       <button class="btn-c" onclick="asEditClear()">Clear</button>
       <button class="btn-c" onclick="closeModal('modal-as-edit')">Close</button>
       <button class="btn-p" onclick="asEditSave()">Save site</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD CUSTOM TEMPLATE MODAL -->
+<div class="overlay hidden" id="modal-add-tpl">
+  <div class="modal" style="width:420px;">
+    <h3>➕ Add note type</h3>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:12px;">Create a custom template that appears alongside the built-in types.</p>
+    <label>Name</label><input id="ctpl-name" placeholder="e.g. Permit to Work, Callback...">
+    <label>Icon <span style="font-weight:400;color:var(--text3);">(emoji)</span></label>
+    <input id="ctpl-icon" placeholder="📝" style="width:70px;">
+    <label>Starter text <span style="font-weight:400;color:var(--text3);">(use {t} for current time)</span></label>
+    <textarea id="ctpl-body" rows="5" placeholder="Time: {t}&#10;Location: &#10;Notes: "></textarea>
+    <div style="margin-top:14px;">
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;">Your custom types</div>
+      <div id="ctpl-list" style="display:flex;flex-direction:column;gap:4px;max-height:140px;overflow-y:auto;"></div>
+    </div>
+    <div class="m-actions">
+      <button class="btn-c" onclick="closeModal('modal-add-tpl')">Close</button>
+      <button class="btn-p" onclick="saveCustomTpl()">Add template</button>
     </div>
   </div>
 </div>
@@ -707,6 +725,7 @@ async function loadSitesAsync() {
 let S = {
   recTasks:[], adhocTasks:[], checklists:{}, activeList:null,
   notes:[], activeNote:null, logEntries:[],
+  customTemplates:[],
   siteFilter:'all',
   timerRunning:false, timerElapsed:0, timerCycles:0,
   shiftStart:Date.now(),
@@ -993,23 +1012,46 @@ function editSite(id){
 function deleteSite(id){ if(!confirm('Delete this site?'))return; SITES=SITES.filter(x=>x.id!==id); saveSites(SITES); renderSites(); }
 
 // ─── TEMPLATES ────────────────────────────────────────────────────────────────
-const TEMPLATES=[
-  {id:'incident',icon:'🚨',name:'Incident report',desc:'Location, severity, action'},
-  {id:'response',icon:'✅',name:'Correct response',desc:'Procedure, notify, outcome'},
-  {id:'obs',icon:'📋',name:'Observation',desc:'Quick freeform note',body:'Time: {t}\nLocation: \nObservation: \nAction taken: '},
-  {id:'callback',icon:'📞',name:'Callback / follow-up',desc:'Who to call back',body:'Time: {t}\nContact: \nReason: \nFollow up by: '},
-  {id:'handoff',icon:'↺',name:'Shift handoff',desc:'Auto-summary of your shift'},
+const TEMPLATES_BUILTIN=[
+  {id:'trip',  icon:'🏭', name:'Site Trip',   desc:'Site visit log',    modal:'modal-incident'},
+  {id:'obs',   icon:'📋', name:'Observation', desc:'Quick freeform note',body:'Time: {t}\nLocation: \nObservation: \nAction taken: '},
 ];
+function allTemplates(){ return [...TEMPLATES_BUILTIN,...(S.customTemplates||[])]; }
 function renderTemplates(){
-  document.getElementById('tpl-grid').innerHTML=TEMPLATES.map(t=>`<button class="tpl-btn" onclick="useTemplate('${t.id}')"><span class="tpl-icon">${t.icon}</span><span class="tpl-name">${esc(t.name)}</span><span class="tpl-desc">${esc(t.desc)}</span></button>`).join('');
+  const grid=document.getElementById('tpl-grid');
+  grid.innerHTML=
+    allTemplates().map(t=>`<button class="tpl-btn" onclick="useTemplate('${esc(t.id)}')"><span class="tpl-icon">${t.icon}</span><span class="tpl-name">${esc(t.name)}</span><span class="tpl-desc">${esc(t.desc)}</span></button>`).join('')+
+    `<button class="tpl-btn" onclick="openAddTplModal()" style="border-style:dashed;color:var(--text3);"><span class="tpl-icon">＋</span><span class="tpl-name">Add type</span><span class="tpl-desc">Custom note template</span></button>`;
+  // Sync tag select options to current template list
+  const sel=document.getElementById('note-tag'), cur=sel.value;
+  sel.innerHTML=allTemplates().map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
+  if([...sel.options].some(o=>o.value===cur)) sel.value=cur;
 }
 function useTemplate(id){
-  if(id==='incident'){openModal('modal-incident');return;}
-  if(id==='response'){openModal('modal-response');return;}
-  if(id==='handoff'){openHandoffAsNote();return;}
-  const tpl=TEMPLATES.find(t=>t.id===id); if(!tpl)return;
+  const tpl=allTemplates().find(t=>t.id===id); if(!tpl)return;
+  if(tpl.modal){openModal(tpl.modal);return;}
   const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  newNote(tpl.name+' — '+now, (tpl.body||'').replace('{t}',now), 'obs');
+  newNote(tpl.name+' — '+now,(tpl.body||'').replace('{t}',now),id);
+}
+function openAddTplModal(){ renderCustomTplList(); openModal('modal-add-tpl'); }
+function renderCustomTplList(){
+  const el=document.getElementById('ctpl-list'); if(!el)return;
+  const c=S.customTemplates||[];
+  el.innerHTML=!c.length?'<div class="empty">No custom types yet</div>':
+    c.map(t=>`<div class="task-item"><span style="font-size:14px;flex-shrink:0;">${t.icon}</span><span class="task-label">${esc(t.name)}</span><button class="task-del" onclick="delCustomTpl('${t.id}')">✕</button></div>`).join('');
+}
+function saveCustomTpl(){
+  const name=document.getElementById('ctpl-name').value.trim(); if(!name){showToast('Name required');return;}
+  const icon=document.getElementById('ctpl-icon').value.trim()||'📝';
+  const body=document.getElementById('ctpl-body').value;
+  if(!S.customTemplates)S.customTemplates=[];
+  S.customTemplates.push({id:'ctpl_'+Date.now(),icon,name,desc:body.split('\n')[0].substring(0,40)||'Custom note',body});
+  ['ctpl-name','ctpl-icon','ctpl-body'].forEach(id=>document.getElementById(id).value='');
+  save(); renderTemplates(); renderCustomTplList(); showToast('Template added');
+}
+function delCustomTpl(id){
+  S.customTemplates=(S.customTemplates||[]).filter(t=>t.id!==id);
+  save(); renderTemplates(); renderCustomTplList(); showToast('Removed');
 }
 
 // ─── NOTES ────────────────────────────────────────────────────────────────────
@@ -1045,30 +1087,34 @@ function deleteNote(){
   if(S.activeNote) loadNoteForm(S.notes.find(n=>n.id===S.activeNote));
   else { document.getElementById('note-form').style.display='none'; document.getElementById('note-no-sel').style.display='block'; }
 }
-const TAG_LABEL={obs:'Observation',incident:'Incident',response:'Response',task:'Task note'};
-const TAG_CLS={obs:'tag-obs',incident:'tag-incident',response:'tag-response',task:'tag-task'};
+function tagLabel(tag){ return allTemplates().find(t=>t.id===tag)?.name||tag; }
+function tagCls(tag){ return {obs:'tag-obs',trip:'tag-incident',incident:'tag-incident',response:'tag-response',task:'tag-task'}[tag]||'tag-obs'; }
 function renderNotes(){
   const el=document.getElementById('notes-list');
   el.innerHTML=!S.notes.length?'<div class="empty">No notes yet</div>':
     S.notes.map(n=>`<div class="note-entry${S.activeNote===n.id?' active':''}" onclick="selectNote(${n.id})">
       <div class="note-entry-time">${new Date(n.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
       <div class="note-entry-title">${esc(n.title)}</div>
-      <div style="margin-top:2px;"><span class="tag ${TAG_CLS[n.tag]||'tag-obs'}">${TAG_LABEL[n.tag]||n.tag}</span></div>
+      <div style="margin-top:2px;"><span class="tag ${tagCls(n.tag)}">${tagLabel(n.tag)}</span></div>
     </div>`).join('');
 }
 
 // ─── INCIDENT / RESPONSE ──────────────────────────────────────────────────────
 function saveIncident(){
-  const loc=document.getElementById('inc-location').value, sev=document.getElementById('inc-severity').value,
-        rep=document.getElementById('inc-reporter').value, desc=document.getElementById('inc-desc').value,
-        act=document.getElementById('inc-action').value, fu=document.getElementById('inc-followup').value;
+  const loc=document.getElementById('inc-location').value,
+        purpose=document.getElementById('inc-purpose').value,
+        personnel=document.getElementById('inc-personnel').value,
+        findings=document.getElementById('inc-desc').value,
+        act=document.getElementById('inc-action').value,
+        fu=document.getElementById('inc-followup').value;
   const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  const title='['+sev+'] Incident — '+(loc||'unknown');
-  newNote(title,'Time: '+now+'\nLocation: '+loc+'\nSeverity: '+sev+'\nReported by: '+rep+'\nDescription: '+desc+'\nAction taken: '+act+'\nFollow-up: '+fu,'incident');
-  addLog({type:'incident',title,detail:sev+' at '+(loc||'?')+'. '+desc.substring(0,80),followup:fu==='yes'});
+  const title='Site Trip — '+(loc||'unknown')+' @ '+now;
+  newNote(title,'Time: '+now+'\nSite: '+loc+'\nPurpose: '+purpose+'\nPersonnel: '+personnel+'\nFindings: '+findings+'\nActions taken: '+act+'\nFollow-up: '+fu,'trip');
+  addLog({type:'incident',title,detail:(purpose||'Visit')+' at '+(loc||'?')+'. '+findings.substring(0,80),followup:fu==='yes'});
   closeModal('modal-incident');
-  ['inc-location','inc-reporter','inc-desc','inc-action'].forEach(id=>document.getElementById(id).value='');
-  showToast('Incident logged');
+  ['inc-location','inc-purpose','inc-personnel','inc-desc','inc-action'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('inc-followup').value='no';
+  showToast('Site trip logged');
   switchView('notes',document.querySelectorAll('.nav-tab')[0]);
 }
 function saveResponse(){
