@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,6 +123,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;
 .tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px;margin-bottom:14px;}
 .tpl-btn{padding:9px 11px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--f);text-align:left;transition:all .15s;box-shadow:var(--shs);}
 .tpl-btn:hover{border-color:var(--amber);color:var(--amber);background:var(--abg);}
+.sc-btn{padding:4px 10px;border-radius:5px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:11px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;white-space:nowrap;}
+.sc-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bbg);}
 .tpl-icon{font-size:16px;display:block;margin-bottom:4px;}
 .tpl-name{font-weight:600;display:block;color:var(--text);font-size:12px;}
 .tpl-desc{font-size:11px;color:var(--text3);margin-top:2px;display:block;}
@@ -293,7 +298,6 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
   <button class="nav-tab active" onclick="switchView('notes',this)">Notepad</button>
   <button class="nav-tab" onclick="switchView('scans',this)">Scans</button>
   <button class="nav-tab" onclick="switchView('ops',this)">Tasks</button>
-  <button class="nav-tab" onclick="switchView('log',this)">Log</button>
   <button class="nav-tab" onclick="switchView('intel',this)">Field Intel</button>
   <button class="nav-tab" onclick="switchView('asset',this)">Asset Scan</button>
   <div class="nav-spacer"></div>
@@ -302,27 +306,31 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 
 <!-- NOTEPAD -->
 <div class="view active" id="view-notes">
-  <div class="tpl-grid" id="tpl-grid"></div>
   <div class="notes-layout">
     <div class="notes-sidebar">
-      <div class="card-title" style="padding:0 2px;">Notes log</div>
+      <div class="card-title" style="padding:0 2px;">Notes</div>
       <button class="tbtn" style="text-align:center;width:100%;padding:8px;" onclick="newBlankNote()">+ New note</button>
       <div class="notes-list" id="notes-list"></div>
     </div>
     <div class="note-card">
-      <div id="note-no-sel" style="color:var(--text3);font-size:13px;padding:24px;text-align:center;">Select a note or use a template above</div>
-      <div id="note-form" style="display:none;flex-direction:column;gap:9px;flex:1;">
+      <div id="note-no-sel" style="color:var(--text3);font-size:13px;padding:24px;text-align:center;">Select a note or create a new one</div>
+      <div id="note-form" style="display:none;flex-direction:column;gap:8px;flex:1;">
         <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
-          <input class="note-title-inp" id="note-title" placeholder="Note title..." style="flex:1;min-width:120px;">
-          <select id="note-tag" style="min-width:130px;">
-            <option value="trip">Site Trip</option>
-            <option value="obs">Observation</option>
-          </select>
+          <input class="note-title-inp" id="note-title" placeholder="Note title..." style="flex:1;min-width:120px;" oninput="scheduleAutoSave()">
           <button class="btn-p" onclick="saveNote()">Save</button>
           <button class="btn-c" onclick="deleteNote()">Delete</button>
         </div>
-        <textarea id="note-body" placeholder="Start typing..."></textarea>
-        <div style="font-size:11px;color:var(--text3);" id="note-meta"></div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;padding:6px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;">
+          <span style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-right:2px;">Insert</span>
+          <button class="sc-btn" onclick="insertSnippet('time')" title="Current time">⏱ Time</button>
+          <button class="sc-btn" onclick="insertSnippet('datetime')" title="Date + time">📅 Date·Time</button>
+          <button class="sc-btn" onclick="insertSnippet('divider')" title="Divider line">— Divider</button>
+          <button class="sc-btn" onclick="insertSnippet('location')" title="Location label">📍 Location:</button>
+          <button class="sc-btn" onclick="insertSnippet('action')" title="Action item">☑ Action:</button>
+          <button class="sc-btn" onclick="insertSnippet('followup')" title="Follow-up label">↩ Follow-up:</button>
+        </div>
+        <textarea id="note-body" placeholder="Start typing..." oninput="scheduleAutoSave()"></textarea>
+        <div style="font-size:11px;color:var(--text3);display:flex;gap:10px;" id="note-meta"></div>
       </div>
     </div>
   </div>
@@ -397,20 +405,6 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
   </div>
 </div>
 
-<!-- LOG -->
-<div class="view" id="view-log">
-  <div class="stat-row" id="log-stats"></div>
-  <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap;">
-    <select id="log-filter" onchange="renderLog()">
-      <option value="all">All entries</option><option value="incident">Incidents</option>
-      <option value="response">Responses</option><option value="task">Tasks</option>
-      <option value="note">Notes</option><option value="scan">Scans</option>
-    </select>
-    <button class="tbtn" onclick="openHandoff()">↺ Shift handoff</button>
-    <button class="btn-d" onclick="clearLog()">Clear log</button>
-  </div>
-  <div id="log-list" style="max-height:520px;overflow-y:auto;"></div>
-</div>
 
 <!-- FIELD INTEL -->
 <div class="view" id="view-intel">
@@ -505,39 +499,6 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
   </div>
 </div>
 
-<div class="overlay hidden" id="modal-incident">
-  <div class="modal">
-    <h3>🏭 Site Trip</h3>
-    <label>Site / Location</label><input id="inc-location" placeholder="Site name, zone, address...">
-    <label>Purpose of visit</label><input id="inc-purpose" placeholder="Inspection, maintenance, commissioning...">
-    <label>Personnel on site</label><input id="inc-personnel" placeholder="Names or IDs of personnel present...">
-    <label>Conditions / Findings</label><textarea id="inc-desc" placeholder="What was observed or found on site?"></textarea>
-    <label>Actions taken</label><textarea id="inc-action" placeholder="Work performed, issues addressed..."></textarea>
-    <label>Follow-up required?</label>
-    <select id="inc-followup"><option value="no">No</option><option value="yes">Yes — open item</option></select>
-    <div class="m-actions">
-      <button class="btn-c" onclick="closeModal('modal-incident')">Cancel</button>
-      <button class="btn-p" onclick="saveIncident()">Log site trip</button>
-    </div>
-  </div>
-</div>
-
-<div class="overlay hidden" id="modal-response">
-  <div class="modal">
-    <h3>✅ Correct response log</h3>
-    <label>Situation / trigger</label><input id="res-situation" placeholder="What prompted this?">
-    <label>Who was notified</label><input id="res-notified" placeholder="Names, teams, channels...">
-    <label>Procedure followed</label><textarea id="res-procedure" placeholder="Steps taken..."></textarea>
-    <label>Resolution / outcome</label><textarea id="res-outcome" placeholder="What was the result?"></textarea>
-    <label>Escalation</label>
-    <select id="res-escalation"><option>No escalation</option><option>Yes — escalated</option><option>Yes — pending</option></select>
-    <div class="m-actions">
-      <button class="btn-c" onclick="closeModal('modal-response')">Cancel</button>
-      <button class="btn-p" onclick="saveResponse()">Log response</button>
-    </div>
-  </div>
-</div>
-
 <div class="overlay hidden" id="modal-task-timer">
   <div class="modal" style="width:320px;">
     <h3 id="ttimer-title">Task timer</h3>
@@ -595,27 +556,6 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
       <button class="btn-c" onclick="asEditClear()">Clear</button>
       <button class="btn-c" onclick="closeModal('modal-as-edit')">Close</button>
       <button class="btn-p" onclick="asEditSave()">Save site</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADD CUSTOM TEMPLATE MODAL -->
-<div class="overlay hidden" id="modal-add-tpl">
-  <div class="modal" style="width:420px;">
-    <h3>➕ Add note type</h3>
-    <p style="font-size:12px;color:var(--text3);margin-bottom:12px;">Create a custom template that appears alongside the built-in types.</p>
-    <label>Name</label><input id="ctpl-name" placeholder="e.g. Permit to Work, Callback...">
-    <label>Icon <span style="font-weight:400;color:var(--text3);">(emoji)</span></label>
-    <input id="ctpl-icon" placeholder="📝" style="width:70px;">
-    <label>Starter text <span style="font-weight:400;color:var(--text3);">(use {t} for current time)</span></label>
-    <textarea id="ctpl-body" rows="5" placeholder="Time: {t}&#10;Location: &#10;Notes: "></textarea>
-    <div style="margin-top:14px;">
-      <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;">Your custom types</div>
-      <div id="ctpl-list" style="display:flex;flex-direction:column;gap:4px;max-height:140px;overflow-y:auto;"></div>
-    </div>
-    <div class="m-actions">
-      <button class="btn-c" onclick="closeModal('modal-add-tpl')">Close</button>
-      <button class="btn-p" onclick="saveCustomTpl()">Add template</button>
     </div>
   </div>
 </div>
@@ -725,7 +665,6 @@ async function loadSitesAsync() {
 let S = {
   recTasks:[], adhocTasks:[], checklists:{}, activeList:null,
   notes:[], activeNote:null, logEntries:[],
-  customTemplates:[],
   siteFilter:'all',
   timerRunning:false, timerElapsed:0, timerCycles:0,
   shiftStart:Date.now(),
@@ -1011,53 +950,15 @@ function editSite(id){
 }
 function deleteSite(id){ if(!confirm('Delete this site?'))return; SITES=SITES.filter(x=>x.id!==id); saveSites(SITES); renderSites(); }
 
-// ─── TEMPLATES ────────────────────────────────────────────────────────────────
-const TEMPLATES_BUILTIN=[
-  {id:'trip',  icon:'🏭', name:'Site Trip',   desc:'Site visit log',    modal:'modal-incident'},
-  {id:'obs',   icon:'📋', name:'Observation', desc:'Quick freeform note',body:'Time: {t}\nLocation: \nObservation: \nAction taken: '},
-];
-function allTemplates(){ return [...TEMPLATES_BUILTIN,...(S.customTemplates||[])]; }
-function renderTemplates(){
-  const grid=document.getElementById('tpl-grid');
-  grid.innerHTML=
-    allTemplates().map(t=>`<button class="tpl-btn" onclick="useTemplate('${esc(t.id)}')"><span class="tpl-icon">${t.icon}</span><span class="tpl-name">${esc(t.name)}</span><span class="tpl-desc">${esc(t.desc)}</span></button>`).join('')+
-    `<button class="tpl-btn" onclick="openAddTplModal()" style="border-style:dashed;color:var(--text3);"><span class="tpl-icon">＋</span><span class="tpl-name">Add type</span><span class="tpl-desc">Custom note template</span></button>`;
-  // Sync tag select options to current template list
-  const sel=document.getElementById('note-tag'), cur=sel.value;
-  sel.innerHTML=allTemplates().map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
-  if([...sel.options].some(o=>o.value===cur)) sel.value=cur;
-}
-function useTemplate(id){
-  const tpl=allTemplates().find(t=>t.id===id); if(!tpl)return;
-  if(tpl.modal){openModal(tpl.modal);return;}
-  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  newNote(tpl.name+' — '+now,(tpl.body||'').replace('{t}',now),id);
-}
-function openAddTplModal(){ renderCustomTplList(); openModal('modal-add-tpl'); }
-function renderCustomTplList(){
-  const el=document.getElementById('ctpl-list'); if(!el)return;
-  const c=S.customTemplates||[];
-  el.innerHTML=!c.length?'<div class="empty">No custom types yet</div>':
-    c.map(t=>`<div class="task-item"><span style="font-size:14px;flex-shrink:0;">${t.icon}</span><span class="task-label">${esc(t.name)}</span><button class="task-del" onclick="delCustomTpl('${t.id}')">✕</button></div>`).join('');
-}
-function saveCustomTpl(){
-  const name=document.getElementById('ctpl-name').value.trim(); if(!name){showToast('Name required');return;}
-  const icon=document.getElementById('ctpl-icon').value.trim()||'📝';
-  const body=document.getElementById('ctpl-body').value;
-  if(!S.customTemplates)S.customTemplates=[];
-  S.customTemplates.push({id:'ctpl_'+Date.now(),icon,name,desc:body.split('\n')[0].substring(0,40)||'Custom note',body});
-  ['ctpl-name','ctpl-icon','ctpl-body'].forEach(id=>document.getElementById(id).value='');
-  save(); renderTemplates(); renderCustomTplList(); showToast('Template added');
-}
-function delCustomTpl(id){
-  S.customTemplates=(S.customTemplates||[]).filter(t=>t.id!==id);
-  save(); renderTemplates(); renderCustomTplList(); showToast('Removed');
-}
+// ─── TEMPLATES (removed) ──────────────────────────────────────────────────────
+function renderTemplates(){} // no-op
 
 // ─── NOTES ────────────────────────────────────────────────────────────────────
-function newBlankNote(){ newNote('New note','','obs'); }
-function newNote(title,body,tag){
-  const n={id:Date.now(),title:title||'New note',body:body||'',tag:tag||'obs',ts:Date.now()};
+let _autoSaveTimer=null;
+function scheduleAutoSave(){ clearTimeout(_autoSaveTimer); _autoSaveTimer=setTimeout(saveNote,1200); }
+function newBlankNote(){ newNote('New note',''); }
+function newNote(title,body){
+  const n={id:Date.now(),title:title||'New note',body:body||'',ts:Date.now()};
   S.notes.unshift(n); S.activeNote=n.id; save(); renderNotes(); loadNoteForm(n);
 }
 function selectNote(id){ S.activeNote=id; renderNotes(); loadNoteForm(S.notes.find(n=>n.id===id)); }
@@ -1067,18 +968,15 @@ function loadNoteForm(n){
   document.getElementById('note-form').style.display='flex';
   document.getElementById('note-title').value=n.title;
   document.getElementById('note-body').value=n.body;
-  document.getElementById('note-tag').value=n.tag;
   document.getElementById('note-meta').textContent='Saved '+new Date(n.ts).toLocaleString();
 }
 function saveNote(){
   const n=S.notes.find(x=>x.id===S.activeNote); if(!n)return;
   n.title=document.getElementById('note-title').value||'Untitled';
   n.body=document.getElementById('note-body').value;
-  n.tag=document.getElementById('note-tag').value;
   n.ts=Date.now();
   document.getElementById('note-meta').textContent='Saved '+new Date(n.ts).toLocaleString();
-  addLog({type:n.tag==='incident'?'incident':n.tag==='response'?'response':'note',title:n.title,detail:n.body.substring(0,100)});
-  save(); renderNotes(); showToast('Saved');
+  save(); renderNotes();
 }
 function deleteNote(){
   if(!S.activeNote)return;
@@ -1087,36 +985,35 @@ function deleteNote(){
   if(S.activeNote) loadNoteForm(S.notes.find(n=>n.id===S.activeNote));
   else { document.getElementById('note-form').style.display='none'; document.getElementById('note-no-sel').style.display='block'; }
 }
-function tagLabel(tag){ return allTemplates().find(t=>t.id===tag)?.name||tag; }
-function tagCls(tag){ return {obs:'tag-obs',trip:'tag-incident',incident:'tag-incident',response:'tag-response',task:'tag-task'}[tag]||'tag-obs'; }
 function renderNotes(){
   const el=document.getElementById('notes-list');
   el.innerHTML=!S.notes.length?'<div class="empty">No notes yet</div>':
     S.notes.map(n=>`<div class="note-entry${S.activeNote===n.id?' active':''}" onclick="selectNote(${n.id})">
       <div class="note-entry-time">${new Date(n.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
       <div class="note-entry-title">${esc(n.title)}</div>
-      <div style="margin-top:2px;"><span class="tag ${tagCls(n.tag)}">${tagLabel(n.tag)}</span></div>
     </div>`).join('');
 }
-
-// ─── INCIDENT / RESPONSE ──────────────────────────────────────────────────────
-function saveIncident(){
-  const loc=document.getElementById('inc-location').value,
-        purpose=document.getElementById('inc-purpose').value,
-        personnel=document.getElementById('inc-personnel').value,
-        findings=document.getElementById('inc-desc').value,
-        act=document.getElementById('inc-action').value,
-        fu=document.getElementById('inc-followup').value;
-  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  const title='Site Trip — '+(loc||'unknown')+' @ '+now;
-  newNote(title,'Time: '+now+'\nSite: '+loc+'\nPurpose: '+purpose+'\nPersonnel: '+personnel+'\nFindings: '+findings+'\nActions taken: '+act+'\nFollow-up: '+fu,'trip');
-  addLog({type:'incident',title,detail:(purpose||'Visit')+' at '+(loc||'?')+'. '+findings.substring(0,80),followup:fu==='yes'});
-  closeModal('modal-incident');
-  ['inc-location','inc-purpose','inc-personnel','inc-desc','inc-action'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('inc-followup').value='no';
-  showToast('Site trip logged');
-  switchView('notes',document.querySelectorAll('.nav-tab')[0]);
+// ─── SHORTCUTS ────────────────────────────────────────────────────────────────
+function insertSnippet(type){
+  const ta=document.getElementById('note-body');
+  const now=new Date();
+  const t=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const d=now.toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
+  const snippets={
+    time: t,
+    datetime: d+' '+t,
+    divider: '\n────────────────────\n',
+    location: 'Location: ',
+    action: '☑ Action: ',
+    followup: '↩ Follow-up: ',
+  };
+  const s=snippets[type]||''; if(!s)return;
+  const start=ta.selectionStart, end=ta.selectionEnd;
+  ta.value=ta.value.slice(0,start)+s+ta.value.slice(end);
+  ta.selectionStart=ta.selectionEnd=start+s.length;
+  ta.focus(); scheduleAutoSave();
 }
+
 function saveResponse(){
   const sit=document.getElementById('res-situation').value, notif=document.getElementById('res-notified').value,
         proc=document.getElementById('res-procedure').value, out=document.getElementById('res-outcome').value,
@@ -1159,26 +1056,8 @@ function openHandoffAsNote(){ const now=new Date().toLocaleTimeString([],{hour:'
 function openHandoff(){ document.getElementById('handoff-content').textContent=buildHandoff(); openModal('modal-handoff'); }
 function copyHandoff(){ try{navigator.clipboard.writeText(document.getElementById('handoff-content').textContent);showToast('Copied!');}catch(e){showToast('Select and copy manually');} }
 
-// ─── LOG ──────────────────────────────────────────────────────────────────────
-function addLog(e){ S.logEntries.unshift({...e,ts:Date.now(),id:Date.now()}); if(S.logEntries.length>500)S.logEntries.length=500; save(); }
-function renderLog(){
-  const f=document.getElementById('log-filter').value;
-  const entries=f==='all'?S.logEntries:S.logEntries.filter(e=>e.type===f);
-  document.getElementById('log-list').innerHTML=!entries.length?'<div class="empty">No entries yet</div>':
-    entries.map(e=>`<div class="log-entry ${e.type||'note'}">
-      <div class="log-time">${new Date(e.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
-      <div class="log-body"><div class="log-title">${esc(e.title||'')}</div>${e.detail?`<div class="log-detail">${esc(e.detail)}</div>`:''}</div>
-    </div>`).join('');
-  const inc=S.logEntries.filter(e=>e.type==='incident').length, res=S.logEntries.filter(e=>e.type==='response').length,
-        tsk=S.logEntries.filter(e=>e.type==='task').length, scn=S.logEntries.filter(e=>e.type==='scan').length;
-  document.getElementById('log-stats').innerHTML=`
-    <div class="stat-chip"><span class="s-val">${S.logEntries.length}</span><span class="s-lbl">Total</span></div>
-    <div class="stat-chip"><span class="s-val" style="color:var(--red)">${inc}</span><span class="s-lbl">Incidents</span></div>
-    <div class="stat-chip"><span class="s-val" style="color:var(--purple)">${res}</span><span class="s-lbl">Responses</span></div>
-    <div class="stat-chip"><span class="s-val" style="color:var(--green)">${tsk}</span><span class="s-lbl">Tasks</span></div>
-    <div class="stat-chip"><span class="s-val" style="color:var(--amber)">${scn}</span><span class="s-lbl">Scans</span></div>`;
-}
-function clearLog(){ if(confirm('Clear all log entries?')){ S.logEntries=[]; save(); renderLog(); } }
+// ─── LOG (removed — addLog kept as no-op) ────────────────────────────────────
+function addLog(e){} // no-op
 
 // ─── MODAL ────────────────────────────────────────────────────────────────────
 function openModal(id){ document.getElementById(id).classList.remove('hidden'); }
