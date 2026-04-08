@@ -2545,7 +2545,14 @@ function initOpsTools() {
   renderPhonetic();
 }
 
-load();
+// Initialize everything
+load().then(() => {
+  initOpsTools();
+  // Initialize Asset Scan if we're on that view
+  if (document.getElementById('view-asset').classList.contains('active')) {
+    asInit();
+  }
+});
 </script>
 </body>
 </html>
