@@ -643,13 +643,26 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
       <select id="as-shift"><option value="">Select</option><option>Day</option><option>Night</option></select>
     </div>
     <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;">
-      <button class="tbtn" onclick="asOpenEdit()">✏ Edit sites</button>
-      <button class="tbtn" style="color:var(--amber);border-color:var(--amber);" onclick="asStartFresh()">↺ Start fresh</button>
+      <button class="tbtn" onclick="asStartFresh()">↺ Start fresh</button>
       <button class="btn-p" onclick="asExportCSV()">Export CSV</button>
     </div>
   </div>
-  <div class="as-site-tabs" id="as-tabs"></div>
-  <div id="as-form-wrap"></div>
+  
+  <!-- Site Selection -->
+  <div style="margin-bottom:16px;">
+    <label style="font-weight:600;margin-bottom:8px;display:block;">Select Site:</label>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <select id="as-site-select" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);">
+        <option value="">Choose a site...</option>
+      </select>
+      <button class="btn-p" onclick="asMarkComplete()">✓ Mark Complete</button>
+    </div>
+  </div>
+  
+  <!-- Site Form -->
+  <div id="as-site-form" style="display:none;">
+    <div id="as-form-content"></div>
+  </div>
 </div>
 
 <!-- ASSET SCAN EDIT MODAL -->
@@ -894,7 +907,7 @@ function switchView(v, el) {
   document.getElementById('view-'+v).classList.add('active');
   if(el) el.classList.add('active');
   if(v==='scans') { refreshScanStatuses(); renderSites(); }
-  if(v==='asset') { asInit(); asRenderTabs(); asRenderForm(); }
+  if(v==='asset') { initAssetScan(); }
 }
 
 // ─── 30-MIN TIMER ─────────────────────────────────────────────────────────────
@@ -2233,6 +2246,410 @@ function asExportCSV() {
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
 }
 
+// ─── NEW ASSET SCAN ───────────────────────────────────────────────────────
+// Asset Scan tool for scanning sites during shifts
+
+const AS_SCAN_KEY = 'rnwbl_asset_scan_v1';
+
+// Site definitions with default values
+const ASSET_SITES = {
+  'ROCC1': {
+    name: 'ROCC1',
+    fields: [
+      { id: 'caiso_ads', label: 'CAISO ADS', type: 'select', options: ['', 'Online', 'Offline'], value: '' },
+      { id: 'caiso_visible', label: 'CAISO ADS Visible', type: 'select', options: ['', 'Yes', 'No'], value: '' },
+      { id: 'abnormal_conditions', label: 'Abnormal Conditions', type: 'text', value: '' },
+      { id: 'indji_online', label: 'Indji Watch Online', type: 'select', options: ['', 'Online', 'Offline'], value: '' },
+      { id: 'indji_visible', label: 'Indji Watch Visible', type: 'select', options: ['', 'Yes', 'No'], value: '' },
+      { id: 'tv_monitor', label: 'TV Monitor Vol [40?]', type: 'select', options: ['', 'Yes', 'No'], value: '' },
+      { id: 'staysafe_online', label: 'Stay Safe Online', type: 'select', options: ['', 'Online', 'Offline'], value: '' },
+      { id: 'staysafe_visible', label: 'Stay Safe Visible', type: 'select', options: ['', 'Yes', 'No'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'ANGF1': {
+    name: 'Angel Fire (ANGF1)',
+    fields: [
+      { id: 'abnormal_conditions', label: 'Abnormal Operating Conditions', type: 'select', options: ['', 'Yes', 'No'], value: '' },
+      { id: 'temperature', label: 'Temperature', type: 'text', unit: '°F', value: '' },
+      { id: 'weather', label: 'Weather Conditions', type: 'select', options: ['', 'Clear', 'Cloudy', 'Rain', 'Snow', 'Wind'], value: '' },
+      { id: 'lightning', label: 'Lightning Activity', type: 'select', options: ['', 'None', 'Distant', 'Local', 'Overhead'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'AVLN1': {
+    name: 'Avila (AVLN1)',
+    fields: [
+      { id: 'overall_status', label: 'Overall Status', type: 'select', options: ['', 'Normal', 'Alarm', 'Fault'], value: '' },
+      { id: 'power_output', label: 'Power Output', type: 'text', unit: 'MW', value: '' },
+      { id: 'battery_soc', label: 'Battery SOC', type: 'text', unit: '%', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'BLKW1': {
+    name: 'Blackwater (BLKW1)',
+    fields: [
+      { id: 'current_output', label: 'Current Output', type: 'text', unit: 'MW', value: '' },
+      { id: 'irradiance', label: 'Irradiance', type: 'text', unit: 'W/m²', value: '' },
+      { id: 'panel_temp', label: 'Panel Temperature', type: 'text', unit: '°C', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'CNDR1': {
+    name: 'Cedar (CNDR1)',
+    fields: [
+      { id: 'site_access', label: 'Site Access', type: 'select', options: ['', 'Clear', 'Restricted'], value: '' },
+      { id: 'security_check', label: 'Security Check', type: 'select', options: ['', 'Pass', 'Fail'], value: '' },
+      { id: 'permits_current', label: 'Permits Current', type: 'select', options: ['', 'Yes', 'No'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'COSO1': {
+    name: 'Cosco (COSO1)',
+    fields: [
+      { id: 'inverter_status', label: 'Inverter Status', type: 'select', options: ['', 'Running', 'Stopped', 'Fault'], value: '' },
+      { id: 'scada_status', label: 'SCADA Status', type: 'select', options: ['', 'Online', 'Offline'], value: '' },
+      { id: 'output_power', label: 'Output Power', type: 'text', unit: 'MW', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'DFRN1': {
+    name: 'Defiance (DFRN1)',
+    fields: [
+      { id: 'dc_voltage', label: 'DC Voltage', type: 'text', unit: 'V', value: '' },
+      { id: 'ac_voltage', label: 'AC Voltage', type: 'text', unit: 'V', value: '' },
+      { id: 'frequency', label: 'Frequency', type: 'text', unit: 'Hz', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'FRMV1': {
+    name: 'Farmersville (FRMV1)',
+    fields: [
+      { id: 'system_health', label: 'System Health', type: 'select', options: ['', 'Good', 'Warning', 'Critical'], value: '' },
+      { id: 'production', label: 'Production', type: 'text', unit: 'MWh', value: '' },
+      { id: 'availability', label: 'Availability', type: 'text', unit: '%', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'GLTA1': {
+    name: 'Glendale (GLTA1)',
+    fields: [
+      { id: 'string_monitoring', label: 'String Monitoring', type: 'select', options: ['', 'Normal', 'Abnormal'], value: '' },
+      { id: 'performance_ratio', label: 'Performance Ratio', type: 'text', unit: '%', value: '' },
+      { id: 'soiling_loss', label: 'Soiling Loss', type: 'text', unit: '%', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'HARQ1': {
+    name: 'Harper Lake 1 (HARQ1)',
+    fields: [
+      { id: 'state_of_charge', label: 'State of Charge', type: 'text', unit: '%', value: '' },
+      { id: 'charge_discharge', label: 'Charge/Discharge', type: 'select', options: ['', 'Charging', 'Discharging', 'Idle'], value: '' },
+      { id: 'temperature', label: 'Temperature', type: 'text', unit: '°C', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'HARQ2': {
+    name: 'Harper Lake 2 (HARQ2)',
+    fields: [
+      { id: 'state_of_charge', label: 'State of Charge', type: 'text', unit: '%', value: '' },
+      { id: 'charge_discharge', label: 'Charge/Discharge', type: 'select', options: ['', 'Charging', 'Discharging', 'Idle'], value: '' },
+      { id: 'temperature', label: 'Temperature', type: 'text', unit: '°C', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'HNFD1': {
+    name: 'Hanford (HNFD1)',
+    fields: [
+      { id: 'fencing_status', label: 'Fencing Status', type: 'select', options: ['', 'Secure', 'Breach'], value: '' },
+      { id: 'lighting_status', label: 'Lighting Status', type: 'select', options: ['', 'Operational', 'Failed'], value: '' },
+      { id: 'equipment_status', label: 'Equipment Status', type: 'select', options: ['', 'Normal', 'Maintenance', 'Fault'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'KUNA1': {
+    name: 'Kuna (KUNA1)',
+    fields: [
+      { id: 'current_output', label: 'Current Output', type: 'text', unit: 'MW', value: '' },
+      { id: 'daily_production', label: 'Daily Production', type: 'text', unit: 'MWh', value: '' },
+      { id: 'efficiency', label: 'Efficiency', type: 'text', unit: '%', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'LSTH1': {
+    name: 'Lathrop 1 (LSTH1)',
+    fields: [
+      { id: 'inverter_status', label: 'Inverter Status', type: 'select', options: ['', 'Online', 'Offline', 'Fault'], value: '' },
+      { id: 'power_output', label: 'Power Output', type: 'text', unit: 'MW', value: '' },
+      { id: 'weather_impact', label: 'Weather Impact', type: 'select', options: ['', 'Clear', 'Cloudy', 'Storm'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'LSTH2': {
+    name: 'Lathrop 2 (LSTH2)',
+    fields: [
+      { id: 'inverter_status', label: 'Inverter Status', type: 'select', options: ['', 'Online', 'Offline', 'Fault'], value: '' },
+      { id: 'power_output', label: 'Power Output', type: 'text', unit: 'MW', value: '' },
+      { id: 'weather_impact', label: 'Weather Impact', type: 'select', options: ['', 'Clear', 'Cloudy', 'Storm'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'MCLM1': {
+    name: 'McCalM (MCLM1)',
+    fields: [
+      { id: 'array_status', label: 'Array Status', type: 'select', options: ['', 'Tracking', 'Fixed', 'Manual'], value: '' },
+      { id: 'dc_voltage', label: 'DC Voltage', type: 'text', unit: 'V', value: '' },
+      { id: 'ac_power', label: 'AC Power', type: 'text', unit: 'kW', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'NCLS1': {
+    name: 'Niles (NCLS1)',
+    fields: [
+      { id: 'scada_connection', label: 'SCADA Connection', type: 'select', options: ['', 'Connected', 'Lost'], value: '' },
+      { id: 'data_quality', label: 'Data Quality', type: 'select', options: ['', 'Good', 'Poor'], value: '' },
+      { id: 'performance_index', label: 'Performance Index', type: 'text', unit: '%', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'NSTR1': {
+    name: 'Mustang (NSTR1)',
+    fields: [
+      { id: 'access_road', label: 'Access Road', type: 'select', options: ['', 'Clear', 'Blocked'], value: '' },
+      { id: 'weather_station', label: 'Weather Station', type: 'select', options: ['', 'Working', 'Failed'], value: '' },
+      { id: 'communication', label: 'Communication', type: 'select', options: ['', 'Normal', 'Intermittent'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'PRGN1': {
+    name: 'Piru (PRGN1)',
+    fields: [
+      { id: 'breaker_status', label: 'Breaker Status', type: 'select', options: ['', 'Closed', 'Open', 'Trip'], value: '' },
+      { id: 'voltage_level', label: 'Voltage Level', type: 'text', unit: 'kV', value: '' },
+      { id: 'load_current', label: 'Load Current', type: 'text', unit: 'A', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'PRTV1': {
+    name: 'Porterville (PRTV1)',
+    fields: [
+      { id: 'inverter_efficiency', label: 'Inverter Efficiency', type: 'text', unit: '%', value: '' },
+      { id: 'array_performance', label: 'Array Performance', type: 'select', options: ['', 'Optimal', 'Suboptimal'], value: '' },
+      { id: 'maintenance_required', label: 'Maintenance Required', type: 'select', options: ['', 'No', 'Yes'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'TLRE1': {
+    name: 'Tulare (TLRE1)',
+    fields: [
+      { id: 'active_power', label: 'Active Power', type: 'text', unit: 'MW', value: '' },
+      { id: 'reactive_power', label: 'Reactive Power', type: 'text', unit: 'MVar', value: '' },
+      { id: 'power_factor', label: 'Power Factor', type: 'text', unit: '', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'TSMS1': {
+    name: 'Tehachapi (TSMS1)',
+    fields: [
+      { id: 'tracker_operation', label: 'Tracker Operation', type: 'select', options: ['', 'Auto', 'Manual', 'Stopped'], value: '' },
+      { id: 'soiling_level', label: 'Soiling Level', type: 'select', options: ['', 'Clean', 'Light', 'Moderate', 'Heavy'], value: '' },
+      { id: 'wind_speed', label: 'Wind Speed', type: 'text', unit: 'mph', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  }
+};
+
+let assetScanData = {};
+let currentSite = '';
+
+// Initialize Asset Scan
+function initAssetScan() {
+  console.log('Asset Scan: Initializing...');  
+  // Load saved data
+  try {
+    const saved = localStorage.getItem(AS_SCAN_KEY);
+    if (saved) {
+      assetScanData = JSON.parse(saved) || {};
+    }
+  } catch(e) {
+    console.error('Failed to load Asset Scan data:', e);
+  }
+  
+  // Populate site dropdown
+  populateSiteDropdown();
+  
+  // Set current date
+  document.getElementById('as-date').valueAsDate = new Date();
+  
+  console.log('Asset Scan: Initialized successfully');
+}
+
+// Populate site dropdown
+function populateSiteDropdown() {
+  const select = document.getElementById('as-site-select');
+  select.innerHTML = '<option value="">Choose a site...</option>';
+  
+  Object.keys(ASSET_SITES).forEach(siteId => {
+    const option = document.createElement('option');
+    option.value = siteId;
+    option.textContent = ASSET_SITES[siteId].name;
+    select.appendChild(option);
+  });
+}
+
+// Handle site selection
+function selectSite(siteId) {
+  if (!siteId) {
+    document.getElementById('as-site-form').style.display = 'none';
+    return;
+  }
+  
+  currentSite = siteId;
+  renderSiteForm(siteId);
+}
+
+// Render form for selected site
+function renderSiteForm(siteId) {
+  const site = ASSET_SITES[siteId];
+  if (!site) return;
+  
+  const formContent = document.getElementById('as-form-content');
+  formContent.innerHTML = '';
+  
+  // Create form sections
+  let html = `<div class="card">
+    <div class="card-title">${site.name}</div>`;
+  
+  site.fields.forEach(field => {
+    const savedValue = assetScanData[siteId] && assetScanData[siteId][field.id] ? assetScanData[siteId][field.id] : '';
+    
+    html += `<div style="margin-bottom:12px;">
+      <label style="display:block;font-weight:500;margin-bottom:4px;color:var(--text2);">${field.label}${field.unit ? ' (' + field.unit + ')' : ''}</label>`;
+    
+    if (field.type === 'select') {
+      html += `<select id="field-${field.id}" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);">`;
+      html += `<option value="">Select...</option>`;
+      field.options.forEach(option => {
+        const selected = option === savedValue ? 'selected' : '';
+        html += `<option value="${option}" ${selected}>${option}</option>`;
+      });
+      html += `</select>`;
+    } else if (field.type === 'textarea') {
+      html += `<textarea id="field-${field.id}" rows="3" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);resize:vertical;">${savedValue}</textarea>`;
+    } else {
+      html += `<input type="text" id="field-${field.id}" value="${savedValue}" placeholder="${field.label}" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);">`;
+    }
+    
+    html += `</div>`;
+  });
+  
+  html += `</div>`;
+  formContent.innerHTML = html;
+  
+  // Show form
+  document.getElementById('as-site-form').style.display = 'block';
+  
+  // Add change listeners
+  site.fields.forEach(field => {
+    const element = document.getElementById(`field-${field.id}`);
+    if (element) {
+      element.addEventListener('change', () => saveFieldValue(siteId, field.id, element.value));
+    }
+  });
+}
+
+// Save field value
+function saveFieldValue(siteId, fieldId, value) {
+  if (!assetScanData[siteId]) {
+    assetScanData[siteId] = {};
+  }
+  assetScanData[siteId][fieldId] = value;
+  
+  try {
+    localStorage.setItem(AS_SCAN_KEY, JSON.stringify(assetScanData));
+  } catch(e) {
+    console.error('Failed to save Asset Scan data:', e);
+  }
+}
+
+// Mark site as complete
+function asMarkComplete() {
+  if (!currentSite) {
+    showToast('Please select a site first');
+    return;
+  }
+  
+  // Add completion timestamp
+  if (!assetScanData[currentSite]) {
+    assetScanData[currentSite] = {};
+  }
+  assetScanData[currentSite].completed = true;
+  assetScanData[currentSite].completedAt = new Date().toISOString();
+  
+  try {
+    localStorage.setItem(AS_SCAN_KEY, JSON.stringify(assetScanData));
+    showToast(`${ASSET_SITES[currentSite].name} marked as complete ✓`);
+  } catch(e) {
+    console.error('Failed to save completion:', e);
+  }
+}
+
+// Start fresh (clear all data)
+function asStartFresh() {
+  if (!confirm('Clear all Asset Scan data? This will remove all entered values and completion status.')) {
+    return;
+  }
+  
+  assetScanData = {};
+  currentSite = '';
+  
+  try {
+    localStorage.setItem(AS_SCAN_KEY, JSON.stringify(assetScanData));
+    document.getElementById('as-site-form').style.display = 'none';
+    document.getElementById('as-site-select').value = '';
+    showToast('Asset Scan cleared - ready for new shift');
+  } catch(e) {
+    console.error('Failed to clear Asset Scan data:', e);
+  }
+}
+
+// Export to CSV
+function asExportCSV() {
+  if (Object.keys(assetScanData).length === 0) {
+    showToast('No data to export');
+    return;
+  }
+  
+  let csv = 'Site,Field,Value,Completed,Completed At\n';
+  
+  Object.keys(assetScanData).forEach(siteId => {
+    const site = ASSET_SITES[siteId];
+    const siteData = assetScanData[siteId];
+    
+    if (siteData) {
+      Object.keys(siteData).forEach(fieldId => {
+        if (fieldId !== 'completed' && fieldId !== 'completedAt') {
+          const field = site.fields.find(f => f.id === fieldId);
+          if (field) {
+            csv += `"${site.name}","${field.label}","${siteData[fieldId] || ''}","${siteData.completed || 'No'}","${siteData.completedAt || ''}"\n`;
+          }
+        }
+      });
+    }
+  });
+  
+  // Create download
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `asset_scan_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  window.URL.revokeObjectURL(url);
+  
+  showToast('Asset Scan exported to CSV');
+}
+
 // OPS TOOLS FUNCTIONS
 
 // SoftWrench Log Builder
@@ -2562,12 +2979,55 @@ function initOpsTools() {
   renderPhonetic();
 }
 
+// Simple test function
+function testAssetScan() {
+  console.log('=== ASSET SCAN TEST ===');
+  
+  // Test 1: Check if elements exist
+  const viewAsset = document.getElementById('view-asset');
+  const asTabs = document.getElementById('as-tabs');
+  const asFormWrap = document.getElementById('as-form-wrap');
+  
+  console.log('view-asset exists:', !!viewAsset);
+  console.log('as-tabs exists:', !!asTabs);
+  console.log('as-form-wrap exists:', !!asFormWrap);
+  
+  // Test 2: Check if AS_SITES is defined
+  console.log('AS_SITES defined:', typeof AS_SITES !== 'undefined');
+  console.log('AS_SITES length:', AS_SITES ? AS_SITES.length : 'undefined');
+  
+  // Test 3: Try to manually add content
+  if (asTabs) {
+    asTabs.innerHTML = '<button style="padding:5px;border:1px solid #ccc;">TEST BUTTON</button>';
+    console.log('Manual content added to as-tabs');
+  }
+  
+  if (asFormWrap) {
+    asFormWrap.innerHTML = '<div style="padding:20px;border:1px solid #ccc;">TEST FORM</div>';
+    console.log('Manual content added to as-form-wrap');
+  }
+  
+  console.log('=== END TEST ===');
+}
+
 // Initialize everything
 load().then(() => {
   initOpsTools();
+  
+  // Run test
+  testAssetScan();
+  
   // Initialize Asset Scan if we're on that view
   if (document.getElementById('view-asset').classList.contains('active')) {
-    asInit();
+    initAssetScan();
+  }
+  
+  // Add Asset Scan site dropdown listener
+  const siteSelect = document.getElementById('as-site-select');
+  if (siteSelect) {
+    siteSelect.addEventListener('change', (e) => {
+      selectSite(e.target.value);
+    });
   }
 });
 </script>
