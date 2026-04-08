@@ -128,6 +128,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;
 .tag-incident{background:var(--rbg);color:var(--red);}
 .tag-response{background:var(--pbg);color:var(--purple);}
 .tag-task{background:var(--gbg);color:var(--green);}
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;}
+@media(max-width:700px){.tools-grid{grid-template-columns:1fr;}}
+.intel-card{align-self:start;}
+.sc-btn{padding:4px 10px;border-radius:5px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:11px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;white-space:nowrap;}
+.sc-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bbg);}
 
 /* LOG */
 .log-entry{display:flex;gap:10px;padding:9px 11px;border-radius:7px;background:var(--bg2);margin-bottom:5px;border-left:3px solid var(--border2);box-shadow:var(--shs);}
@@ -414,17 +419,63 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 
 <!-- FIELD INTEL -->
 <div class="view" id="view-intel">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-    <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">Field Intel</div>
-    <span style="font-size:12px;color:var(--text3);">Site weather &amp; conditions</span>
-  </div>
-  <div style="max-width:480px;">
+  <div class="tools-grid">
     <div class="intel-card">
       <div class="intel-card-hdr">
-        <span class="intel-icon">🌤</span>
+        <span class="intel-icon">??</span>
+        <div>
+          <div class="intel-title">SoftWrench Log Builder</div>
+          <div class="intel-desc">Select a procedure, fill the fields, copy the ready-to-paste log entry.</div>
+          <span class="itag itag-amber">Log Builder</span>
+        </div>
+      </div>
+      <div class="intel-content">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+          <select id="sw-flow-sel" style="flex:1;" onchange="swSelectFlow()"></select>
+          <button class="ibtn ibtn-p" onclick="swOpenManage()">?? Manage flows</button>
+        </div>
+        <div id="sw-fields" style="display:flex;flex-direction:column;gap:7px;"></div>
+        <div id="sw-output-wrap" style="display:none;margin-top:10px;">
+          <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Output - ready to paste</div>
+          <div id="sw-output" style="font-family:var(--m);font-size:12px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;line-height:1.8;white-space:pre-wrap;word-break:break-word;color:var(--text);"></div>
+          <div class="iacts" style="margin-top:8px;">
+            <button class="ibtn ibtn-p" onclick="swCopy()">Copy</button>
+            <button class="ibtn" onclick="swClear()">Clear fields</button>
+          </div>
+        </div>
+        <div id="sw-empty" style="font-size:12px;color:var(--text3);margin-top:6px;">No flows yet - click "Manage flows" to add one.</div>
+      </div>
+    </div>
+
+    <div class="intel-card">
+      <div class="intel-card-hdr">
+        <span class="intel-icon">??</span>
+        <div>
+          <div class="intel-title">NATO Phonetic Alphabet</div>
+          <div class="intel-desc">Type any text - get the phonetic readout instantly.</div>
+          <span class="itag itag-blue">Instant</span>
+        </div>
+      </div>
+      <div class="intel-content">
+        <div class="ifield">
+          <label>Input</label>
+          <input id="ph-input" placeholder="e.g. 589L45" oninput="renderPhonetic()" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="font-family:var(--m);letter-spacing:.04em;">
+        </div>
+        <div id="ph-output" style="margin-top:10px;min-height:36px;font-family:var(--m);font-size:13px;color:var(--text);line-height:1.8;word-break:break-word;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;display:none;"></div>
+        <div id="ph-empty" style="margin-top:8px;font-size:12px;color:var(--text3);">Enter text above to see the phonetic readout.</div>
+        <div class="iacts" style="margin-top:10px;">
+          <button class="ibtn ibtn-p" onclick="copyPhonetic()">Copy</button>
+          <button class="ibtn" onclick="document.getElementById('ph-input').value='';renderPhonetic();">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="intel-card">
+      <div class="intel-card-hdr">
+        <span class="intel-icon">??</span>
         <div>
           <div class="intel-title">Site Weather &amp; Wind</div>
-          <div class="intel-desc">Search by site name — location auto-fills from your scan sites.</div>
+          <div class="intel-desc">Search by site name - location auto-fills from your scan sites.</div>
           <span class="itag itag-green">Live</span>
         </div>
       </div>
@@ -440,11 +491,11 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
         </div>
         <div style="margin-top:10px;">
           <div class="wx-section">
-            <div class="wx-icon" id="wx-icon">—</div>
+            <div class="wx-icon" id="wx-icon">-</div>
             <div>
-              <div class="wx-temp" id="wx-temp">—</div>
+              <div class="wx-temp" id="wx-temp">-</div>
               <div class="wx-desc" id="wx-desc">Search a site or enter a location above</div>
-              <div class="wx-wind"><span>💨</span><span id="wx-wind">Wind: —</span><span style="margin-left:8px;">👁</span><span id="wx-vis">Vis: —</span></div>
+              <div class="wx-wind"><span>??</span><span id="wx-wind">Wind: -</span><span style="margin-left:8px;">??</span><span id="wx-vis">Vis: -</span></div>
             </div>
           </div>
         </div>
@@ -454,12 +505,40 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
         </div>
       </div>
     </div>
-  </div>
+
+    <div class="intel-card">
+      <div class="intel-card-hdr">
+        <span class="intel-icon">??</span>
+        <div>
+          <div class="intel-title">Elapsed Time</div>
+          <div class="intel-desc">Mark when an event started - track duration for logs &amp; NERC compliance.</div>
+          <span class="itag itag-amber">Live</span>
+        </div>
+      </div>
+      <div class="intel-content">
+        <div style="display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px;">
+          <div class="ifield" style="flex:1;margin-bottom:0;">
+            <label>Event start time</label>
+            <input type="time" id="et-start" style="font-family:var(--m);font-size:14px;">
+          </div>
+          <button class="ibtn ibtn-p" onclick="etSetNow()" style="white-space:nowrap;">Set to now</button>
+        </div>
+        <div id="et-label" style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;display:none;">Elapsed</div>
+        <div id="et-display" style="font-family:var(--m);font-size:32px;font-weight:500;color:var(--green);letter-spacing:.02em;display:none;">00:00:00</div>
+        <div id="et-since" style="font-size:12px;color:var(--text2);margin-top:3px;display:none;"></div>
+        <div id="et-empty" style="font-size:12px;color:var(--text3);margin-top:4px;">Set a start time to begin tracking.</div>
+        <div class="iacts" style="margin-top:12px;">
+          <button class="ibtn ibtn-p" onclick="etCopyLog()" id="et-copy-btn" style="display:none;">Copy for log</button>
+          <button class="ibtn" onclick="etReset()">Reset</button>
+        </div>
+      </div>
+    </div>
 </div>
 
 <!-- MODALS -->
 <div class="overlay hidden" id="modal-handoff">
   <div class="modal" style="width:520px;">
+    <h3>?? Shift handoff summary</h3>
     <h3>↺ Shift handoff summary</h3>
     <div class="handoff-box" id="handoff-content"></div>
     <div class="m-actions">
@@ -546,6 +625,65 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
       <div style="font-size:12px;color:var(--text3);margin-top:6px;" id="ttimer-desc"></div>
     </div>
     <div class="m-actions"><button class="btn-c" onclick="closeModal('modal-task-timer')">Close</button></div>
+  </div>
+</div>
+
+<!-- SOFTWRENCH MANAGE FLOWS MODAL -->
+<div class="overlay hidden" id="modal-sw-manage">
+  <div class="modal" style="width:580px;max-height:92vh;">
+    <h3>?? Manage SoftWrench Flows</h3>
+
+    <!-- Flow list -->
+    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Your flows</div>
+    <div id="sw-flow-list" style="max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;border:1px solid var(--border);border-radius:8px;padding:8px;margin-bottom:16px;"></div>
+
+    <!-- Divider -->
+    <div style="border-top:1px solid var(--border);padding-top:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="font-size:13px;font-weight:600;" id="sw-form-hdr">Add new flow</div>
+        <button class="tbtn" style="font-size:11px;" onclick="swFormClear()">?? Clear form</button>
+      </div>
+      <input type="hidden" id="sw-edit-idx">
+
+      <!-- Step 1: Name -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:3px;">Flow name</div>
+          <input id="sw-fname" placeholder="e.g. HARQ De-Energize" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;color:var(--text);">
+        </div>
+      </div>
+
+      <!-- Step 2: Template -->
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">2</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:3px;">
+            Write the log template
+            <span style="font-weight:400;color:var(--text3);margin-left:4px;">- wrap any input you need in <code style="background:var(--bbg);color:var(--blue);padding:1px 5px;border-radius:3px;font-size:11px;">{curly braces}</code></span>
+          </div>
+          <textarea id="sw-ftemplate" rows="5" oninput="swPreviewFields()"
+            placeholder="Call received from field tech {Tech Name} requesting de-energization of {Equipment}:&#10;- Associated Megapacks disabled remotely&#10;- {Equipment} opened remotely"
+            style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--text);font-family:var(--m);resize:vertical;line-height:1.7;"></textarea>
+        </div>
+      </div>
+
+      <!-- Step 3: Live field preview -->
+      <div style="display:flex;gap:8px;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--gmid);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">3</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:4px;">Fields that will appear for this flow</div>
+          <div id="sw-field-preview" style="min-height:30px;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text3);">
+            Type a template above - fields will appear here as you use <span style="color:var(--blue);">{curly braces}</span>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="m-actions" style="margin-top:16px;">
+      <button class="btn-c" onclick="closeModal('modal-sw-manage')">Close</button>
+      <button class="btn-p" onclick="swSaveFlow()">Save flow</button>
+    </div>
   </div>
 </div>
 
@@ -2178,6 +2316,335 @@ function asExportCSV() {
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
   a.download=`ROC_Asset_Scan_${op||'Op'}_${date||'nodate'}.csv`;
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
+}
+
+// OPS TOOLS FUNCTIONS
+
+// SoftWrench Log Builder
+const SW_KEY = 'rnwbl_sw_flows_v1';
+let swFlows = [];
+let swActiveFlow = null;
+let swFieldValues = {};
+
+function swLoadFlows() {
+  try { const r = localStorage.getItem(SW_KEY); if (r) swFlows = JSON.parse(r) || []; } catch(e) {}
+  swRenderFlowSelect();
+}
+
+function swSaveFlows() {
+  try { localStorage.setItem(SW_KEY, JSON.stringify(swFlows)); } catch(e) {}
+}
+
+function swRenderFlowSelect() {
+  const sel = document.getElementById('sw-flow-sel');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Select a flow...</option>' + 
+    swFlows.map((f, i) => `<option value="${i}">${esc(f.name)}</option>`).join('');
+}
+
+function swSelectFlow() {
+  const sel = document.getElementById('sw-flow-sel');
+  const idx = parseInt(sel.value);
+  if (isNaN(idx) || !swFlows[idx]) {
+    swActiveFlow = null;
+    swFieldValues = {};
+    swRenderFields();
+    return;
+  }
+  swActiveFlow = swFlows[idx];
+  swFieldValues = {};
+  swRenderFields();
+}
+
+function swRenderFields() {
+  const container = document.getElementById('sw-fields');
+  const outputWrap = document.getElementById('sw-output-wrap');
+  const empty = document.getElementById('sw-empty');
+  if (!container) return;
+
+  if (!swActiveFlow) {
+    container.innerHTML = '';
+    outputWrap.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+
+  const fields = swExtractFields(swActiveFlow.template);
+  container.innerHTML = fields.map(field => `
+    <div style="display:flex;gap:6px;align-items:center;">
+      <label style="font-size:12px;font-weight:500;color:var(--text2);min-width:80px;">${esc(field)}:</label>
+      <input type="text" style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:13px;color:var(--text);" 
+             data-field="${esc(field)}" oninput="swUpdateField('${esc(field)}', this.value)" value="${esc(swFieldValues[field] || '')}">
+    </div>
+  `).join('');
+
+  empty.style.display = 'none';
+  swUpdateOutput();
+}
+
+function swExtractFields(template) {
+  const matches = template.match(/\{([^}]+)\}/g);
+  if (!matches) return [];
+  return matches.map(m => m.slice(1, -1)).filter((f, i, arr) => arr.indexOf(f) === i);
+}
+
+function swUpdateField(field, value) {
+  swFieldValues[field] = value;
+  swUpdateOutput();
+}
+
+function swUpdateOutput() {
+  const output = document.getElementById('sw-output');
+  if (!output || !swActiveFlow) return;
+
+  let result = swActiveFlow.template;
+  for (const [field, value] of Object.entries(swFieldValues)) {
+    result = result.replace(new RegExp(`\\{${field.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\}`, 'g'), value || `{${field}}`);
+  }
+
+  output.textContent = result;
+  document.getElementById('sw-output-wrap').style.display = 'block';
+}
+
+function swCopy() {
+  const output = document.getElementById('sw-output');
+  if (!output) return;
+  output.select();
+  document.execCommand('copy');
+  showToast('Log entry copied to clipboard');
+}
+
+function swClear() {
+  swFieldValues = {};
+  swRenderFields();
+}
+
+function swOpenManage() {
+  swRenderFlowList();
+  swFormClear();
+  openModal('modal-sw-manage');
+}
+
+function swRenderFlowList() {
+  const list = document.getElementById('sw-flow-list');
+  if (!list) return;
+  
+  list.innerHTML = swFlows.length === 0 ? '<div style="color:var(--text3);font-size:12px;text-align:center;padding:20px;">No flows created yet</div>' :
+    swFlows.map((f, i) => `
+      <div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg3);border-radius:6px;">
+        <span style="flex:1;font-size:13px;">${esc(f.name)}</span>
+        <button class="tbtn" style="font-size:11px;padding:2px 8px;" onclick="swEditFlow(${i})">Edit</button>
+        <button class="task-del" onclick="swDeleteFlow(${i})">??</button>
+      </div>
+    `).join('');
+}
+
+function swEditFlow(idx) {
+  const flow = swFlows[idx];
+  if (!flow) return;
+  
+  document.getElementById('sw-edit-idx').value = idx;
+  document.getElementById('sw-fname').value = flow.name;
+  document.getElementById('sw-ftemplate').value = flow.template;
+  document.getElementById('sw-form-hdr').textContent = 'Edit flow';
+  swPreviewFields();
+}
+
+function swDeleteFlow(idx) {
+  if (!confirm('Delete this flow?')) return;
+  swFlows.splice(idx, 1);
+  swSaveFlows();
+  swRenderFlowList();
+  swRenderFlowSelect();
+}
+
+function swFormClear() {
+  document.getElementById('sw-edit-idx').value = '';
+  document.getElementById('sw-fname').value = '';
+  document.getElementById('sw-ftemplate').value = '';
+  document.getElementById('sw-form-hdr').textContent = 'Add new flow';
+  swPreviewFields();
+}
+
+function swPreviewFields() {
+  const template = document.getElementById('sw-ftemplate').value;
+  const fields = swExtractFields(template);
+  const preview = document.getElementById('sw-field-preview');
+  
+  if (!preview) return;
+  
+  preview.innerHTML = fields.length === 0 
+    ? 'Type a template above - fields will appear here as you use <span style="color:var(--blue);">{curly braces}</span>.'
+    : fields.map(f => `<code style="background:var(--bbg);color:var(--blue);padding:2px 6px;border-radius:3px;margin:2px;">{${esc(f)}}</code>`).join(' ');
+}
+
+function swSaveFlow() {
+  const name = document.getElementById('sw-fname').value.trim();
+  const template = document.getElementById('sw-ftemplate').value.trim();
+  
+  if (!name || !template) {
+    showToast('Name and template are required');
+    return;
+  }
+  
+  const idx = parseInt(document.getElementById('sw-edit-idx').value);
+  const flow = { name, template };
+  
+  if (!isNaN(idx) && idx >= 0) {
+    swFlows[idx] = flow;
+  } else {
+    swFlows.push(flow);
+  }
+  
+  swSaveFlows();
+  swRenderFlowList();
+  swRenderFlowSelect();
+  swFormClear();
+  showToast('Flow saved');
+}
+
+// NATO Phonetic Alphabet
+const NATO = {
+  'A': 'Alpha', 'B': 'Bravo', 'C': 'Charlie', 'D': 'Delta', 'E': 'Echo',
+  'F': 'Foxtrot', 'G': 'Golf', 'H': 'Hotel', 'I': 'India', 'J': 'Juliett',
+  'K': 'Kilo', 'L': 'Lima', 'M': 'Mike', 'N': 'November', 'O': 'Oscar',
+  'P': 'Papa', 'Q': 'Quebec', 'R': 'Romeo', 'S': 'Sierra', 'T': 'Tango',
+  'U': 'Uniform', 'V': 'Victor', 'W': 'Whiskey', 'X': 'X-ray', 'Y': 'Yankee', 'Z': 'Zulu',
+  '0': 'Zero', '1': 'One', '2': 'Two', '3': 'Three', '4': 'Four',
+  '5': 'Five', '6': 'Six', '7': 'Seven', '8': 'Eight', '9': 'Nine'
+};
+
+function renderPhonetic() {
+  const input = document.getElementById('ph-input').value.toUpperCase();
+  const output = document.getElementById('ph-output');
+  const empty = document.getElementById('ph-empty');
+  
+  if (!input) {
+    output.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  
+  const phonetic = input.split('').map(char => NATO[char] || char).join(' ');
+  output.textContent = phonetic;
+  output.style.display = 'block';
+  empty.style.display = 'none';
+}
+
+function copyPhonetic() {
+  const output = document.getElementById('ph-output');
+  if (!output) return;
+  
+  const text = output.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Phonetic text copied');
+  }).catch(() => {
+    // Fallback for older browsers
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    showToast('Phonetic text copied');
+  });
+}
+
+// Elapsed Time
+let etInterval = null;
+let etStartTime = null;
+
+function etSetNow() {
+  const now = new Date();
+  const timeStr = now.toTimeString().slice(0, 5);
+  document.getElementById('et-start').value = timeStr;
+  etStartTimer();
+}
+
+function etStartTimer() {
+  const timeInput = document.getElementById('et-start').value;
+  if (!timeInput) return;
+  
+  const [hours, minutes] = timeInput.split(':').map(Number);
+  const now = new Date();
+  const start = new Date();
+  start.setHours(hours, minutes, 0, 0);
+  
+  // If the time is in the past, assume it's today
+  if (start > now) {
+    start.setDate(start.getDate() - 1);
+  }
+  
+  etStartTime = start;
+  
+  if (etInterval) clearInterval(etInterval);
+  etInterval = setInterval(etUpdateTimer, 1000);
+  etUpdateTimer();
+  
+  document.getElementById('et-label').style.display = 'block';
+  document.getElementById('et-display').style.display = 'block';
+  document.getElementById('et-since').style.display = 'block';
+  document.getElementById('et-empty').style.display = 'none';
+  document.getElementById('et-copy-btn').style.display = 'inline-block';
+}
+
+function etUpdateTimer() {
+  if (!etStartTime) return;
+  
+  const now = new Date();
+  const diff = now - etStartTime;
+  
+  const hours = Math.floor(diff / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+  
+  const display = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  document.getElementById('et-display').textContent = display;
+  
+  const sinceStr = `Since ${etStartTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}`;
+  document.getElementById('et-since').textContent = sinceStr;
+}
+
+function etReset() {
+  if (etInterval) clearInterval(etInterval);
+  etInterval = null;
+  etStartTime = null;
+  
+  document.getElementById('et-start').value = '';
+  document.getElementById('et-label').style.display = 'none';
+  document.getElementById('et-display').style.display = 'none';
+  document.getElementById('et-since').style.display = 'none';
+  document.getElementById('et-empty').style.display = 'block';
+  document.getElementById('et-copy-btn').style.display = 'none';
+}
+
+function etCopyLog() {
+  if (!etStartTime) return;
+  
+  const now = new Date();
+  const diff = now - etStartTime;
+  const minutes = Math.floor(diff / 60000);
+  
+  const logText = `Event started: ${etStartTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}\nElapsed: ${minutes} minutes`;
+  
+  navigator.clipboard.writeText(logText).then(() => {
+    showToast('Elapsed time copied to log');
+  }).catch(() => {
+    // Fallback
+    const textarea = document.createElement('textarea');
+    textarea.value = logText;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    showToast('Elapsed time copied to log');
+  });
+}
+
+// Initialize ops tools when page loads
+function initOpsTools() {
+  swLoadFlows();
+  renderPhonetic();
 }
 
 load();
