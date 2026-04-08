@@ -295,12 +295,10 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h8l-1 8 9-12h-8l1-8z" fill="var(--accent)" stroke="var(--accent)" stroke-width="1" stroke-linejoin="round"/></svg>
     <span class="nav-brand-text">RNWBL OPS</span>
   </div>
-  <button class="nav-tab active" onclick="switchView('notes',this)">Notepad</button>
-  <button class="nav-tab" onclick="switchView('scans',this)">Scans</button>
-  <button class="nav-tab" onclick="switchView('ops',this)">Tasks</button>
-  <button class="nav-tab" onclick="switchView('log',this)">Log</button>
-  <button class="nav-tab" onclick="switchView('intel',this)">Field Intel</button>
-  <button class="nav-tab" onclick="switchView('asset',this)">Asset Scan</button>
+  <button class="nav-tab active" onclick="switchView('notes',this)" aria-label="Notepad" aria-current="page" tabindex="0">Notepad</button>
+  <button class="nav-tab" onclick="switchView('scans',this)" aria-label="Scans" tabindex="0">Scans</button>
+  <button class="nav-tab" onclick="switchView('intel',this)" aria-label="Ops Tools" tabindex="0">Ops Tools</button>
+  <button class="nav-tab" onclick="switchView('asset',this)" aria-label="Asset Scan" tabindex="0">Asset Scan</button>
   <div class="nav-spacer"></div>
   <div class="nav-time" id="nav-clock"></div>
 </div>
@@ -356,65 +354,6 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
     <button class="filter-btn" onclick="setSiteFilter('nerc',this)">NERC only</button>
   </div>
   <div class="sites-grid" id="sites-grid"></div>
-</div>
-
-<!-- TASKS -->
-<div class="view" id="view-ops">
-  <div class="cols3">
-    <div class="card">
-      <div class="card-title">Recurring tasks</div>
-      <div id="rec-list"></div>
-      <div class="add-row">
-        <input id="rec-inp" placeholder="Add recurring task..." onkeydown="if(event.key==='Enter')addRec()">
-        <button onclick="addRec()">+</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Ad hoc tasks</div>
-      <div id="adhoc-list" style="max-height:260px;overflow-y:auto;"></div>
-      <div class="adhoc-row">
-        <input id="adhoc-inp" placeholder="Task description..." onkeydown="if(event.key==='Enter')addAdhoc()">
-        <input id="adhoc-t" class="t-inp" type="number" min="0" placeholder="min">
-        <span class="min-lbl">min</span>
-        <button class="add-btn" onclick="addAdhoc()">+ Add</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Checklists</div>
-      <div class="cl-add-row">
-        <input id="cl-list-inp" placeholder="New checklist name..." onkeydown="if(event.key==='Enter')addClList()">
-        <button onclick="addClList()">+ New list</button>
-      </div>
-      <div class="cl-hdr" id="cl-hdr" style="display:none;">
-        <select class="cl-sel" id="cl-sel" onchange="switchClFromSelect()"></select>
-        <button class="cl-del" onclick="delActiveClList()">🗑 Delete</button>
-      </div>
-      <div class="prog-row" id="cl-prog-row" style="display:none;">
-        <div class="prog-bar"><div class="prog-fill" id="cl-prog-fill" style="width:0%"></div></div>
-        <div class="prog-txt" id="cl-prog-txt">0/0</div>
-      </div>
-      <div id="cl-items" style="max-height:180px;overflow-y:auto;"></div>
-      <div class="cl-item-row" id="cl-item-row" style="display:none;">
-        <input id="cl-item-inp" placeholder="Add item..." onkeydown="if(event.key==='Enter')addClItem()">
-        <button onclick="addClItem()">+ Item</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- LOG -->
-<div class="view" id="view-log">
-  <div class="stat-row" id="log-stats"></div>
-  <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap;">
-    <select id="log-filter" onchange="renderLog()">
-      <option value="all">All entries</option><option value="incident">Incidents</option>
-      <option value="response">Responses</option><option value="task">Tasks</option>
-      <option value="note">Notes</option><option value="scan">Scans</option>
-    </select>
-    <button class="tbtn" onclick="openHandoff()">↺ Shift handoff</button>
-    <button class="btn-d" onclick="clearLog()">Clear log</button>
-  </div>
-  <div id="log-list" style="max-height:520px;overflow-y:auto;"></div>
 </div>
 
 <!-- FIELD INTEL -->
@@ -762,8 +701,28 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 
 <script>
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
-const SK = 'rnwbl_v1';         // bumped key — forces clean state
+const SK = 'rnwbl_state_v2';         // bumped key — for version tracking
 const SITES_KEY = 'rnwbl_sites_v1'; // sites stored separately so they survive SK upgrades
+const APP_VERSION = '2.0.0';
+
+// Data migration
+function migrateData() {
+  try {
+    const oldState = localStorage.getItem('rnwbl_state_v1');
+    if (oldState && !localStorage.getItem(SK)) {
+      const parsed = JSON.parse(oldState);
+      // Remove deprecated properties
+      delete parsed.logEntries;
+      delete parsed.checklists;
+      delete parsed.recTasks;
+      delete parsed.adhocTasks;
+      localStorage.setItem(SK, JSON.stringify(parsed));
+      console.log('Data migrated to v2');
+    }
+  } catch(e) {
+    console.error('Migration failed:', e);
+  }
+}
 
 // ─── DEFAULT SITES ────────────────────────────────────────────────────────────
 function defaultSites() {
@@ -872,11 +831,23 @@ let S = {
 let SITES = []; // loaded separately
 
 function save() {
-  try { localStorage.setItem(SK, JSON.stringify(S)); } catch(e) {}
-  try { window.storage && window.storage.set(SK, JSON.stringify(S)); } catch(e) {}
+  try { 
+    localStorage.setItem(SK, JSON.stringify(S)); 
+  } catch(e) { 
+    console.error('localStorage save failed:', e);
+    showToast('Warning: Data may not be saved locally');
+  }
+  try { 
+    window.storage && window.storage.set(SK, JSON.stringify(S)); 
+  } catch(e) { 
+    console.error('Cloud storage save failed:', e);
+  }
 }
 
 async function load() {
+  // Run data migration first
+  migrateData();
+  
   // Load user state
   let raw = null;
   try { raw = localStorage.getItem(SK); } catch(e) {}
@@ -885,9 +856,7 @@ async function load() {
     try {
       const p = JSON.parse(raw);
       S = Object.assign(S, p);
-      if(!S.checklists) S.checklists={};
       if(!S.notes) S.notes=[];
-      if(!S.logEntries) S.logEntries=[];
       if(!S.crew) S.crew=[];
       if(!S.equipment) S.equipment=[];
       if(!S.escContacts) S.escContacts={t1:'',t2:'',t3:''};
@@ -924,7 +893,6 @@ function switchView(v, el) {
   document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
   if(el) el.classList.add('active');
-  if(v==='log') renderLog();
   if(v==='scans') { refreshScanStatuses(); renderSites(); }
   if(v==='asset') { asInit(); asRenderTabs(); asRenderForm(); }
 }
@@ -940,7 +908,6 @@ function startTimerInterval(){
     S.timerElapsed++;
     if(S.timerElapsed>=TOTAL){
       S.timerElapsed=0; S.timerCycles++;
-      addLog({type:'task',title:'30-min cycle #'+S.timerCycles+' completed',detail:''});
       fireAlert('Cycle #'+S.timerCycles+' — time to scan!');
     }
     save(); updateTimerUI();
@@ -958,100 +925,6 @@ function updateTimerUI(){
   document.getElementById('timer-fill').style.width=((rem/TOTAL)*100).toFixed(1)+'%';
   document.getElementById('timer-fill').classList.toggle('urgent',urgent);
   document.getElementById('cycles-badge').textContent=S.timerCycles+' cycle'+(S.timerCycles!==1?'s':'');
-}
-
-// ─── RECURRING TASKS ──────────────────────────────────────────────────────────
-function addRec(){ const v=document.getElementById('rec-inp').value.trim(); if(!v)return; S.recTasks.push({id:Date.now(),name:v,done:false}); document.getElementById('rec-inp').value=''; save(); renderRec(); }
-function toggleRec(id){ const t=S.recTasks.find(x=>x.id===id); if(t)t.done=!t.done; save(); renderRec(); }
-function delRec(id){ S.recTasks=S.recTasks.filter(x=>x.id!==id); save(); renderRec(); }
-function renderRec(){
-  const el=document.getElementById('rec-list');
-  el.innerHTML=!S.recTasks.length?'<div class="empty">No recurring tasks</div>':
-    S.recTasks.map(t=>`<div class="task-item${t.done?' done':''}">
-      <input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleRec(${t.id})">
-      <span class="task-label">${esc(t.name)}</span>
-      <span class="rec-badge${t.done?' done':''}">${t.done?'done':'due'}</span>
-      <button class="task-del" onclick="delRec(${t.id})">✕</button>
-    </div>`).join('');
-}
-
-// ─── ADHOC TASKS ──────────────────────────────────────────────────────────────
-let adhocInts={};
-function addAdhoc(){
-  const v=document.getElementById('adhoc-inp').value.trim(); if(!v)return;
-  const min=parseInt(document.getElementById('adhoc-t').value)||0;
-  const task={id:Date.now(),name:v,done:false,timerMin:min>0?min:null,timerStart:min>0?Date.now():null};
-  S.adhocTasks.push(task);
-  document.getElementById('adhoc-inp').value=''; document.getElementById('adhoc-t').value='';
-  addLog({type:'task',title:'Task added: '+v,detail:min>0?min+'min timer':''});
-  save(); renderAdhoc(); if(task.timerMin) startAdhocTimer(task.id);
-}
-function startAdhocTimer(id){ if(adhocInts[id])clearInterval(adhocInts[id]); adhocInts[id]=setInterval(()=>renderAdhoc(),30000); }
-function restoreAdhocTimers(){ S.adhocTasks.forEach(t=>{if(t.timerMin&&t.timerStart&&!t.done)startAdhocTimer(t.id);}); }
-function timerDisplay(t){
-  if(!t.timerMin||!t.timerStart) return null;
-  const rem=(t.timerMin*60000)-(Date.now()-t.timerStart);
-  if(rem<=0) return {label:'Overdue',exp:true};
-  return {label:Math.ceil(rem/60000)+'min left',exp:false};
-}
-function toggleAdhoc(id){
-  const t=S.adhocTasks.find(x=>x.id===id); if(!t)return;
-  t.done=!t.done;
-  if(t.done){ addLog({type:'task',title:'Task done: '+t.name,detail:''}); if(adhocInts[id]){clearInterval(adhocInts[id]);delete adhocInts[id];} }
-  save(); renderAdhoc();
-}
-function delAdhoc(id){ if(adhocInts[id]){clearInterval(adhocInts[id]);delete adhocInts[id];} S.adhocTasks=S.adhocTasks.filter(x=>x.id!==id); save(); renderAdhoc(); }
-function openTaskTimer(id){
-  const t=S.adhocTasks.find(x=>x.id===id); if(!t||!t.timerMin)return;
-  document.getElementById('ttimer-title').textContent=esc(t.name);
-  document.getElementById('ttimer-desc').textContent=t.timerMin+'min timer';
-  updateTTimerDisp(id); openModal('modal-task-timer');
-  if(window._tt)clearInterval(window._tt);
-  window._tt=setInterval(()=>{ if(!document.getElementById('modal-task-timer').classList.contains('hidden'))updateTTimerDisp(id); else clearInterval(window._tt); },1000);
-}
-function updateTTimerDisp(id){
-  const t=S.adhocTasks.find(x=>x.id===id); if(!t)return;
-  const ti=timerDisplay(t); const d=document.getElementById('ttimer-disp');
-  if(!ti){d.textContent='No timer';return;}
-  if(ti.exp){d.textContent='OVERDUE';d.style.color='var(--red)';return;}
-  const rem=Math.max(0,(t.timerMin*60000)-(Date.now()-t.timerStart));
-  d.textContent=String(Math.floor(rem/60000)).padStart(2,'0')+':'+String(Math.floor((rem%60000)/1000)).padStart(2,'0');
-  d.style.color='var(--amber)';
-}
-function renderAdhoc(){
-  const el=document.getElementById('adhoc-list');
-  el.innerHTML=!S.adhocTasks.length?'<div class="empty">No tasks yet</div>':
-    S.adhocTasks.map(t=>{ const ti=timerDisplay(t); return `<div class="task-item${t.done?' done':''}">
-      <input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleAdhoc(${t.id})">
-      <span class="task-label">${esc(t.name)}</span>
-      ${ti?`<span class="timer-badge${ti.exp?' exp':''}" onclick="openTaskTimer(${t.id})">${ti.label}</span>`:''}
-      <button class="task-del" onclick="delAdhoc(${t.id})">✕</button>
-    </div>`; }).join('');
-}
-
-// ─── CHECKLISTS ───────────────────────────────────────────────────────────────
-function addClList(){ const v=document.getElementById('cl-list-inp').value.trim(); if(!v)return; if(!S.checklists[v])S.checklists[v]=[]; S.activeList=v; document.getElementById('cl-list-inp').value=''; save(); renderCl(); }
-function switchClFromSelect(){ S.activeList=document.getElementById('cl-sel').value||null; renderCl(); }
-function delActiveClList(){ if(!S.activeList||!confirm('Delete "'+S.activeList+'"?'))return; delete S.checklists[S.activeList]; S.activeList=Object.keys(S.checklists)[0]||null; save(); renderCl(); }
-function addClItem(){ if(!S.activeList)return; const v=document.getElementById('cl-item-inp').value.trim(); if(!v)return; S.checklists[S.activeList].push({id:Date.now(),name:v,done:false}); document.getElementById('cl-item-inp').value=''; save(); renderCl(); }
-function toggleCl(id){ if(!S.activeList)return; const t=S.checklists[S.activeList].find(x=>x.id===id); if(t)t.done=!t.done; save(); renderCl(); }
-function delCl(id){ if(!S.activeList)return; S.checklists[S.activeList]=S.checklists[S.activeList].filter(x=>x.id!==id); save(); renderCl(); }
-function renderCl(){
-  const keys=Object.keys(S.checklists);
-  const hdr=document.getElementById('cl-hdr'), ir=document.getElementById('cl-item-row'), pr=document.getElementById('cl-prog-row'), el=document.getElementById('cl-items');
-  if(!keys.length){ hdr.style.display='none'; ir.style.display='none'; pr.style.display='none'; el.innerHTML='<div class="empty">Create your first checklist above</div>'; return; }
-  if(!S.activeList||!S.checklists[S.activeList]) S.activeList=keys[0];
-  hdr.style.display='flex';
-  document.getElementById('cl-sel').innerHTML=keys.map(k=>`<option value="${esc(k)}"${S.activeList===k?' selected':''}>${esc(k)}</option>`).join('');
-  const list=S.checklists[S.activeList], done=list.filter(x=>x.done).length, tot=list.length;
-  if(tot>0){ pr.style.display='flex'; document.getElementById('cl-prog-fill').style.width=Math.round(done/tot*100)+'%'; document.getElementById('cl-prog-txt').textContent=done+'/'+tot; } else pr.style.display='none';
-  ir.style.display='flex';
-  el.innerHTML=!list.length?'<div class="empty">No items yet — add one below</div>':
-    list.map(t=>`<div class="task-item${t.done?' done':''}">
-      <input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleCl(${t.id})">
-      <span class="task-label">${esc(t.name)}</span>
-      <button class="task-del" onclick="delCl(${t.id})">✕</button>
-    </div>`).join('');
 }
 
 // ─── SITES / SCANS ────────────────────────────────────────────────────────────
@@ -1119,12 +992,12 @@ function timeSince(ts){ const m=Math.floor((Date.now()-ts)/60000); return m<1?'j
 function openScanNote(id){ const s=SITES.find(x=>x.id===id); if(!s)return; document.getElementById('scan-note-title').textContent='Log scan — '+s.name; document.getElementById('scan-note-site-id').value=id; document.getElementById('scan-note-body').value=''; openModal('modal-scan-note'); }
 function confirmScan(){
   const id=parseInt(document.getElementById('scan-note-site-id').value), s=SITES.find(x=>x.id===id); if(!s)return;
-  s.lastScan=Date.now(); addLog({type:'scan',title:'Scan: '+s.name,detail:document.getElementById('scan-note-body').value.trim()||'All clear'});
+  s.lastScan=Date.now();
   closeModal('modal-scan-note'); saveSites(SITES); renderSites(); showToast('Scan logged');
 }
 function scanAll(){
   const nerc=SITES.filter(s=>s.nerc); if(!nerc.length){showToast('No NERC sites');return;}
-  nerc.forEach(s=>s.lastScan=Date.now()); addLog({type:'scan',title:'Scan all NERC ('+nerc.length+')',detail:nerc.map(s=>s.name).join(', ')});
+  nerc.forEach(s=>s.lastScan=Date.now());
   saveSites(SITES); renderSites(); showToast('All NERC sites scanned');
 }
 function saveSite(){
@@ -1210,12 +1083,26 @@ function loadNoteForm(n){
 }
 function saveNote(){
   const n=S.notes.find(x=>x.id===S.activeNote); if(!n)return;
-  n.title=document.getElementById('note-title').value||'Untitled';
-  n.body=document.getElementById('note-body').value;
-  n.tag=document.getElementById('note-tag').value;
-  n.ts=Date.now();
+  
+  const title = document.getElementById('note-title').value?.trim() || 'Untitled';
+  const body = document.getElementById('note-body').value?.trim() || '';
+  const tag = document.getElementById('note-tag').value?.trim() || 'obs';
+  
+  // Validate inputs
+  if (title.length > 200) {
+    showToast('Title too long (max 200 chars)');
+    return;
+  }
+  if (body.length > 50000) {
+    showToast('Note too long (max 50,000 chars)');
+    return;
+  }
+  
+  n.title = title;
+  n.body = body;
+  n.tag = tag;
+  n.ts = Date.now();
   document.getElementById('note-meta').textContent='Saved '+new Date(n.ts).toLocaleString();
-  addLog({type:n.tag==='incident'?'incident':n.tag==='response'?'response':'note',title:n.title,detail:n.body.substring(0,100)});
   save(); renderNotes(); showToast('Saved');
 }
 function deleteNote(){
@@ -1248,7 +1135,6 @@ function saveIncident(){
   const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   const title='Site Trip — '+(loc||'unknown')+' @ '+now;
   newNote(title,'Time: '+now+'\nSite: '+loc+'\nPurpose: '+purpose+'\nPersonnel: '+personnel+'\nFindings: '+findings+'\nActions taken: '+act+'\nFollow-up: '+fu,'trip');
-  addLog({type:'incident',title,detail:(purpose||'Visit')+' at '+(loc||'?')+'. '+findings.substring(0,80),followup:fu==='yes'});
   closeModal('modal-incident');
   ['inc-location','inc-purpose','inc-personnel','inc-desc','inc-action'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('inc-followup').value='no';
@@ -1262,7 +1148,6 @@ function saveResponse(){
   const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   const title='Response — '+(sit||'situation')+' @ '+now;
   newNote(title,'Time: '+now+'\nSituation: '+sit+'\nNotified: '+notif+'\nProcedure: '+proc+'\nOutcome: '+out+'\nEscalation: '+esc2,'response');
-  addLog({type:'response',title,detail:'Notified: '+notif+'. '+out.substring(0,80)});
   closeModal('modal-response');
   ['res-situation','res-notified','res-procedure','res-outcome'].forEach(id=>document.getElementById(id).value='');
   showToast('Response logged');
@@ -1272,51 +1157,40 @@ function saveResponse(){
 // ─── HANDOFF ──────────────────────────────────────────────────────────────────
 function buildHandoff(){
   const now=new Date(), sStr=new Date(S.shiftStart).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}), eStr=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  const te=S.logEntries.filter(e=>e.ts>=S.shiftStart);
-  const inc=te.filter(e=>e.type==='incident'), res=te.filter(e=>e.type==='response'),
-        done=te.filter(e=>e.type==='task'&&e.title.startsWith('Task done:')), scans=te.filter(e=>e.type==='scan');
-  const openInc=inc.filter(e=>e.followup), openTasks=S.adhocTasks.filter(t=>!t.done),
-        ov=SITES.filter(s=>siteStatus(s)==='overdue'), du=SITES.filter(s=>siteStatus(s)==='due');
-  const clStatus=Object.keys(S.checklists).map(k=>{const l=S.checklists[k]; return k+': '+l.filter(x=>x.done).length+'/'+l.length;});
-  const L=[];
-  L.push('SHIFT HANDOFF SUMMARY\n─────────────────────');
-  L.push('Shift: '+sStr+' → '+eStr+'\nCycles completed: '+S.timerCycles+'\n');
-  const hasOpen=openInc.length||openTasks.length||ov.length||du.length;
-  L.push('⚠ OPEN ITEMS'+(hasOpen?'':' — none'));
-  if(openInc.length){L.push('\n  Incidents with follow-up:');openInc.forEach(e=>L.push('  • '+e.title+(e.detail?' — '+e.detail.substring(0,60):'')));}
-  if(openTasks.length){L.push('\n  Incomplete tasks:');openTasks.forEach(t=>L.push('  • '+t.name));}
-  if(ov.length){L.push('\n  Overdue scans:');ov.forEach(s=>L.push('  • '+s.name+(s.nerc?' [NERC]':'')+'  (last: '+timeSince(s.lastScan||0)+')'));}
-  if(du.length){L.push('\n  Due soon:');du.forEach(s=>L.push('  • '+s.name+(s.nerc?' [NERC]':'')));}
-  L.push('\n✓ ACTIVITY\n  Incidents: '+inc.length+'  Responses: '+res.length+'  Tasks done: '+done.length+'  Scans: '+scans.length);
-  if(clStatus.length){L.push('\n  Checklists:');clStatus.forEach(s=>L.push('  • '+s));}
-  if(inc.length){L.push('\n  Incident log:');inc.forEach(e=>{const t=new Date(e.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});L.push('  ['+t+'] '+e.title);if(e.detail)L.push('        '+e.detail.substring(0,80));});}
-  L.push('\n──────────────────────\nGenerated '+now.toLocaleString());
+  const scans=SITES.filter(s=>s.lastScan&&s.lastScan>=S.shiftStart);
+  const L=[`Shift handoff: ${sStr} - ${eStr}`];
+  L.push('\nSUMMARY');
+  L.push('  Sites scanned this shift: '+scans.length);
+  L.push('\nACTIVITY\n  Scans: '+scans.length);
+  L.push('\n\nNOTES');
+  const notes=S.notes.filter(n=>n.ts>=S.shiftStart);
+  if(notes.length){notes.forEach(n=>{const t=new Date(n.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});L.push('['+t+'] '+n.title);});}else{L.push('  (none)');}
+  L.push('\n\nEQUIPMENT STATUS');
+  const eq=S.equipment.filter(e=>e.ts>=S.shiftStart);
+  if(eq.length){eq.forEach(e=>{L.push('  '+e.name+' - '+e.status);});}else{L.push('  (no changes)');}
+  L.push('\n\nSAFETY CHECKLIST');
+  const safetyDone=SAFETY.filter(i=>safetyS[i]).length;
+  L.push('  Completed: '+safetyDone+'/'+SAFETY.length);
+  L.push('\n\nNERC COMPLIANCE');
+  const nercDone=NERC_ITEMS.filter(i=>nercS[i]).length;
+  L.push('  Completed: '+nercDone+'/'+NERC_ITEMS.length);
+  L.push('\n\nSHIFT TIMING');
+  L.push('  Start: '+sStr);
+  L.push('  End: '+eStr);
+  L.push('  Duration: '+Math.floor((now-S.shiftStart)/60000)+' minutes');
+  L.push('\n\nESCALATION CONTACTS');
+  L.push('  Tier 1: '+S.escContacts.t1);
+  L.push('  Tier 2: '+S.escContacts.t2);
+  L.push('  Tier 3: '+S.escContacts.t3);
+  L.push('\n\nNEXT SHIFT');
+  L.push('  Priority items: _______________');
+  L.push('  Follow-ups needed: _______________');
+  L.push('\n\nGenerated '+now.toLocaleString());
   return L.join('\n');
 }
 function openHandoffAsNote(){ const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); newNote('Shift handoff — '+now,buildHandoff(),'obs'); switchView('notes',document.querySelectorAll('.nav-tab')[0]); }
 function openHandoff(){ document.getElementById('handoff-content').textContent=buildHandoff(); openModal('modal-handoff'); }
 function copyHandoff(){ try{navigator.clipboard.writeText(document.getElementById('handoff-content').textContent);showToast('Copied!');}catch(e){showToast('Select and copy manually');} }
-
-// ─── LOG ──────────────────────────────────────────────────────────────────────
-function addLog(e){ S.logEntries.unshift({...e,ts:Date.now(),id:Date.now()}); if(S.logEntries.length>500)S.logEntries.length=500; save(); }
-function renderLog(){
-  const f=document.getElementById('log-filter').value;
-  const entries=f==='all'?S.logEntries:S.logEntries.filter(e=>e.type===f);
-  document.getElementById('log-list').innerHTML=!entries.length?'<div class="empty">No entries yet</div>':
-    entries.map(e=>`<div class="log-entry ${e.type||'note'}">
-      <div class="log-time">${new Date(e.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
-      <div class="log-body"><div class="log-title">${esc(e.title||'')}</div>${e.detail?`<div class="log-detail">${esc(e.detail)}</div>`:''}</div>
-    </div>`).join('');
-  const inc=S.logEntries.filter(e=>e.type==='incident').length, res=S.logEntries.filter(e=>e.type==='response').length,
-        tsk=S.logEntries.filter(e=>e.type==='task').length, scn=S.logEntries.filter(e=>e.type==='scan').length;
-  document.getElementById('log-stats').innerHTML=`
-    <div class="stat-chip"><span class="s-val">${S.logEntries.length}</span><span class="s-lbl">Total</span></div>
-    <div class="stat-chip"><span class="s-val" style="color:var(--red)">${inc}</span><span class="s-lbl">Incidents</span></div>
-    <div class="stat-chip"><span class="s-val" style="color:var(--purple)">${res}</span><span class="s-lbl">Responses</span></div>
-    <div class="stat-chip"><span class="s-val" style="color:var(--green)">${tsk}</span><span class="s-lbl">Tasks</span></div>
-    <div class="stat-chip"><span class="s-val" style="color:var(--amber)">${scn}</span><span class="s-lbl">Scans</span></div>`;
-}
-function clearLog(){ if(confirm('Clear all log entries?')){ S.logEntries=[]; save(); renderLog(); } }
 
 // ─── MODAL ────────────────────────────────────────────────────────────────────
 function openModal(id){ document.getElementById(id).classList.remove('hidden'); }
@@ -1370,7 +1244,7 @@ function renderCrew(){
 }
 
 // ─── EQUIPMENT ────────────────────────────────────────────────────────────────
-function addEquip(){ const n=document.getElementById('equip-inp').value.trim(); if(!n)return; const st=document.getElementById('equip-status').value; S.equipment.push({id:Date.now(),name:n,status:st,ts:Date.now()}); document.getElementById('equip-inp').value=''; addLog({type:'task',title:'Equipment: '+n+' — '+st,detail:''}); save(); renderEquip(); }
+function addEquip(){ const n=document.getElementById('equip-inp').value.trim(); if(!n)return; const st=document.getElementById('equip-status').value; S.equipment.push({id:Date.now(),name:n,status:st,ts:Date.now()}); document.getElementById('equip-inp').value=''; save(); renderEquip(); }
 function removeEquip(id){ S.equipment=S.equipment.filter(x=>x.id!==id); save(); renderEquip(); }
 function renderEquip(){
   const icons={ok:'✅',caution:'⚠️',down:'🔴'};
@@ -1386,8 +1260,7 @@ function toggleSafety(i){ safetyS[i]=!safetyS[i]; renderSafety(); }
 function renderSafety(){ document.getElementById('safety-list').innerHTML=SAFETY.map(i=>`<div class="task-item${safetyS[i]?' done':''}"><input type="checkbox" class="task-cb" ${safetyS[i]?'checked':''} onchange="toggleSafety('${i.replace(/'/g,"\\'")}')" ><span class="task-label">${i}</span></div>`).join(''); }
 function completeSafety(){
   const done=SAFETY.filter(i=>safetyS[i]).length, now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  addLog({type:'task',title:'Safety check — '+done+'/'+SAFETY.length,detail:done===SAFETY.length?'All clear':'Incomplete'});
-  newNote('Safety check @ '+now,'Items: '+done+'/'+SAFETY.length+'\n'+SAFETY.map(i=>(safetyS[i]?'✓':'✗')+' '+i).join('\n'),'obs');
+  newNote('Safety check @ '+now,'Items: '+done+'/'+SAFETY.length+'\n'+SAFETY.map(i=>(safetyS[i]?'':'')+' '+i).join('\n'),'obs');
   switchView('notes',document.querySelectorAll('.nav-tab')[0]); showToast('Safety check logged');
 }
 function resetSafety(){ SAFETY.forEach(i=>safetyS[i]=false); renderSafety(); }
@@ -1400,8 +1273,7 @@ function toggleNERC(i){ nercS[i]=!nercS[i]; renderNERC(); }
 function renderNERC(){ document.getElementById('nerc-list').innerHTML=NERC_ITEMS.map(i=>`<div class="task-item${nercS[i]?' done':''}"><input type="checkbox" class="task-cb" ${nercS[i]?'checked':''} onchange="toggleNERC('${i.replace(/'/g,"\\'")}')" ><span class="task-label" style="font-size:12px;">${i}</span></div>`).join(''); }
 function completeNERC(){
   const done=NERC_ITEMS.filter(i=>nercS[i]).length, now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  addLog({type:'scan',title:'NERC compliance — '+done+'/'+NERC_ITEMS.length,detail:done===NERC_ITEMS.length?'All verified':'Incomplete'});
-  newNote('NERC compliance @ '+now,'Items: '+done+'/'+NERC_ITEMS.length+'\n'+NERC_ITEMS.map(i=>(nercS[i]?'✓':'✗')+' '+i).join('\n'),'obs');
+  newNote('NERC compliance @ '+now,'Items: '+done+'/'+NERC_ITEMS.length+'\n'+NERC_ITEMS.map(i=>(nercS[i]?'':'')+' '+i).join('\n'),'obs');
   switchView('notes',document.querySelectorAll('.nav-tab')[0]); showToast('NERC check submitted');
 }
 function resetNERC(){ NERC_ITEMS.forEach(i=>nercS[i]=false); renderNERC(); }
@@ -1410,14 +1282,40 @@ function resetNERC(){ NERC_ITEMS.forEach(i=>nercS[i]=false); renderNERC(); }
 function saveEscContacts(){
   const rows=document.querySelectorAll('#esc-tbody tr'), keys=['t1','t2','t3'];
   rows.forEach((row,i)=>{ const inp=row.querySelector('input'); if(inp)S.escContacts[keys[i]]=inp.value; });
-  save(); addLog({type:'task',title:'Escalation contacts updated',detail:'Tier 1: '+S.escContacts.t1}); showToast('Contacts saved');
+  save(); showToast('Contacts saved');
 }
 
 // ─── UTILS ────────────────────────────────────────────────────────────────────
 function fireAlert(msg){ showToast(msg); try{const ctx=new AudioContext();[880,660].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;g.gain.setValueAtTime(.25,ctx.currentTime+i*.15);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.15+.4);o.start(ctx.currentTime+i*.15);o.stop(ctx.currentTime+i*.15+.4);});}catch(e){} }
 function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-function renderAll(){ renderRec(); renderAdhoc(); renderCl(); renderNotes(); renderTemplates(); updateTimerUI(); renderSites(); }
+function renderAll(){ renderNotes(); renderTemplates(); updateTimerUI(); renderSites(); }
+
+// Performance utilities
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+function throttle(func, limit) {
+  let inThrottle;
+  return function() {
+    const args = arguments;
+    const context = this;
+    if (!inThrottle) {
+      func.apply(context, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+}
 
 // ─── ASSET SCAN ───────────────────────────────────────────────────────────────
 // Site definitions: each site has sections, each section has fields.
