@@ -1,109 +1,332 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Control Room v3</title>
+<title>RNWBL — Ops Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ===== Visual Tone Refresh: calmer, professional ops ===== */
 :root{
-  --bg:#0f1115;--bg2:#151820;--bg3:#1c202a;--bg4:#232838;
-  --border:#2b3042;--border2:#3a4060;
-  --text:#e6e9f2;--text2:#a5acc2;--text3:#6f7690;
-  --green:#4fd39c;--green-dim:#173a2b;
-  --amber:#f3b34a;--amber-dim:#3a2a12;
-  --red:#ef6b6b;--red-dim:#3a1616;
-  --blue:#6aa3ff;--blue-dim:#122547;
-  --purple:#a58bff;--purple-dim:#231b45;
-  --font:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
-  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas;
+  --bg:#f5f4f2;--bg2:#fff;--bg3:#eeece9;--bg4:#e4e1dc;
+  --border:#ddd9d3;--border2:#c8c3bb;
+  --text:#1a1917;--text2:#6b6760;--text3:#9e9a94;
+  --green:#1a6e4a;--gbg:#e8f5ee;--gmid:#2d9e6b;
+  --amber:#b36b00;--abg:#fff4e0;
+  --red:#b33000;--rbg:#feeee8;
+  --blue:#1a4d8a;--bbg:#e8f0fb;
+  --purple:#5a3a8a;--pbg:#f0eaf8;
+  --accent:#c0392b;
+  --f:'DM Sans',sans-serif;--m:'DM Mono',monospace;
+  --r:8px;--rl:12px;
+  --sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.06);
+  --shs:0 1px 3px rgba(0,0,0,.08);
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;min-height:100vh;}
+::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 
-.nav{display:flex;gap:4px;align-items:center;padding:8px 12px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap}
-.nav-brand{font-family:var(--mono);font-size:12px;color:var(--green);letter-spacing:.06em}
-.nav-tab{padding:6px 12px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--text2);cursor:pointer}
-.nav-tab:hover{background:var(--bg3);color:var(--text)}
-.nav-tab.active{background:var(--bg3);border-color:var(--border2);color:var(--text)}
-.nav-spacer{flex:1}
-.nav-time{font-family:var(--mono);font-size:11px;color:var(--text3)}
+/* NAV */
+.nav{display:flex;align-items:center;gap:2px;padding:0 16px;background:var(--bg2);border-bottom:1px solid var(--border);height:48px;position:sticky;top:0;z-index:50;box-shadow:var(--shs);}
+.nav-brand{display:flex;align-items:center;gap:8px;margin-right:12px;flex-shrink:0;}
+.nav-brand-text{font-family:var(--m);font-size:12px;font-weight:500;color:var(--accent);letter-spacing:.08em;}
+.nav-tab{padding:6px 13px;border-radius:6px;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border:none;background:transparent;font-family:var(--f);transition:all .15s;white-space:nowrap;}
+.nav-tab:hover{background:var(--bg3);color:var(--text);}
+.nav-tab.active{background:var(--bg3);color:var(--text);box-shadow:var(--shs);border:1px solid var(--border);}
+.nav-spacer{flex:1;}
+.nav-time{font-family:var(--m);font-size:11px;color:var(--text3);}
 
-.view{display:none;padding:14px}
-.view.active{display:block}
+/* LAYOUT */
+.view{display:none;padding:16px;}.view.active{display:block;}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+@media(max-width:800px){.cols3{grid-template-columns:1fr 1fr;}}
+@media(max-width:500px){.cols3{grid-template-columns:1fr;}}
 
-/* Generic UI */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px}
-.card-title{font-size:11px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px;box-shadow:var(--shs);}
+.card-title{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;}
 
-.tbtn{padding:6px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);color:var(--text);cursor:pointer}
-.tbtn:hover{border-color:var(--blue);color:var(--blue)}
-.btn-primary{padding:7px 16px;border-radius:6px;border:1px solid var(--green);background:var(--green-dim);color:var(--green);cursor:pointer}
-.btn-primary:hover{background:var(--green);color:#000}
-.btn-danger{padding:6px 14px;border-radius:6px;border:1px solid var(--red-dim);background:transparent;color:var(--red);cursor:pointer}
-.btn-danger:hover{background:var(--red-dim)}
+/* BUTTONS */
+.tbtn{padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:12px;cursor:pointer;font-family:var(--f);font-weight:500;transition:all .15s;box-shadow:var(--shs);}
+.tbtn:hover{border-color:var(--green);color:var(--green);background:var(--gbg);}
+.tbtn.active-btn{border-color:var(--green);color:var(--green);background:var(--gbg);}
+.btn-p{padding:7px 16px;background:var(--green);border:1px solid var(--green);border-radius:6px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;}
+.btn-p:hover{background:var(--gmid);}
+.btn-c{padding:7px 16px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;}
+.btn-c:hover{color:var(--text);border-color:var(--text2);}
+.btn-d{padding:6px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--red);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;}
+.btn-d:hover{background:var(--rbg);border-color:var(--red);}
 
-.empty{font-size:12px;color:var(--text3);padding:14px;text-align:center}
+/* TASKS */
+.task-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;background:var(--bg3);margin-bottom:5px;border:1px solid transparent;transition:border-color .15s;}
+.task-item:hover{border-color:var(--border2);}
+.task-cb{width:15px;height:15px;accent-color:var(--green);cursor:pointer;flex-shrink:0;}
+.task-label{flex:1;font-size:13px;}
+.task-item.done .task-label{text-decoration:line-through;color:var(--text3);}
+.task-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:2px 3px;border-radius:4px;opacity:.5;transition:all .15s;}
+.task-del:hover{color:var(--red);opacity:1;background:var(--rbg);}
+.rec-badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;background:var(--gbg);color:var(--green);white-space:nowrap;}
+.rec-badge.done{background:var(--bg4);color:var(--text3);}
+.timer-badge{font-family:var(--m);font-size:11px;color:var(--amber);background:var(--abg);padding:2px 7px;border-radius:10px;cursor:pointer;}
+.timer-badge.exp{color:var(--red);background:var(--rbg);}
 
-/* Layout helpers */
-.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-@media(max-width:900px){.cols3{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.cols3{grid-template-columns:1fr}}
-  /* ===== Notepad: full-focus editor ===== */
-.notes-layout{display:grid;grid-template-columns:260px 1fr;gap:10px;min-height:70vh}
-@media(max-width:900px){
-  .notes-layout{grid-template-columns:1fr}
-  .notes-sidebar{display:none}
-}
-.notes-sidebar{display:flex;flex-direction:column;gap:6px}
-.notes-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
-.note-entry{padding:8px 10px;border-radius:6px;background:var(--bg3);cursor:pointer}
-.note-entry.active{outline:2px solid var(--blue-dim)}
-.note-ts{font-size:10px;color:var(--text3);font-family:var(--mono)}
-.note-title{font-size:12px;font-weight:500}
+/* INPUTS */
+.add-row{display:flex;gap:6px;margin-top:9px;}
+.add-row input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--f);font-size:13px;}
+.add-row input:focus{outline:none;border-color:var(--gmid);background:var(--bg2);}
+.add-row button{padding:6px 12px;background:var(--gbg);border:1px solid var(--green);border-radius:6px;color:var(--green);font-size:14px;font-weight:600;cursor:pointer;}
+.add-row button:hover{background:var(--green);color:#fff;}
+.adhoc-row{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap;}
+.adhoc-row input{flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--f);font-size:13px;}
+.adhoc-row input:focus{outline:none;border-color:var(--gmid);background:var(--bg2);}
+.t-inp{width:64px!important;flex:none!important;text-align:center;}
+.adhoc-row .add-btn{padding:6px 12px;background:var(--gbg);border:1px solid var(--green);border-radius:6px;color:var(--green);font-size:13px;font-weight:600;cursor:pointer;}
+.adhoc-row .add-btn:hover{background:var(--green);color:#fff;}
+.min-lbl{font-size:11px;color:var(--text3);align-self:center;padding:0 2px;}
 
-.note-editor{display:flex;flex-direction:column;gap:8px}
-.note-editor textarea{
-  flex:1;min-height:55vh;background:var(--bg2);
-  border:1px solid var(--border);border-radius:10px;
-  padding:14px;font-family:var(--mono);color:var(--text);font-size:14px
-}
+/* CHECKLIST */
+.cl-add-row{display:flex;gap:5px;margin-bottom:8px;}
+.cl-add-row input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-family:var(--f);font-size:13px;}
+.cl-add-row input:focus{outline:none;border-color:var(--gmid);background:var(--bg2);}
+.cl-add-row button{padding:5px 10px;background:var(--bbg);border:1px solid var(--blue);border-radius:6px;color:var(--blue);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.cl-hdr{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.cl-sel{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-family:var(--f);font-size:13px;font-weight:500;}
+.cl-del{padding:5px 9px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--red);font-size:12px;cursor:pointer;}
+.cl-del:hover{background:var(--rbg);border-color:var(--red);}
+.prog-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.prog-bar{flex:1;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--gmid);border-radius:3px;transition:width .3s;}
+.prog-txt{font-size:11px;color:var(--text3);font-family:var(--m);min-width:30px;text-align:right;}
+.cl-item-row{display:flex;gap:5px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.cl-item-row input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--f);font-size:13px;}
+.cl-item-row input:focus{outline:none;border-color:var(--gmid);background:var(--bg2);}
+.cl-item-row button{padding:6px 13px;background:var(--gbg);border:1px solid var(--green);border-radius:6px;color:var(--green);font-size:13px;font-weight:600;cursor:pointer;}
+.cl-item-row button:hover{background:var(--green);color:#fff;}
 
-/* ===== Scans Timer (moved from Ops) ===== */
-.timer-strip{display:flex;gap:10px;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px;flex-wrap:wrap}
-.timer-big{font-family:var(--mono);font-size:28px;color:var(--green)}
-.timer-bar{flex:1;min-width:120px;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
-.timer-fill{height:100%;background:var(--green)}
-  </style>
+/* NOTES */
+.notes-layout{display:grid;grid-template-columns:220px 1fr;gap:12px;}
+@media(max-width:600px){.notes-layout{grid-template-columns:1fr;}}
+.notes-sidebar{display:flex;flex-direction:column;gap:8px;}
+.notes-list{display:flex;flex-direction:column;gap:4px;overflow-y:auto;}
+.note-entry{padding:8px 10px;border-radius:7px;border:1px solid transparent;cursor:pointer;background:var(--bg2);box-shadow:var(--shs);transition:all .15s;}
+.note-entry:hover{border-color:var(--border2);}
+.note-entry.active{border-color:var(--blue);background:var(--bbg);}
+.note-entry-time{font-size:10px;color:var(--text3);font-family:var(--m);margin-bottom:2px;}
+.note-entry-title{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.note-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;display:flex;flex-direction:column;box-shadow:var(--shs);}
+.note-card textarea{flex:1;width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;color:var(--text);font-family:var(--m);font-size:13px;resize:none;line-height:1.75;min-height:300px;}
+.note-card textarea:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.note-title-inp{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-family:var(--f);font-size:15px;font-weight:600;width:100%;}
+.note-title-inp:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px;margin-bottom:14px;}
+.tpl-btn{padding:9px 11px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--f);text-align:left;transition:all .15s;box-shadow:var(--shs);}
+.tpl-btn:hover{border-color:var(--amber);color:var(--amber);background:var(--abg);}
+.tpl-icon{font-size:16px;display:block;margin-bottom:4px;}
+.tpl-name{font-weight:600;display:block;color:var(--text);font-size:12px;}
+.tpl-desc{font-size:11px;color:var(--text3);margin-top:2px;display:block;}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;}
+.tag-obs{background:var(--bg4);color:var(--text2);}
+.tag-incident{background:var(--rbg);color:var(--red);}
+.tag-response{background:var(--pbg);color:var(--purple);}
+.tag-task{background:var(--gbg);color:var(--green);}
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;}
+@media(max-width:700px){.tools-grid{grid-template-columns:1fr;}}
+.intel-card{align-self:start;}
+.sc-btn{padding:4px 10px;border-radius:5px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:11px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;white-space:nowrap;}
+.sc-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bbg);}
+
+/* LOG */
+.log-entry{display:flex;gap:10px;padding:9px 11px;border-radius:7px;background:var(--bg2);margin-bottom:5px;border-left:3px solid var(--border2);box-shadow:var(--shs);}
+.log-entry.incident{border-left-color:var(--red);}
+.log-entry.response{border-left-color:var(--purple);}
+.log-entry.task{border-left-color:var(--green);}
+.log-entry.note{border-left-color:var(--blue);}
+.log-entry.scan{border-left-color:var(--amber);}
+.log-time{font-family:var(--m);font-size:11px;color:var(--text3);min-width:50px;padding-top:2px;}
+.log-body{flex:1;}
+.log-title{font-size:13px;font-weight:500;}
+.log-detail{font-size:12px;color:var(--text2);margin-top:2px;line-height:1.5;}
+
+/* SCANS */
+.timer-strip{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:12px 16px;margin-bottom:14px;flex-wrap:wrap;box-shadow:var(--shs);}
+.timer-big{font-family:var(--m);font-size:26px;font-weight:500;color:var(--green);min-width:70px;}
+.timer-big.urgent{color:var(--red);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.timer-bar-wrap{flex:1;min-width:80px;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.timer-bar-fill{height:100%;background:var(--gmid);border-radius:3px;transition:width 1s linear;}
+.timer-bar-fill.urgent{background:var(--red);}
+.cycles-badge{font-family:var(--m);font-size:11px;color:var(--text3);background:var(--bg3);padding:3px 9px;border-radius:10px;}
+.sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:6px;}
+.nerc-sep{display:flex;align-items:center;gap:10px;margin:14px 0 4px;grid-column:1/-1;}
+.nerc-sep-line{flex:1;height:1px;background:var(--border);}
+.nerc-sep-lbl{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;}
+/* Site cards + hover tooltip */
+.site-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:13px;box-shadow:var(--shs);transition:box-shadow .15s;position:relative;}
+.site-card:hover{box-shadow:var(--sh);}
+.site-card.ok{border-left:3px solid var(--green);}
+.site-card.due{border-left:3px solid var(--amber);}
+.site-card.overdue{border-left:3px solid var(--red);}
+.site-card.never{border-left:3px solid var(--text3);}
+.site-tip{display:none;position:absolute;bottom:calc(100% + 8px);left:0;right:0;background:#1a1917;color:#e8eaf0;border-radius:8px;padding:10px 12px;font-size:11px;font-family:var(--m);line-height:1.75;z-index:300;box-shadow:0 4px 20px rgba(0,0,0,.3);pointer-events:none;white-space:pre-wrap;min-width:200px;}
+.site-tip-title{font-weight:600;font-size:12px;color:#fff;margin-bottom:4px;font-family:var(--f);display:block;}
+.site-card:hover .site-tip{display:block;}
+.site-hdr{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.site-name{font-size:13px;font-weight:600;flex:1;}
+.badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;}
+.b-nerc{background:var(--bbg);color:var(--blue);}
+.b-ok{background:var(--gbg);color:var(--green);}
+.b-due{background:var(--abg);color:var(--amber);}
+.b-overdue{background:var(--rbg);color:var(--red);}
+.b-never{background:var(--bg4);color:var(--text3);}
+.site-meta{font-size:11px;color:var(--text3);margin-bottom:7px;font-family:var(--m);}
+.site-acts{display:flex;gap:5px;flex-wrap:wrap;}
+.scan-btn{padding:5px 11px;border-radius:5px;border:1px solid var(--green);background:var(--gbg);color:var(--green);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;}
+.scan-btn:hover{background:var(--green);color:#fff;}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.filter-btn{padding:5px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;}
+.filter-btn.active{border-color:var(--blue);color:var(--blue);background:var(--bbg);}
+.stat-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.stat-chip{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;box-shadow:var(--shs);}
+.s-val{font-family:var(--m);font-size:18px;font-weight:600;display:block;}
+.s-lbl{font-size:11px;color:var(--text3);}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:14px;backdrop-filter:blur(3px);}
+.overlay.hidden{display:none;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:20px;width:460px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.14);}
+.modal h3{font-size:15px;font-weight:600;margin-bottom:14px;}
+.modal label{font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:3px;margin-top:10px;}
+.modal input,.modal select,.modal textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--f);font-size:13px;}
+.modal input:focus,.modal select:focus,.modal textarea:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.modal textarea{min-height:80px;resize:vertical;font-family:var(--m);}
+.m-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;}
+.handoff-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:var(--m);font-size:12px;line-height:1.9;color:var(--text2);white-space:pre-wrap;max-height:420px;overflow-y:auto;}
+
+/* FIELD INTEL */
+.intel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.intel-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;box-shadow:var(--shs);display:flex;flex-direction:column;gap:10px;}
+.intel-card-hdr{display:flex;align-items:flex-start;gap:10px;}
+.intel-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
+.intel-title{font-size:14px;font-weight:600;}
+.intel-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-top:2px;}
+.itag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;display:inline-block;margin-top:4px;}
+.itag-green{background:var(--gbg);color:var(--green);}
+.itag-blue{background:var(--bbg);color:var(--blue);}
+.itag-amber{background:var(--abg);color:var(--amber);}
+.itag-red{background:var(--rbg);color:var(--red);}
+.itag-purple{background:var(--pbg);color:var(--purple);}
+.intel-content{border-top:1px solid var(--border);padding-top:10px;}
+.ifield{margin-bottom:8px;}
+.ifield label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px;}
+.ifield input,.ifield select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--f);font-size:13px;}
+.ifield input:focus,.ifield select:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.iacts{display:flex;gap:6px;flex-wrap:wrap;}
+.ibtn{padding:6px 13px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;}
+.ibtn:hover{border-color:var(--text2);color:var(--text);}
+.ibtn-p{border-color:var(--green);color:var(--green);background:var(--gbg);}
+.ibtn-p:hover{background:var(--green)!important;color:#fff!important;}
+.ibtn-r{border-color:var(--red);color:var(--red);background:var(--rbg);}
+.ibtn-r:hover{background:var(--red)!important;color:#fff!important;}
+.wx-section{display:flex;align-items:center;gap:12px;}
+.wx-icon{font-size:32px;}
+.wx-temp{font-size:22px;font-weight:600;font-family:var(--m);}
+.wx-desc{font-size:12px;color:var(--text2);margin-top:2px;}
+.wx-wind{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;color:var(--text2);}
+/* Site search dropdown */
+.wx-matches{display:none;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-top:4px;}
+.wx-match-item{padding:7px 10px;cursor:pointer;background:var(--bg2);font-size:13px;border-bottom:1px solid var(--border);}
+.wx-match-item:last-child{border-bottom:none;}
+.wx-match-item:hover{background:var(--bbg);}
+
+/* Escalation table */
+.esc-table{width:100%;border-collapse:collapse;}
+.esc-table th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);padding:5px 8px;background:var(--bg3);border-bottom:1px solid var(--border);text-align:left;}
+.esc-table td{font-size:12px;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text2);}
+.esc-table tr:last-child td{border-bottom:none;}
+.esc-table input{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 7px;font-size:12px;width:100%;color:var(--text);}
+
+/* Safety/NERC check lists */
+.feat-list{display:flex;flex-direction:column;gap:5px;}
+.feat-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);padding:6px 8px;background:var(--bg3);border-radius:5px;}
+
+/* ASSET SCAN */
+.as-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);box-shadow:var(--shs);}
+.as-meta label{font-size:12px;font-weight:500;color:var(--text2);margin-right:4px;}
+.as-meta input,.as-meta select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:13px;color:var(--text);font-family:var(--f);}
+.as-meta input:focus,.as-meta select:focus{outline:none;border-color:var(--blue);}
+.as-site-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.as-tab{padding:5px 13px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;box-shadow:var(--shs);}
+.as-tab:hover{border-color:var(--text2);color:var(--text);}
+.as-tab.active{border-color:var(--accent);color:var(--accent);background:#fdf2f2;}
+.as-banner{background:var(--text);color:#fff;padding:12px 16px;border-radius:var(--rl) var(--rl) 0 0;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+.as-banner-name{font-size:20px;font-weight:700;letter-spacing:.02em;font-family:var(--f);}
+.as-banner-stats{font-size:12px;color:rgba(255,255,255,.65);font-family:var(--m);}
+.as-body{background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--rl) var(--rl);padding:16px;box-shadow:var(--shs);}
+.as-section-hdr{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.09em;text-transform:uppercase;margin:16px 0 6px;display:flex;align-items:center;gap:8px;}
+.as-section-hdr::after{content:'';flex:1;height:1px;background:var(--border);}
+.as-row{display:grid;grid-template-columns:200px 1fr auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--bg3);}
+.as-row:last-child{border-bottom:none;}
+.as-lbl{font-size:13px;font-weight:500;color:var(--text);}
+.as-hint{font-size:11px;color:var(--text3);margin-top:1px;}
+.as-inp{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:6px 9px;color:var(--text);font-family:var(--m);font-size:13px;width:100%;}
+.as-inp:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.as-sel{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:6px 9px;color:var(--text);font-family:var(--f);font-size:13px;width:100%;}
+.as-sel:focus{outline:none;border-color:var(--blue);}
+.as-textarea{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:6px 9px;color:var(--text);font-family:var(--m);font-size:12px;width:100%;resize:vertical;min-height:48px;line-height:1.5;}
+.as-textarea:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.as-status{font-size:11px;font-weight:600;padding:2px 7px;border-radius:5px;white-space:nowrap;}
+.kv-ok{background:var(--gbg);color:var(--green);}
+.kv-bad{background:var(--rbg);color:var(--red);}
+.alert-pill{font-size:11px;font-weight:600;color:var(--red);background:var(--rbg);padding:2px 8px;border-radius:5px;white-space:nowrap;display:none;}
+.alert-pill.on{display:inline-block;}
+.as-export-bar{margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+@media(max-width:600px){.as-row{grid-template-columns:1fr;}.as-lbl{font-size:12px;}}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:200;font-family:var(--m);box-shadow:0 4px 20px rgba(0,0,0,.2);}
+.toast.show{opacity:1;}
+.empty{font-size:12px;color:var(--text3);text-align:center;padding:16px 0;}
+select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;color:var(--text);font-family:var(--f);font-size:13px;}
+</style>
 </head>
 <body>
 
 <div class="nav">
-  <div class="nav-brand">CTRL ROOM</div>
-  <button class="nav-tab active" onclick="switchView('notepad',this)">Notepad</button>
-  <button class="nav-tab" onclick="switchView('scans',this)">Scans</button>
-  <button class="nav-tab" onclick="switchView('ops',this)">Ops</button>
-  <button class="nav-tab" onclick="switchView('log',this)">Log</button>
-  <button class="nav-tab" onclick="switchView('intel',this)">Ops Intelligence</button>
+  <div class="nav-brand">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h8l-1 8 9-12h-8l1-8z" fill="var(--accent)" stroke="var(--accent)" stroke-width="1" stroke-linejoin="round"/></svg>
+    <span class="nav-brand-text">RNWBL OPS</span>
+  </div>
+  <button class="nav-tab active" onclick="switchView('notes',this)" aria-label="Notepad" aria-current="page" tabindex="0">Notepad</button>
+  <button class="nav-tab" onclick="switchView('scans',this)" aria-label="Scans" tabindex="0">Scans</button>
+  <button class="nav-tab" onclick="switchView('intel',this)" aria-label="Ops Tools" tabindex="0">Ops Tools</button>
+  <button class="nav-tab" onclick="switchView('asset',this)" aria-label="Asset Scan" tabindex="0">Asset Scan</button>
   <div class="nav-spacer"></div>
   <div class="nav-time" id="nav-clock"></div>
 </div>
 
 <!-- NOTEPAD -->
-<div class="view active" id="view-notepad">
+<div class="view active" id="view-notes">
+  <div class="tpl-grid" id="tpl-grid"></div>
   <div class="notes-layout">
     <div class="notes-sidebar">
-      <button class="tbtn" onclick="newNote()">+ New note</button>
+      <div class="card-title" style="padding:0 2px;">Notes log</div>
+      <button class="tbtn" style="text-align:center;width:100%;padding:8px;" onclick="newBlankNote()">+ New note</button>
       <div class="notes-list" id="notes-list"></div>
     </div>
-    <div class="card note-editor">
-      <input id="note-title" placeholder="Note title..." class="tbtn">
-      <textarea id="note-body" placeholder="Write here..."></textarea>
-      <div style="display:flex;gap:8px">
-        <button class="btn-primary" onclick="saveNote()">Save</button>
-        <button class="btn-danger" onclick="deleteNote()">Delete</button>
+    <div class="note-card">
+      <div id="note-no-sel" style="color:var(--text3);font-size:13px;padding:24px;text-align:center;">Select a note or use a template above</div>
+      <div id="note-form" style="display:none;flex-direction:column;gap:9px;flex:1;">
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
+          <input class="note-title-inp" id="note-title" placeholder="Note title..." style="flex:1;min-width:120px;">
+          <select id="note-tag" style="min-width:130px;">
+            <option value="trip">Site Trip</option>
+            <option value="obs">Observation</option>
+          </select>
+          <button class="btn-p" onclick="saveNote()">Save</button>
+          <button class="btn-c" onclick="deleteNote()">Delete</button>
+        </div>
+        <textarea id="note-body" placeholder="Start typing..."></textarea>
+        <div style="font-size:11px;color:var(--text3);" id="note-meta"></div>
       </div>
     </div>
   </div>
@@ -112,122 +335,2702 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 <!-- SCANS -->
 <div class="view" id="view-scans">
   <div class="timer-strip">
-    <div class="timer-big" id="scan-timer">30:00</div>
-    <div class="timer-bar"><div class="timer-fill" id="scan-fill" style="width:100%"></div></div>
-    <button class="tbtn" onclick="toggleScanTimer()">Start</button>
-    <button class="tbtn" onclick="resetScanTimer()">Reset</button>
+    <div class="timer-big" id="timer-disp">30:00</div>
+    <div class="timer-bar-wrap"><div class="timer-bar-fill" id="timer-fill" style="width:100%"></div></div>
+    <span class="cycles-badge" id="cycles-badge">0 cycles</span>
+    <button class="tbtn" id="timer-btn" onclick="toggleTimer()">Start</button>
+    <button class="tbtn" onclick="resetTimer()">Reset</button>
+    <span id="scan-next-due" style="font-family:var(--m);font-size:11px;color:var(--text3);margin-left:4px;"></span>
   </div>
-  <div id="sites"></div>
-</div>
-<!-- OPS -->
-<div class="view" id="view-ops">
-  <div class="cols3">
-    <div class="card">
-      <div class="card-title">Recurring Tasks</div>
-      <div id="recurring"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Ad‑hoc Tasks</div>
-      <div id="adhoc"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Checklists</div>
-      <div style="font-size:12px;color:var(--text3);margin-bottom:6px">Edit mode required to delete</div>
-      <div id="checklists"></div>
-    </div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+    <button class="btn-p" onclick="openModal('modal-add-site')">+ Add site</button>
+    <button class="tbtn" onclick="scanAll()">Scan all NERC</button>
   </div>
+  <div class="stat-row" id="scan-stats"></div>
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="setSiteFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setSiteFilter('overdue',this)">Overdue</button>
+    <button class="filter-btn" onclick="setSiteFilter('due',this)">Due soon</button>
+    <button class="filter-btn" onclick="setSiteFilter('ok',this)">OK</button>
+    <button class="filter-btn" onclick="setSiteFilter('nerc',this)">NERC only</button>
+  </div>
+  <div class="sites-grid" id="sites-grid"></div>
 </div>
 
-<!-- LOG -->
-<div class="view" id="view-log">
-  <div id="log"></div>
-</div>
-
-<!-- OPS INTELLIGENCE -->
+<!-- FIELD INTEL -->
 <div class="view" id="view-intel">
-  <div class="cols3">
-    <div class="card">
-      <div class="card-title">Attention Queue</div>
-      <div id="intel-attention"></div>
+  <div class="tools-grid">
+    <div class="intel-card">
+      <div class="intel-card-hdr">
+        <span class="intel-icon">??</span>
+        <div>
+          <div class="intel-title">SoftWrench Log Builder</div>
+          <div class="intel-desc">Select a procedure, fill the fields, copy the ready-to-paste log entry.</div>
+          <span class="itag itag-amber">Log Builder</span>
+        </div>
+      </div>
+      <div class="intel-content">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+          <select id="sw-flow-sel" style="flex:1;" onchange="swSelectFlow()"></select>
+          <button class="ibtn ibtn-p" onclick="swOpenManage()">?? Manage flows</button>
+        </div>
+        <div id="sw-fields" style="display:flex;flex-direction:column;gap:7px;"></div>
+        <div id="sw-output-wrap" style="display:none;margin-top:10px;">
+          <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Output - ready to paste</div>
+          <div id="sw-output" style="font-family:var(--m);font-size:12px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;line-height:1.8;white-space:pre-wrap;word-break:break-word;color:var(--text);"></div>
+          <div class="iacts" style="margin-top:8px;">
+            <button class="ibtn ibtn-p" onclick="swCopy()">Copy</button>
+            <button class="ibtn" onclick="swClear()">Clear fields</button>
+          </div>
+        </div>
+        <div id="sw-empty" style="font-size:12px;color:var(--text3);margin-top:6px;">No flows yet - click "Manage flows" to add one.</div>
+      </div>
     </div>
-    <div class="card">
-      <div class="card-title">Shift Load</div>
-      <div id="intel-load"></div>
+
+    <div class="intel-card">
+      <div class="intel-card-hdr">
+        <span class="intel-icon">??</span>
+        <div>
+          <div class="intel-title">NATO Phonetic Alphabet</div>
+          <div class="intel-desc">Type any text - get the phonetic readout instantly.</div>
+          <span class="itag itag-blue">Instant</span>
+        </div>
+      </div>
+      <div class="intel-content">
+        <div class="ifield">
+          <label>Input</label>
+          <input id="ph-input" placeholder="e.g. 589L45" oninput="renderPhonetic()" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="font-family:var(--m);letter-spacing:.04em;">
+        </div>
+        <div id="ph-output" style="margin-top:10px;min-height:36px;font-family:var(--m);font-size:13px;color:var(--text);line-height:1.8;word-break:break-word;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;display:none;"></div>
+        <div id="ph-empty" style="margin-top:8px;font-size:12px;color:var(--text3);">Enter text above to see the phonetic readout.</div>
+        <div class="iacts" style="margin-top:10px;">
+          <button class="ibtn ibtn-p" onclick="copyPhonetic()">Copy</button>
+          <button class="ibtn" onclick="document.getElementById('ph-input').value='';renderPhonetic();">Clear</button>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <div class="card-title">Upcoming Scans</div>
-      <div id="intel-scans"></div>
+
+    <div class="intel-card">
+      <div class="intel-card-hdr">
+        <span class="intel-icon">??</span>
+        <div>
+          <div class="intel-title">Site Weather &amp; Wind</div>
+          <div class="intel-desc">Search by site name - location auto-fills from your scan sites.</div>
+          <span class="itag itag-green">Live</span>
+        </div>
+      </div>
+      <div class="intel-content">
+        <div class="ifield">
+          <label>Search site name</label>
+          <input id="wx-site-inp" placeholder="Type site name..." oninput="wxFilter()" autocomplete="off">
+          <div class="wx-matches" id="wx-matches"></div>
+        </div>
+        <div class="ifield">
+          <label>Location (auto-filled or override)</label>
+          <input id="wx-location" placeholder="e.g. Tehachapi, CA">
+        </div>
+        <div style="margin-top:10px;">
+          <div class="wx-section">
+            <div class="wx-icon" id="wx-icon">-</div>
+            <div>
+              <div class="wx-temp" id="wx-temp">-</div>
+              <div class="wx-desc" id="wx-desc">Search a site or enter a location above</div>
+              <div class="wx-wind"><span>??</span><span id="wx-wind">Wind: -</span><span style="margin-left:8px;">??</span><span id="wx-vis">Vis: -</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="iacts" style="margin-top:10px;">
+          <button class="ibtn ibtn-p" onclick="fetchWeather()">Fetch conditions</button>
+          <button class="ibtn" onclick="logWeather()">Log to notes</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="intel-card">
+      <div class="intel-card-hdr">
+        <span class="intel-icon">??</span>
+        <div>
+          <div class="intel-title">Elapsed Time</div>
+          <div class="intel-desc">Mark when an event started - track duration for logs &amp; NERC compliance.</div>
+          <span class="itag itag-amber">Live</span>
+        </div>
+      </div>
+      <div class="intel-content">
+        <div style="display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px;">
+          <div class="ifield" style="flex:1;margin-bottom:0;">
+            <label>Event start time</label>
+            <input type="time" id="et-start" style="font-family:var(--m);font-size:14px;">
+          </div>
+          <button class="ibtn ibtn-p" onclick="etSetNow()" style="white-space:nowrap;">Set to now</button>
+        </div>
+        <div id="et-label" style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;display:none;">Elapsed</div>
+        <div id="et-display" style="font-family:var(--m);font-size:32px;font-weight:500;color:var(--green);letter-spacing:.02em;display:none;">00:00:00</div>
+        <div id="et-since" style="font-size:12px;color:var(--text2);margin-top:3px;display:none;"></div>
+        <div id="et-empty" style="font-size:12px;color:var(--text3);margin-top:4px;">Set a start time to begin tracking.</div>
+        <div class="iacts" style="margin-top:12px;">
+          <button class="ibtn ibtn-p" onclick="etCopyLog()" id="et-copy-btn" style="display:none;">Copy for log</button>
+          <button class="ibtn" onclick="etReset()">Reset</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- MODALS -->
+<div class="overlay hidden" id="modal-handoff">
+  <div class="modal" style="width:520px;">
+    <h3>?? Shift handoff summary</h3>
+    <h3>↺ Shift handoff summary</h3>
+    <div class="handoff-box" id="handoff-content"></div>
+    <div class="m-actions">
+      <button class="tbtn" onclick="copyHandoff()">Copy text</button>
+      <button class="btn-c" onclick="closeModal('modal-handoff')">Close</button>
     </div>
   </div>
 </div>
+
+<div class="overlay hidden" id="modal-add-site">
+  <div class="modal">
+    <h3 id="site-modal-title">Add site</h3>
+    <input type="hidden" id="site-edit-id">
+    <label>Site name / code</label>
+    <input id="site-name" placeholder="e.g. CNDR1">
+    <label>NERC site?</label>
+    <select id="site-nerc"><option value="0">No</option><option value="1">Yes</option></select>
+    <label>Scan interval (minutes)</label>
+    <input id="site-interval" type="number" value="30" min="1">
+    <label>Due-soon threshold (minutes before overdue)</label>
+    <input id="site-threshold" type="number" value="5" min="1">
+    <label>Location (city/state — used for weather search)</label>
+    <input id="site-location" placeholder="e.g. Tehachapi, CA">
+    <label>Reference info (shown on hover — NP, voltage, band)</label>
+    <textarea id="site-notes" placeholder="NP: 818MWh / 200MW&#10;V SET POINT: 115kV&#10;BAND: 109.25kV–120.75kV"></textarea>
+    <div class="m-actions">
+      <button class="btn-c" onclick="closeModal('modal-add-site')">Cancel</button>
+      <button class="btn-p" onclick="saveSite()">Save site</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="modal-scan-note">
+  <div class="modal">
+    <h3 id="scan-note-title">Log scan</h3>
+    <input type="hidden" id="scan-note-site-id">
+    <label>Scan notes (optional)</label>
+    <textarea id="scan-note-body" placeholder="All clear, or note any anomalies..."></textarea>
+    <div class="m-actions">
+      <button class="btn-c" onclick="closeModal('modal-scan-note')">Cancel</button>
+      <button class="btn-p" onclick="confirmScan()">Log scan</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="modal-incident">
+  <div class="modal">
+    <h3>🏭 Site Trip</h3>
+    <label>Site / Location</label><input id="inc-location" placeholder="Site name, zone, address...">
+    <label>Purpose of visit</label><input id="inc-purpose" placeholder="Inspection, maintenance, commissioning...">
+    <label>Personnel on site</label><input id="inc-personnel" placeholder="Names or IDs of personnel present...">
+    <label>Conditions / Findings</label><textarea id="inc-desc" placeholder="What was observed or found on site?"></textarea>
+    <label>Actions taken</label><textarea id="inc-action" placeholder="Work performed, issues addressed..."></textarea>
+    <label>Follow-up required?</label>
+    <select id="inc-followup"><option value="no">No</option><option value="yes">Yes — open item</option></select>
+    <div class="m-actions">
+      <button class="btn-c" onclick="closeModal('modal-incident')">Cancel</button>
+      <button class="btn-p" onclick="saveIncident()">Log site trip</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="modal-response">
+  <div class="modal">
+    <h3>✅ Correct response log</h3>
+    <label>Situation / trigger</label><input id="res-situation" placeholder="What prompted this?">
+    <label>Who was notified</label><input id="res-notified" placeholder="Names, teams, channels...">
+    <label>Procedure followed</label><textarea id="res-procedure" placeholder="Steps taken..."></textarea>
+    <label>Resolution / outcome</label><textarea id="res-outcome" placeholder="What was the result?"></textarea>
+    <label>Escalation</label>
+    <select id="res-escalation"><option>No escalation</option><option>Yes — escalated</option><option>Yes — pending</option></select>
+    <div class="m-actions">
+      <button class="btn-c" onclick="closeModal('modal-response')">Cancel</button>
+      <button class="btn-p" onclick="saveResponse()">Log response</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="modal-task-timer">
+  <div class="modal" style="width:320px;">
+    <h3 id="ttimer-title">Task timer</h3>
+    <div style="text-align:center;padding:16px 0;">
+      <div style="font-family:var(--m);font-size:40px;font-weight:500;color:var(--amber);" id="ttimer-disp">00:00</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:6px;" id="ttimer-desc"></div>
+    </div>
+    <div class="m-actions"><button class="btn-c" onclick="closeModal('modal-task-timer')">Close</button></div>
+  </div>
+</div>
+
+<!-- SOFTWRENCH MANAGE FLOWS MODAL -->
+<div class="overlay hidden" id="modal-sw-manage">
+  <div class="modal" style="width:580px;max-height:92vh;">
+    <h3>?? Manage SoftWrench Flows</h3>
+
+    <!-- Flow list -->
+    <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Your flows</div>
+    <div id="sw-flow-list" style="max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;border:1px solid var(--border);border-radius:8px;padding:8px;margin-bottom:16px;"></div>
+
+    <!-- Divider -->
+    <div style="border-top:1px solid var(--border);padding-top:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="font-size:13px;font-weight:600;" id="sw-form-hdr">Add new flow</div>
+        <button class="tbtn" style="font-size:11px;" onclick="swFormClear()">?? Clear form</button>
+      </div>
+      <input type="hidden" id="sw-edit-idx">
+
+      <!-- Step 1: Name -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:3px;">Flow name</div>
+          <input id="sw-fname" placeholder="e.g. HARQ De-Energize" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;color:var(--text);">
+        </div>
+      </div>
+
+      <!-- Step 2: Template -->
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">2</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:3px;">
+            Write the log template
+            <span style="font-weight:400;color:var(--text3);margin-left:4px;">- wrap any input you need in <code style="background:var(--bbg);color:var(--blue);padding:1px 5px;border-radius:3px;font-size:11px;">{curly braces}</code></span>
+          </div>
+          <textarea id="sw-ftemplate" rows="5" oninput="swPreviewFields()"
+            placeholder="Call received from field tech {Tech Name} requesting de-energization of {Equipment}:&#10;- Associated Megapacks disabled remotely&#10;- {Equipment} opened remotely"
+            style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--text);font-family:var(--m);resize:vertical;line-height:1.7;"></textarea>
+        </div>
+      </div>
+
+      <!-- Step 3: Live field preview -->
+      <div style="display:flex;gap:8px;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--gmid);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">3</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:4px;">Fields that will appear for this flow</div>
+          <div id="sw-field-preview" style="min-height:30px;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text3);">
+            Type a template above - fields will appear here as you use <span style="color:var(--blue);">{curly braces}</span>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="m-actions" style="margin-top:16px;">
+      <button class="btn-c" onclick="closeModal('modal-sw-manage')">Close</button>
+      <button class="btn-p" onclick="swSaveFlow()">Save flow</button>
+    </div>
+  </div>
+</div>
+
+<!-- ASSET SCAN -->
+<div class="view" id="view-asset">
+  <div class="as-meta">
+    <div><label>Date:</label><input type="date" id="as-date"></div>
+    <div>
+      <label>Operator:</label>
+      <input id="as-operator" list="as-ops-list" placeholder="Name">
+      <datalist id="as-ops-list">
+        <option>Adam McCauley</option><option>Alexander Conway</option><option>Christopher Hill</option>
+        <option>Jesse Snygg-Carrasco</option><option>Jonathan Osborne</option><option>Mar'Cell Edwards</option>
+        <option>Morgan Shearer</option><option>Rob Seffern</option><option>Sergio Torres</option>
+      </datalist>
+    </div>
+    <div><label>Shift:</label>
+      <select id="as-shift"><option value="">Select</option><option>Day</option><option>Night</option></select>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;">
+      <button class="tbtn" onclick="asStartFresh()">↺ Start fresh</button>
+      <button class="btn-p" onclick="asExportCSV()">Export CSV</button>
+    </div>
+  </div>
+  
+  <!-- Site Selection -->
+  <div style="margin-bottom:16px;">
+    <label style="font-weight:600;margin-bottom:8px;display:block;">Select Site:</label>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <select id="as-site-select" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);">
+        <option value="">Choose a site...</option>
+      </select>
+      <button class="btn-p" onclick="asMarkComplete()">✓ Mark Complete</button>
+    </div>
+  </div>
+  
+  <!-- Site Form -->
+  <div id="as-site-form" style="display:none;">
+    <div id="as-form-content"></div>
+  </div>
+</div>
+
+<!-- ASSET SCAN EDIT MODAL -->
+<div class="overlay hidden" id="modal-as-edit">
+  <div class="modal" style="width:560px;max-height:90vh;">
+    <h3>✏ Edit Asset Scan Sites</h3>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:10px;">Add, edit or remove sites. Changes are saved to localStorage immediately.</p>
+    <div id="as-edit-list" style="max-height:220px;overflow-y:auto;margin-bottom:12px;display:flex;flex-direction:column;gap:5px;border:1px solid var(--border);border-radius:6px;padding:8px;"></div>
+    <div style="border-top:1px solid var(--border);padding-top:12px;">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;" id="as-edit-form-hdr">Add new site</div>
+      <input type="hidden" id="as-edit-idx">
+      <label>Site ID</label><input id="as-eid" placeholder="e.g. NEWSITE1" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:13px;color:var(--text);margin-bottom:6px;">
+      <label>Display label</label><input id="as-elabel" placeholder="e.g. New Solar Farm" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:13px;color:var(--text);margin-bottom:6px;">
+      <label>Stats line</label><input id="as-estats" placeholder="e.g. PV 60MW  V SET: 119kV" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:13px;color:var(--text);margin-bottom:6px;">
+      <label>Sections JSON <span style="font-weight:400;color:var(--text3);">(array of {title, fields:[{n,t,opts,alert,unit,kvMin,kvMax,hint}]})</span></label>
+      <textarea id="as-ejson" rows="5" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 9px;font-size:12px;color:var(--text);font-family:var(--m);resize:vertical;" placeholder='[{"title":"0-STATUS","fields":[{"n":"Abnormal Operating Conditions","t":"select","opts":["","Yes","No"],"alert":"Yes"},{"n":"Notes","t":"textarea"}]}]'></textarea>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px;">Types: <code>select</code> (needs opts[]), <code>text</code> (unit/kvMin/kvMax optional), <code>textarea</code></div>
+    </div>
+    <div class="m-actions">
+      <button class="btn-c" onclick="asEditClear()">Clear</button>
+      <button class="btn-c" onclick="closeModal('modal-as-edit')">Close</button>
+      <button class="btn-p" onclick="asEditSave()">Save site</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD CUSTOM TEMPLATE MODAL -->
+<div class="overlay hidden" id="modal-add-tpl">
+  <div class="modal" style="width:420px;">
+    <h3>➕ Add note type</h3>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:12px;">Create a custom template that appears alongside the built-in types.</p>
+    <label>Name</label><input id="ctpl-name" placeholder="e.g. Permit to Work, Callback...">
+    <label>Icon <span style="font-weight:400;color:var(--text3);">(emoji)</span></label>
+    <input id="ctpl-icon" placeholder="📝" style="width:70px;">
+    <label>Starter text <span style="font-weight:400;color:var(--text3);">(use {t} for current time)</span></label>
+    <textarea id="ctpl-body" rows="5" placeholder="Time: {t}&#10;Location: &#10;Notes: "></textarea>
+    <div style="margin-top:14px;">
+      <div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;">Your custom types</div>
+      <div id="ctpl-list" style="display:flex;flex-direction:column;gap:4px;max-height:140px;overflow-y:auto;"></div>
+    </div>
+    <div class="m-actions">
+      <button class="btn-c" onclick="closeModal('modal-add-tpl')">Close</button>
+      <button class="btn-p" onclick="saveCustomTpl()">Add template</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-const SK='ctrlroom_onefile';
-const DEFAULT_NOTES_TEMPLATES=[
-  {id:'obs',name:'Observation'},
-  {id:'incident',name:'Incident'},
-  {id:'handoff',name:'Shift Handoff'}
-];
-let S={
-  notes:[],
-  activeNote:null,
-  scanTimer:{running:false,elapsed:0},
-  logs:[]
-};
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+const SK = 'rnwbl_state_v2';         // bumped key — for version tracking
+const SITES_KEY = 'rnwbl_sites_v1'; // sites stored separately so they survive SK upgrades
+const APP_VERSION = '2.0.0';
 
-function save(){localStorage.setItem(SK,JSON.stringify(S))}
-function load(){try{const x=JSON.parse(localStorage.getItem(SK));if(x)S=x}catch(e){}}
-function clock(){nav-clock.textContent=new Date().toLocaleTimeString()}
-setInterval(clock,1000);clock()
-
-function switchView(v,el){
-  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'))
-  document.getElementById('view-'+v).classList.add('active')
-  document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'))
-  el.classList.add('active')
-}
-
-/* Notes */
-function newNote(){const id=Date.now();S.notes.unshift({id,title:'New note',body:'',ts:id});S.activeNote=id;save();renderNotes()}
-function saveNote(){const n=S.notes.find(x=>x.id===S.activeNote);if(!n)return;n.title=note-title.value;n.body=note-body.value;save();renderNotes()}
-function deleteNote(){S.notes=S.notes.filter(x=>x.id!==S.activeNote);S.activeNote=null;save();renderNotes()}
-function renderNotes(){
-  const el=document.getElementById('notes-list')
-  el.innerHTML=S.notes.map(n=>`<div class="note-entry ${n.id===S.activeNote?'active':''}" onclick="selectNote(${n.id})">
-    <div class="note-ts">${new Date(n.ts).toLocaleString()}</div>
-    <div class="note-title">${n.title}</div>
-  </div>`).join('')||'<div class="empty">No notes</div>'
-}
-function selectNote(id){
-  S.activeNote=id;
-  const n=S.notes.find(x=>x.id===id);if(!n)return;
-  note-title.value=n.title;note-body.value=n.body;
-  renderNotes()
-}
-  /* Scan Timer */
-const TOTAL=1800;let scanInt=null;
-function toggleScanTimer(){
-  if(S.scanTimer.running){clearInterval(scanInt);S.scanTimer.running=false}
-  else{
-    S.scanTimer.running=true;
-    scanInt=setInterval(()=>{
-      S.scanTimer.elapsed++;
-      if(S.scanTimer.elapsed>=TOTAL){addLog('30‑minute scan complete');S.scanTimer.elapsed=0}
-      updateTimer();save()
-    },1000)
+// Data migration
+function migrateData() {
+  try {
+    const oldState = localStorage.getItem('rnwbl_state_v1');
+    if (oldState && !localStorage.getItem(SK)) {
+      const parsed = JSON.parse(oldState);
+      // Remove deprecated properties
+      delete parsed.logEntries;
+      delete parsed.checklists;
+      delete parsed.recTasks;
+      delete parsed.adhocTasks;
+      localStorage.setItem(SK, JSON.stringify(parsed));
+      console.log('Data migrated to v2');
+    }
+  } catch(e) {
+    console.error('Migration failed:', e);
   }
 }
-function resetScanTimer(){S.scanTimer.elapsed=0;updateTimer();save()}
-function updateTimer(){
-  const rem=TOTAL-S.scanTimer.elapsed;
-  scan-timer.textContent=`${Math.floor(rem/60).toString().padStart(2,'0')}:${(rem%60).toString().padStart(2,'0')}`;
-  scan-fill.style.width=(rem/TOTAL*100)+'%';
+
+// ─── DEFAULT SITES ────────────────────────────────────────────────────────────
+function defaultSites() {
+  return [
+    // NERC BESS ---------------------------------------------------------------
+    {id:101,name:'CNDR1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Tehachapi, CA',
+     notes:'NP: 818MWh / 200MW\nV SET: 115kV\nBAND: 109.25kV–120.75kV\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
+    {id:102,name:'PRGN1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Mojave, CA',
+     notes:'NP: 430MWh / 200MW\nV SET: 231.3kV\nBAND: 228kV–234kV\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
+    {id:103,name:'HARQ2',nerc:true,interval:30,threshold:5,lastScan:null,location:'Harper Lake, CA',
+     notes:'NP: 1299MWh / 300MW\nV SET: 525kV\nBAND: 498.75kV–551.25kV\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
+    {id:104,name:'KUNA1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Kuna, ID',
+     notes:'NP: 600MWh / 150MW\nV SET: 142kV\nBAND: 138kV–144.9kV\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
+    {id:105,name:'BLKW1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Bakersfield, CA',
+     notes:'NP: 12MW\nV SET: 11.7kV\nNO BAND\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
+    {id:106,name:'GLTA1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Goleta, CA',
+     notes:'NP: 160MWh / 60MW\nV SET: 66.00kV\nBAND: 63.17kV–69.83kV\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
+    {id:107,name:'COSO1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Coso Junction, CA',
+     notes:'NP: 240MWh / 60MW\nV SET: 235kV\nBAND: 230.3kV–239.7kV\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
+    // Solar -------------------------------------------------------------------
+    {id:201,name:'HARQ1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Harper Lake, CA',
+     notes:'PV 200MW\nInverters inverting?\nRates about the same?'},
+    {id:202,name:'ANGF1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Angel Fire, NM',
+     notes:'PV 7.7MW  BESS 3.5MW / 7MWh\nInverters inverting?\nRates about the same?'},
+    {id:203,name:'AVLN1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Taos, NM',
+     notes:'PV 19.7MW  BESS 12MW / 24MWh\nInverters inverting?\nRates about the same?'},
+    {id:204,name:'NCLS1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Nicolis, CA',
+     notes:'PV 26MW\nInverters inverting?\nRates about the same?'},
+    {id:205,name:'TSMS1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Rosamond, CA',
+     notes:'PV 18.2MW\nInverters inverting?\nRates about the same?'},
+    {id:206,name:'TLRE1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Tulare, CA',
+     notes:'PV 3.6MW\nInverters inverting?\nRates about the same?'},
+    {id:207,name:'PRTV1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Porterville, CA',
+     notes:'PV 3.6MW\nInverters inverting?\nRates about the same?'},
+    {id:208,name:'LSTH1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Lost Hills, CA',
+     notes:'PV 26MW\nInverters inverting?\nRates about the same?'},
+    {id:209,name:'HNFD1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Hanford, CA',
+     notes:'PV 3.6MW\nInverters inverting?\nRates about the same?'},
+    {id:210,name:'FRMV1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Farmersville, CA',
+     notes:'PV 5.4MW\nInverters inverting?\nRates about the same?'},
+    {id:211,name:'AVLN2',nerc:false,interval:30,threshold:5,lastScan:null,location:'Avalon, CA',
+     notes:'PV 25MW\nInverters inverting?\nRates about the same?'},
+    {id:212,name:'BLKW2',nerc:false,interval:30,threshold:5,lastScan:null,location:'Blackwell, OK',
+     notes:'PV 16.2MW\nInverters inverting?\nRates about the same?'},
+    {id:213,name:'LSTH2',nerc:false,interval:30,threshold:5,lastScan:null,location:'Lost Hills, CA',
+     notes:'PV 27.6MW\nNP: 20MW  V SET: 71kV  BAND: 70.29–71.71kV\nInverters inverting?\nRates about the same?'},
+    {id:214,name:'NSTR1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Kern County, CA',
+     notes:'PV 60MW\nNP: 60MW  V SET: 119kV  BAND: 117.81–120.19kV\nInverters inverting?\nRates about the same?'},
+    // Wind --------------------------------------------------------------------
+    {id:301,name:'DFRN1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Dufferin, Ontario',
+     notes:'Wind 91MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
+    {id:302,name:'MCLM1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Manitoulin Island, Ontario',
+     notes:'Wind 60MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
+    {id:303,name:'GDWL1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Goodwell, OK',
+     notes:'Wind 200MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
+    {id:304,name:'LNDL1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Lincoln County, MN',
+     notes:'Wind 150MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
+    {id:305,name:'ORGN1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Kern County, CA',
+     notes:'Wind 150MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
+    {id:306,name:'RKRD1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Kern County, CA',
+     notes:'Wind 149MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
+    {id:307,name:'PRRS1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Elk County, KS',
+     notes:'Wind 200MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
+    {id:308,name:'DIBL1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Diablo Range, CA',
+     notes:'Wind 16.68MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
+    // ROC ---------------------------------------------------------------------
+    {id:401,name:'ROCC1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Remote Ops Center',
+     notes:'CAISO ADS\nIndji Watch\nStay Safe systems'},
+  ];
 }
 
-/* Logs */
-function addLog(msg){S.logs.unshift({ts:Date.now(),msg});renderLog()}
-function renderLog(){log.innerHTML=S.logs.map(l=>`<div>${new Date(l.ts).toLocaleString()} — ${l.msg}</div>`).join('')}
+// ─── STATE ────────────────────────────────────────────────────────────────────
+// Sites live in their own key so user edits persist independently of app state
+function loadSites() {
+  try {
+    const raw = localStorage.getItem(SITES_KEY);
+    if (raw) { const p = JSON.parse(raw); if (Array.isArray(p) && p.length) return p; }
+  } catch(e) {}
+  return defaultSites();
+}
+function saveSites(sites) {
+  try { localStorage.setItem(SITES_KEY, JSON.stringify(sites)); } catch(e) {}
+  try { window.storage && window.storage.set(SITES_KEY, JSON.stringify(sites)); } catch(e) {}
+}
+async function loadSitesAsync() {
+  try {
+    const raw = localStorage.getItem(SITES_KEY);
+    if (raw) { const p = JSON.parse(raw); if (Array.isArray(p) && p.length) return p; }
+  } catch(e) {}
+  try {
+    const r = await window.storage.get(SITES_KEY);
+    if (r && r.value) { const p = JSON.parse(r.value); if (Array.isArray(p) && p.length) return p; }
+  } catch(e) {}
+  return defaultSites();
+}
 
-load();renderNotes();updateTimer();
+let S = {
+  recTasks:[], adhocTasks:[], checklists:{}, activeList:null,
+  notes:[], activeNote:null, logEntries:[],
+  customTemplates:[],
+  siteFilter:'all',
+  timerRunning:false, timerElapsed:0, timerCycles:0,
+  shiftStart:Date.now(),
+  crew:[], equipment:[], escContacts:{t1:'',t2:'',t3:''}
+};
+let SITES = []; // loaded separately
+
+function save() {
+  try { 
+    localStorage.setItem(SK, JSON.stringify(S)); 
+  } catch(e) { 
+    console.error('localStorage save failed:', e);
+    showToast('Warning: Data may not be saved locally');
+  }
+  try { 
+    window.storage && window.storage.set(SK, JSON.stringify(S)); 
+  } catch(e) { 
+    console.error('Cloud storage save failed:', e);
+  }
+}
+
+async function load() {
+  // Run data migration first
+  migrateData();
+  
+  // Load user state
+  let raw = null;
+  try { raw = localStorage.getItem(SK); } catch(e) {}
+  if (!raw) { try { const r = await window.storage.get(SK); if(r) raw=r.value; } catch(e) {} }
+  if (raw) {
+    try {
+      const p = JSON.parse(raw);
+      S = Object.assign(S, p);
+      if(!S.notes) S.notes=[];
+      if(!S.crew) S.crew=[];
+      if(!S.equipment) S.equipment=[];
+      if(!S.escContacts) S.escContacts={t1:'',t2:'',t3:''};
+      if(!S.timerCycles) S.timerCycles=0;
+      if(!S.shiftStart) S.shiftStart=Date.now();
+    } catch(e) {}
+  }
+
+  // Load sites (separate key — always has defaults if blank)
+  SITES = await loadSitesAsync();
+
+  renderAll();
+  if (S.timerRunning) startTimerInterval();
+  setInterval(refreshScanStatuses, 30000);
+  refreshScanStatuses();
+  initSafety();
+  initNERC();
+  renderCrew();
+  renderEquip();
+  restoreAdhocTimers();
+  asInit();
+  // Restore escalation contacts
+  const rows = document.querySelectorAll('#esc-tbody tr');
+  const tkeys = ['t1','t2','t3'];
+  rows.forEach((row,i) => { const inp=row.querySelector('input'); if(inp) inp.value=S.escContacts[tkeys[i]]||''; });
+}
+
+// ─── CLOCK ────────────────────────────────────────────────────────────────────
+setInterval(()=>{ document.getElementById('nav-clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}); },1000);
+
+// ─── NAV ──────────────────────────────────────────────────────────────────────
+function switchView(v, el) {
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  if(el) el.classList.add('active');
+  if(v==='scans') { refreshScanStatuses(); renderSites(); }
+  if(v==='asset') { initAssetScan(); }
+}
+
+// ─── 30-MIN TIMER ─────────────────────────────────────────────────────────────
+let timerInt=null;
+const TOTAL=1800;
+function toggleTimer(){ S.timerRunning ? stopTimer() : (S.timerRunning=true, save(), startTimerInterval()); }
+function startTimerInterval(){
+  const btn=document.getElementById('timer-btn');
+  btn.textContent='Stop'; btn.classList.add('active-btn');
+  timerInt=setInterval(()=>{
+    S.timerElapsed++;
+    if(S.timerElapsed>=TOTAL){
+      S.timerElapsed=0; S.timerCycles++;
+      fireAlert('Cycle #'+S.timerCycles+' — time to scan!');
+    }
+    save(); updateTimerUI();
+  },1000);
+}
+function stopTimer(){
+  S.timerRunning=false; clearInterval(timerInt); timerInt=null;
+  const btn=document.getElementById('timer-btn'); btn.textContent='Start'; btn.classList.remove('active-btn'); save();
+}
+function resetTimer(){ stopTimer(); S.timerElapsed=0; save(); updateTimerUI(); }
+function updateTimerUI(){
+  const rem=TOTAL-S.timerElapsed, urgent=rem<=120;
+  document.getElementById('timer-disp').textContent=String(Math.floor(rem/60)).padStart(2,'0')+':'+String(rem%60).padStart(2,'0');
+  document.getElementById('timer-disp').classList.toggle('urgent',urgent);
+  document.getElementById('timer-fill').style.width=((rem/TOTAL)*100).toFixed(1)+'%';
+  document.getElementById('timer-fill').classList.toggle('urgent',urgent);
+  document.getElementById('cycles-badge').textContent=S.timerCycles+' cycle'+(S.timerCycles!==1?'s':'');
+}
+
+// ─── SITES / SCANS ────────────────────────────────────────────────────────────
+function siteStatus(s){
+  if(!s.lastScan) return 'never';
+  const e=(Date.now()-s.lastScan)/60000, i=s.interval||30, th=s.threshold||5;
+  if(e>i) return 'overdue';
+  if(e>i-th) return 'due';
+  return 'ok';
+}
+const STATUS_LABEL={ok:'OK',due:'Due soon',overdue:'OVERDUE',never:'Never scanned'};
+const STATUS_BADGE={ok:'b-ok',due:'b-due',overdue:'b-overdue',never:'b-never'};
+function setSiteFilter(f,el){ S.siteFilter=f; document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); renderSites(); }
+function refreshScanStatuses(){ renderSites(); renderScanStats(); }
+function renderScanStats(){
+  const ok=SITES.filter(s=>siteStatus(s)==='ok').length, due=SITES.filter(s=>siteStatus(s)==='due').length,
+        ov=SITES.filter(s=>siteStatus(s)==='overdue').length, nv=SITES.filter(s=>siteStatus(s)==='never').length;
+  document.getElementById('scan-stats').innerHTML=`
+    <div class="stat-chip"><span class="s-val">${SITES.length}</span><span class="s-lbl">Sites</span></div>
+    <div class="stat-chip"><span class="s-val" style="color:var(--green)">${ok}</span><span class="s-lbl">OK</span></div>
+    <div class="stat-chip"><span class="s-val" style="color:var(--amber)">${due}</span><span class="s-lbl">Due soon</span></div>
+    <div class="stat-chip"><span class="s-val" style="color:var(--red)">${ov}</span><span class="s-lbl">Overdue</span></div>
+    <div class="stat-chip"><span class="s-val" style="color:var(--text3)">${nv}</span><span class="s-lbl">Never</span></div>`;
+  const next=SITES.filter(s=>s.lastScan&&siteStatus(s)==='ok').sort((a,b)=>((a.interval||30)-((Date.now()-a.lastScan)/60000))-((b.interval||30)-((Date.now()-b.lastScan)/60000)))[0];
+  document.getElementById('scan-next-due').textContent=next?'Next: '+esc(next.name)+' ~'+Math.ceil(Math.max(0,(next.interval||30)-((Date.now()-next.lastScan)/60000)))+'min':'';
+}
+function siteCard(site){
+  const st=siteStatus(site), last=site.lastScan?timeSince(site.lastScan):'—';
+  const tip=site.notes?`<div class="site-tip"><span class="site-tip-title">${esc(site.name)}</span>${esc(site.notes)}</div>`:'';
+  return `<div class="site-card ${st}">
+    ${tip}
+    <div class="site-hdr">
+      <span class="site-name">${esc(site.name)}</span>
+      ${site.nerc?'<span class="badge b-nerc">NERC</span>':''}
+      <span class="badge ${STATUS_BADGE[st]}">${STATUS_LABEL[st]}</span>
+    </div>
+    <div class="site-meta">Last: ${last} · ${site.interval||30}min</div>
+    <div class="site-acts">
+      <button class="scan-btn" onclick="openScanNote(${site.id})">Log scan</button>
+      <button class="tbtn" style="font-size:11px;padding:3px 9px;" onclick="editSite(${site.id})">Edit</button>
+      <button class="tbtn" style="font-size:11px;padding:3px 9px;color:var(--red);border-color:var(--red);" onclick="deleteSite(${site.id})">Del</button>
+    </div>
+  </div>`;
+}
+function renderSites(){
+  renderScanStats();
+  const f=S.siteFilter||'all';
+  const order={overdue:0,due:1,never:2,ok:3};
+  let sites=[...SITES];
+  if(f==='nerc') sites=sites.filter(s=>s.nerc);
+  else if(f!=='all') sites=sites.filter(s=>siteStatus(s)===f);
+  sites.sort((a,b)=>(order[siteStatus(a)]||0)-(order[siteStatus(b)]||0));
+  const el=document.getElementById('sites-grid');
+  if(!sites.length){ el.innerHTML='<div class="empty" style="grid-column:1/-1;">No sites'+(f!=='all'?' matching filter':' added yet')+'</div>'; return; }
+  if(f==='all'){
+    const nerc=sites.filter(s=>s.nerc), non=sites.filter(s=>!s.nerc);
+    el.innerHTML=
+      (nerc.length?`<div class="nerc-sep"><div class="nerc-sep-line"></div><span class="nerc-sep-lbl">NERC Sites</span><div class="nerc-sep-line"></div></div>${nerc.map(siteCard).join('')}`:'') +
+      (non.length?`<div class="nerc-sep"><div class="nerc-sep-line"></div><span class="nerc-sep-lbl">Non-NERC Sites</span><div class="nerc-sep-line"></div></div>${non.map(siteCard).join('')}`:'');
+  } else {
+    el.innerHTML=sites.map(siteCard).join('');
+  }
+}
+function timeSince(ts){ const m=Math.floor((Date.now()-ts)/60000); return m<1?'just now':m<60?m+'min ago':Math.floor(m/60)+'h '+m%60+'m ago'; }
+function openScanNote(id){ const s=SITES.find(x=>x.id===id); if(!s)return; document.getElementById('scan-note-title').textContent='Log scan — '+s.name; document.getElementById('scan-note-site-id').value=id; document.getElementById('scan-note-body').value=''; openModal('modal-scan-note'); }
+function confirmScan(){
+  const id=parseInt(document.getElementById('scan-note-site-id').value), s=SITES.find(x=>x.id===id); if(!s)return;
+  s.lastScan=Date.now();
+  closeModal('modal-scan-note'); saveSites(SITES); renderSites(); showToast('Scan logged');
+}
+function scanAll(){
+  const nerc=SITES.filter(s=>s.nerc); if(!nerc.length){showToast('No NERC sites');return;}
+  nerc.forEach(s=>s.lastScan=Date.now());
+  saveSites(SITES); renderSites(); showToast('All NERC sites scanned');
+}
+function saveSite(){
+  const name=document.getElementById('site-name').value.trim(); if(!name)return;
+  const editId=document.getElementById('site-edit-id').value;
+  const d={name,nerc:document.getElementById('site-nerc').value==='1',interval:parseInt(document.getElementById('site-interval').value)||30,threshold:parseInt(document.getElementById('site-threshold').value)||5,location:document.getElementById('site-location').value.trim(),notes:document.getElementById('site-notes').value.trim()};
+  if(editId){ const s=SITES.find(x=>x.id===parseInt(editId)); if(s)Object.assign(s,d); }
+  else SITES.push({id:Date.now(),lastScan:null,...d});
+  closeModal('modal-add-site'); saveSites(SITES); renderSites(); showToast('Site saved');
+}
+function editSite(id){
+  const s=SITES.find(x=>x.id===id); if(!s)return;
+  document.getElementById('site-modal-title').textContent='Edit site';
+  document.getElementById('site-edit-id').value=id;
+  document.getElementById('site-name').value=s.name;
+  document.getElementById('site-nerc').value=s.nerc?'1':'0';
+  document.getElementById('site-interval').value=s.interval||30;
+  document.getElementById('site-threshold').value=s.threshold||5;
+  document.getElementById('site-location').value=s.location||'';
+  document.getElementById('site-notes').value=s.notes||'';
+  openModal('modal-add-site');
+}
+function deleteSite(id){ if(!confirm('Delete this site?'))return; SITES=SITES.filter(x=>x.id!==id); saveSites(SITES); renderSites(); }
+
+// ─── TEMPLATES ────────────────────────────────────────────────────────────────
+const TEMPLATES_BUILTIN=[
+  {id:'trip',  icon:'🏭', name:'Site Trip',   desc:'Site visit log',    modal:'modal-incident'},
+  {id:'obs',   icon:'📋', name:'Observation', desc:'Quick freeform note',body:'Time: {t}\nLocation: \nObservation: \nAction taken: '},
+];
+function allTemplates(){ return [...TEMPLATES_BUILTIN,...(S.customTemplates||[])]; }
+function renderTemplates(){
+  const grid=document.getElementById('tpl-grid');
+  grid.innerHTML=
+    allTemplates().map(t=>`<button class="tpl-btn" onclick="useTemplate('${esc(t.id)}')"><span class="tpl-icon">${t.icon}</span><span class="tpl-name">${esc(t.name)}</span><span class="tpl-desc">${esc(t.desc)}</span></button>`).join('')+
+    `<button class="tpl-btn" onclick="openAddTplModal()" style="border-style:dashed;color:var(--text3);"><span class="tpl-icon">＋</span><span class="tpl-name">Add type</span><span class="tpl-desc">Custom note template</span></button>`;
+  // Sync tag select options to current template list
+  const sel=document.getElementById('note-tag'), cur=sel.value;
+  sel.innerHTML=allTemplates().map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
+  if([...sel.options].some(o=>o.value===cur)) sel.value=cur;
+}
+function useTemplate(id){
+  const tpl=allTemplates().find(t=>t.id===id); if(!tpl)return;
+  if(tpl.modal){openModal(tpl.modal);return;}
+  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  newNote(tpl.name+' — '+now,(tpl.body||'').replace('{t}',now),id);
+}
+function openAddTplModal(){ renderCustomTplList(); openModal('modal-add-tpl'); }
+function renderCustomTplList(){
+  const el=document.getElementById('ctpl-list'); if(!el)return;
+  const c=S.customTemplates||[];
+  el.innerHTML=!c.length?'<div class="empty">No custom types yet</div>':
+    c.map(t=>`<div class="task-item"><span style="font-size:14px;flex-shrink:0;">${t.icon}</span><span class="task-label">${esc(t.name)}</span><button class="task-del" onclick="delCustomTpl('${t.id}')">✕</button></div>`).join('');
+}
+function saveCustomTpl(){
+  const name=document.getElementById('ctpl-name').value.trim(); if(!name){showToast('Name required');return;}
+  const icon=document.getElementById('ctpl-icon').value.trim()||'📝';
+  const body=document.getElementById('ctpl-body').value;
+  if(!S.customTemplates)S.customTemplates=[];
+  S.customTemplates.push({id:'ctpl_'+Date.now(),icon,name,desc:body.split('\n')[0].substring(0,40)||'Custom note',body});
+  ['ctpl-name','ctpl-icon','ctpl-body'].forEach(id=>document.getElementById(id).value='');
+  save(); renderTemplates(); renderCustomTplList(); showToast('Template added');
+}
+function delCustomTpl(id){
+  S.customTemplates=(S.customTemplates||[]).filter(t=>t.id!==id);
+  save(); renderTemplates(); renderCustomTplList(); showToast('Removed');
+}
+
+// ─── NOTES ────────────────────────────────────────────────────────────────────
+function newBlankNote(){ newNote('New note','','obs'); }
+function newNote(title,body,tag){
+  const n={id:Date.now(),title:title||'New note',body:body||'',tag:tag||'obs',ts:Date.now()};
+  S.notes.unshift(n); S.activeNote=n.id; save(); renderNotes(); loadNoteForm(n);
+}
+function selectNote(id){ S.activeNote=id; renderNotes(); loadNoteForm(S.notes.find(n=>n.id===id)); }
+function loadNoteForm(n){
+  if(!n)return;
+  document.getElementById('note-no-sel').style.display='none';
+  document.getElementById('note-form').style.display='flex';
+  document.getElementById('note-title').value=n.title;
+  document.getElementById('note-body').value=n.body;
+  document.getElementById('note-tag').value=n.tag;
+  document.getElementById('note-meta').textContent='Saved '+new Date(n.ts).toLocaleString();
+}
+function saveNote(){
+  const n=S.notes.find(x=>x.id===S.activeNote); if(!n)return;
+  
+  const title = document.getElementById('note-title').value?.trim() || 'Untitled';
+  const body = document.getElementById('note-body').value?.trim() || '';
+  const tag = document.getElementById('note-tag').value?.trim() || 'obs';
+  
+  // Validate inputs
+  if (title.length > 200) {
+    showToast('Title too long (max 200 chars)');
+    return;
+  }
+  if (body.length > 50000) {
+    showToast('Note too long (max 50,000 chars)');
+    return;
+  }
+  
+  n.title = title;
+  n.body = body;
+  n.tag = tag;
+  n.ts = Date.now();
+  document.getElementById('note-meta').textContent='Saved '+new Date(n.ts).toLocaleString();
+  save(); renderNotes(); showToast('Saved');
+}
+function deleteNote(){
+  if(!S.activeNote)return;
+  S.notes=S.notes.filter(x=>x.id!==S.activeNote);
+  S.activeNote=S.notes[0]?.id||null; save(); renderNotes();
+  if(S.activeNote) loadNoteForm(S.notes.find(n=>n.id===S.activeNote));
+  else { document.getElementById('note-form').style.display='none'; document.getElementById('note-no-sel').style.display='block'; }
+}
+function tagLabel(tag){ return allTemplates().find(t=>t.id===tag)?.name||tag; }
+function tagCls(tag){ return {obs:'tag-obs',trip:'tag-incident',incident:'tag-incident',response:'tag-response',task:'tag-task'}[tag]||'tag-obs'; }
+function renderNotes(){
+  const el=document.getElementById('notes-list');
+  el.innerHTML=!S.notes.length?'<div class="empty">No notes yet</div>':
+    S.notes.map(n=>`<div class="note-entry${S.activeNote===n.id?' active':''}" onclick="selectNote(${n.id})">
+      <div class="note-entry-time">${new Date(n.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
+      <div class="note-entry-title">${esc(n.title)}</div>
+      <div style="margin-top:2px;"><span class="tag ${tagCls(n.tag)}">${tagLabel(n.tag)}</span></div>
+    </div>`).join('');
+}
+
+// ─── INCIDENT / RESPONSE ──────────────────────────────────────────────────────
+function saveIncident(){
+  const loc=document.getElementById('inc-location').value,
+        purpose=document.getElementById('inc-purpose').value,
+        personnel=document.getElementById('inc-personnel').value,
+        findings=document.getElementById('inc-desc').value,
+        act=document.getElementById('inc-action').value,
+        fu=document.getElementById('inc-followup').value;
+  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const title='Site Trip — '+(loc||'unknown')+' @ '+now;
+  newNote(title,'Time: '+now+'\nSite: '+loc+'\nPurpose: '+purpose+'\nPersonnel: '+personnel+'\nFindings: '+findings+'\nActions taken: '+act+'\nFollow-up: '+fu,'trip');
+  closeModal('modal-incident');
+  ['inc-location','inc-purpose','inc-personnel','inc-desc','inc-action'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('inc-followup').value='no';
+  showToast('Site trip logged');
+  switchView('notes',document.querySelectorAll('.nav-tab')[0]);
+}
+function saveResponse(){
+  const sit=document.getElementById('res-situation').value, notif=document.getElementById('res-notified').value,
+        proc=document.getElementById('res-procedure').value, out=document.getElementById('res-outcome').value,
+        esc2=document.getElementById('res-escalation').value;
+  const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const title='Response — '+(sit||'situation')+' @ '+now;
+  newNote(title,'Time: '+now+'\nSituation: '+sit+'\nNotified: '+notif+'\nProcedure: '+proc+'\nOutcome: '+out+'\nEscalation: '+esc2,'response');
+  closeModal('modal-response');
+  ['res-situation','res-notified','res-procedure','res-outcome'].forEach(id=>document.getElementById(id).value='');
+  showToast('Response logged');
+  switchView('notes',document.querySelectorAll('.nav-tab')[0]);
+}
+
+// ─── HANDOFF ──────────────────────────────────────────────────────────────────
+function buildHandoff(){
+  const now=new Date(), sStr=new Date(S.shiftStart).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}), eStr=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const scans=SITES.filter(s=>s.lastScan&&s.lastScan>=S.shiftStart);
+  const L=[`Shift handoff: ${sStr} - ${eStr}`];
+  L.push('\nSUMMARY');
+  L.push('  Sites scanned this shift: '+scans.length);
+  L.push('\nACTIVITY\n  Scans: '+scans.length);
+  L.push('\n\nNOTES');
+  const notes=S.notes.filter(n=>n.ts>=S.shiftStart);
+  if(notes.length){notes.forEach(n=>{const t=new Date(n.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});L.push('['+t+'] '+n.title);});}else{L.push('  (none)');}
+  L.push('\n\nEQUIPMENT STATUS');
+  const eq=S.equipment.filter(e=>e.ts>=S.shiftStart);
+  if(eq.length){eq.forEach(e=>{L.push('  '+e.name+' - '+e.status);});}else{L.push('  (no changes)');}
+  L.push('\n\nSAFETY CHECKLIST');
+  const safetyDone=SAFETY.filter(i=>safetyS[i]).length;
+  L.push('  Completed: '+safetyDone+'/'+SAFETY.length);
+  L.push('\n\nNERC COMPLIANCE');
+  const nercDone=NERC_ITEMS.filter(i=>nercS[i]).length;
+  L.push('  Completed: '+nercDone+'/'+NERC_ITEMS.length);
+  L.push('\n\nSHIFT TIMING');
+  L.push('  Start: '+sStr);
+  L.push('  End: '+eStr);
+  L.push('  Duration: '+Math.floor((now-S.shiftStart)/60000)+' minutes');
+  L.push('\n\nESCALATION CONTACTS');
+  L.push('  Tier 1: '+S.escContacts.t1);
+  L.push('  Tier 2: '+S.escContacts.t2);
+  L.push('  Tier 3: '+S.escContacts.t3);
+  L.push('\n\nNEXT SHIFT');
+  L.push('  Priority items: _______________');
+  L.push('  Follow-ups needed: _______________');
+  L.push('\n\nGenerated '+now.toLocaleString());
+  return L.join('\n');
+}
+function openHandoffAsNote(){ const now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); newNote('Shift handoff — '+now,buildHandoff(),'obs'); switchView('notes',document.querySelectorAll('.nav-tab')[0]); }
+function openHandoff(){ document.getElementById('handoff-content').textContent=buildHandoff(); openModal('modal-handoff'); }
+function copyHandoff(){ try{navigator.clipboard.writeText(document.getElementById('handoff-content').textContent);showToast('Copied!');}catch(e){showToast('Select and copy manually');} }
+
+// ─── MODAL ────────────────────────────────────────────────────────────────────
+function openModal(id){ document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
+
+// ─── WEATHER ──────────────────────────────────────────────────────────────────
+function wxFilter(){
+  const q=document.getElementById('wx-site-inp').value.toLowerCase().trim();
+  const box=document.getElementById('wx-matches');
+  if(!q){ box.style.display='none'; return; }
+  const hits=SITES.filter(s=>s.name.toLowerCase().includes(q)||(s.location||'').toLowerCase().includes(q)).slice(0,6);
+  if(!hits.length){ box.style.display='none'; return; }
+  box.style.display='block';
+  box.innerHTML=hits.map(s=>`<div class="wx-match-item" onclick="wxPick(${s.id})">
+    <strong>${esc(s.name)}</strong>${s.location?' — <span style="color:var(--text3);font-size:11px;">'+esc(s.location)+'</span>':''}
+  </div>`).join('');
+}
+function wxPick(id){ const s=SITES.find(x=>x.id===id); if(!s)return; document.getElementById('wx-site-inp').value=s.name; document.getElementById('wx-location').value=s.location||s.name; document.getElementById('wx-matches').style.display='none'; }
+async function fetchWeather(){
+  const loc=document.getElementById('wx-location').value.trim(); if(!loc){showToast('Enter a location first');return;}
+  document.getElementById('wx-desc').textContent='Fetching...';
+  try{
+    const d=(await(await fetch(`https://wttr.in/${encodeURIComponent(loc)}?format=j1`)).json()).current_condition[0];
+    document.getElementById('wx-temp').textContent=d.temp_F+'°F';
+    document.getElementById('wx-desc').textContent=d.weatherDesc[0].value+' · Humidity '+d.humidity+'%';
+    document.getElementById('wx-wind').textContent='Wind: '+d.windspeedMiles+'mph '+d.winddir16Point;
+    document.getElementById('wx-vis').textContent='Vis: '+d.visibility+'mi';
+    const desc=d.weatherDesc[0].value.toLowerCase();
+    document.getElementById('wx-icon').textContent=desc.includes('thunder')?'⛈':desc.includes('rain')||desc.includes('drizzle')?'🌧':desc.includes('snow')?'❄️':desc.includes('overcast')?'🌥':desc.includes('cloud')?'☁️':desc.includes('fog')||desc.includes('mist')?'🌫':desc.includes('sunny')||desc.includes('clear')?'☀️':'🌤';
+  }catch(e){ document.getElementById('wx-desc').textContent='Could not fetch — check location'; }
+}
+function logWeather(){
+  const temp=document.getElementById('wx-temp').textContent, desc=document.getElementById('wx-desc').textContent,
+        wind=document.getElementById('wx-wind').textContent, loc=document.getElementById('wx-location').value.trim()||'site',
+        now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  newNote('Weather — '+loc+' @ '+now,'Location: '+loc+'\nTime: '+now+'\nTemp: '+temp+'\n'+desc+'\n'+wind,'obs');
+  switchView('notes',document.querySelectorAll('.nav-tab')[0]); showToast('Weather logged');
+}
+
+// ─── CREW ─────────────────────────────────────────────────────────────────────
+function addCrew(){ const n=document.getElementById('crew-inp').value.trim(); if(!n)return; S.crew.push({id:Date.now(),name:n,status:'In field'}); document.getElementById('crew-inp').value=''; save(); renderCrew(); }
+function cycleCrew(id){ const STATS=['In field','On break','Off site','Stand-by']; const m=S.crew.find(x=>x.id===id); if(!m)return; m.status=STATS[(STATS.indexOf(m.status)+1)%STATS.length]; save(); renderCrew(); }
+function removeCrew(id){ S.crew=S.crew.filter(x=>x.id!==id); save(); renderCrew(); }
+function renderCrew(){
+  const colors={'In field':'var(--green)','On break':'var(--amber)','Off site':'var(--text3)','Stand-by':'var(--blue)'};
+  document.getElementById('crew-list').innerHTML=!S.crew.length?'<div class="empty">No crew added</div>':
+    S.crew.map(m=>`<div class="task-item"><span class="task-label">${esc(m.name)}</span>
+      <span style="font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;background:var(--bg4);color:${colors[m.status]||'var(--text2)'};cursor:pointer;" onclick="cycleCrew(${m.id})">${m.status}</span>
+      <button class="task-del" onclick="removeCrew(${m.id})">✕</button>
+    </div>`).join('');
+}
+
+// ─── EQUIPMENT ────────────────────────────────────────────────────────────────
+function addEquip(){ const n=document.getElementById('equip-inp').value.trim(); if(!n)return; const st=document.getElementById('equip-status').value; S.equipment.push({id:Date.now(),name:n,status:st,ts:Date.now()}); document.getElementById('equip-inp').value=''; save(); renderEquip(); }
+function removeEquip(id){ S.equipment=S.equipment.filter(x=>x.id!==id); save(); renderEquip(); }
+function renderEquip(){
+  const icons={ok:'✅',caution:'⚠️',down:'🔴'};
+  document.getElementById('equip-list').innerHTML=!S.equipment.length?'<div class="empty">No equipment logged</div>':
+    S.equipment.map(e=>`<div class="task-item"><span style="font-size:14px;">${icons[e.status]||'?'}</span><span class="task-label">${esc(e.name)}</span><span style="font-size:10px;color:var(--text3);font-family:var(--m);">${timeSince(e.ts)}</span><button class="task-del" onclick="removeEquip(${e.id})">✕</button></div>`).join('');
+}
+
+// ─── SAFETY CHECK ─────────────────────────────────────────────────────────────
+const SAFETY=['Hard hat worn','High-vis vest on','Safety glasses','Steel-toe boots','Gloves available','First aid kit accessible','Buddy check complete','Radio/comms operational','Weather conditions acceptable','Site hazards reviewed'];
+let safetyS={};
+function initSafety(){ SAFETY.forEach(i=>{if(safetyS[i]===undefined)safetyS[i]=false;}); renderSafety(); }
+function toggleSafety(i){ safetyS[i]=!safetyS[i]; renderSafety(); }
+function renderSafety(){ document.getElementById('safety-list').innerHTML=SAFETY.map(i=>`<div class="task-item${safetyS[i]?' done':''}"><input type="checkbox" class="task-cb" ${safetyS[i]?'checked':''} onchange="toggleSafety('${i.replace(/'/g,"\\'")}')" ><span class="task-label">${i}</span></div>`).join(''); }
+function completeSafety(){
+  const done=SAFETY.filter(i=>safetyS[i]).length, now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  newNote('Safety check @ '+now,'Items: '+done+'/'+SAFETY.length+'\n'+SAFETY.map(i=>(safetyS[i]?'':'')+' '+i).join('\n'),'obs');
+  switchView('notes',document.querySelectorAll('.nav-tab')[0]); showToast('Safety check logged');
+}
+function resetSafety(){ SAFETY.forEach(i=>safetyS[i]=false); renderSafety(); }
+
+// ─── NERC CHECK ───────────────────────────────────────────────────────────────
+const NERC_ITEMS=['Physical access log reviewed','Electronic access controls verified','Security perimeter inspected','Unauthorized access attempts checked','Backup communications tested','SCADA/EMS communication verified','Protection relay status confirmed','Transmission constraint monitoring active','Outage coordination reviewed','Operator log current and complete'];
+let nercS={};
+function initNERC(){ NERC_ITEMS.forEach(i=>{if(nercS[i]===undefined)nercS[i]=false;}); renderNERC(); }
+function toggleNERC(i){ nercS[i]=!nercS[i]; renderNERC(); }
+function renderNERC(){ document.getElementById('nerc-list').innerHTML=NERC_ITEMS.map(i=>`<div class="task-item${nercS[i]?' done':''}"><input type="checkbox" class="task-cb" ${nercS[i]?'checked':''} onchange="toggleNERC('${i.replace(/'/g,"\\'")}')" ><span class="task-label" style="font-size:12px;">${i}</span></div>`).join(''); }
+function completeNERC(){
+  const done=NERC_ITEMS.filter(i=>nercS[i]).length, now=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  newNote('NERC compliance @ '+now,'Items: '+done+'/'+NERC_ITEMS.length+'\n'+NERC_ITEMS.map(i=>(nercS[i]?'':'')+' '+i).join('\n'),'obs');
+  switchView('notes',document.querySelectorAll('.nav-tab')[0]); showToast('NERC check submitted');
+}
+function resetNERC(){ NERC_ITEMS.forEach(i=>nercS[i]=false); renderNERC(); }
+
+// ─── ESCALATION CONTACTS ──────────────────────────────────────────────────────
+function saveEscContacts(){
+  const rows=document.querySelectorAll('#esc-tbody tr'), keys=['t1','t2','t3'];
+  rows.forEach((row,i)=>{ const inp=row.querySelector('input'); if(inp)S.escContacts[keys[i]]=inp.value; });
+  save(); showToast('Contacts saved');
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function fireAlert(msg){ showToast(msg); try{const ctx=new AudioContext();[880,660].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;g.gain.setValueAtTime(.25,ctx.currentTime+i*.15);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.15+.4);o.start(ctx.currentTime+i*.15);o.stop(ctx.currentTime+i*.15+.4);});}catch(e){} }
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function renderAll(){ renderNotes(); renderTemplates(); updateTimerUI(); renderSites(); }
+
+// Performance utilities
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+function throttle(func, limit) {
+  let inThrottle;
+  return function() {
+    const args = arguments;
+    const context = this;
+    if (!inThrottle) {
+      func.apply(context, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+}
+
+// ─── ASSET SCAN ───────────────────────────────────────────────────────────────
+// Site definitions: each site has sections, each section has fields.
+// Field types: 'select', 'text', 'textarea'
+// alert: value that triggers a red alert pill (case-insensitive match)
+// unit:  appended on blur for numeric text fields
+// kvMin/kvMax: triggers in-band / out-of-band indicator
+
+const AS_SITES = [
+  { id:'ROCC1', label:'ROCC1', stats:'',
+    sections:[{ title:'', fields:[
+      {n:'CAISO ADS',            t:'select', opts:['','Online','Offline'], alert:''},
+      {n:'CAISO ADS Visible',    t:'select', opts:['','Yes','No'],        alert:''},
+      {n:'Abnormal Conditions',  t:'text',   unit:''},
+      {n:'Indji Watch Online',   t:'select', opts:['','Online','Offline'], alert:''},
+      {n:'Indji Watch Visible',  t:'select', opts:['','Yes','No'],        alert:''},
+      {n:'TV Monitor Vol [40?]', t:'select', opts:['','Yes','No'],        alert:''},
+      {n:'Stay Safe Online',     t:'select', opts:['','Online','Offline'], alert:''},
+      {n:'Stay Safe Visible',    t:'select', opts:['','Yes','No'],        alert:''},
+      {n:'Notes',                t:'textarea'},
+    ]}]
+  },
+  { id:'ANGF1', label:'Angel Fire', stats:'PV 7.7MW  BESS 3.5MW / 7MWh',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',   t:'text', unit:'MW'},
+        {n:'MWh',  t:'text', unit:'MWh'},
+        {n:'kV',   t:'text', unit:'kV'},
+        {n:'MVAR', t:'text', unit:'MVAR'},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [7.5+]',  t:'select', opts:['','Yes','No'], alert:''},
+        {n:'MWh [7+]',   t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [3]',   t:'text',   unit:'/3 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [3]',  t:'text',   unit:'/3 Online'},
+        {n:'3+ Inverters',   t:'select', opts:['','Yes','No'], alert:'No'},
+        {n:'BESS [3]',       t:'text',   unit:'/3 Available'},
+        {n:'3+ BESS',        t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage in place', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'AVLN1', label:'Taos Mesa', stats:'PV 19.7MW  BESS 12MW / 24MWh',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',   t:'text', unit:'MW'},
+        {n:'kV',   t:'text', unit:'kV'},
+        {n:'MVAR', t:'text', unit:'MVAR'},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [29+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [29]', t:'text',   unit:'/29 Online'},
+        {n:'22+ Inverters',  t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'BLKW1', label:'Bypass BESS', stats:'NP: 12MW  V SET: 11.7kV  NO BAND',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'1-CONTROL', fields:[
+        {n:'AVR Control Mode',     t:'select', opts:['','Voltage','Reactive Power','Power Factor'], alert:''},
+        {n:'Voltage Limit [ON]',   t:'select', opts:['','Yes','No'], alert:'No'},
+        {n:'PF Setpoint [0.982]',  t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Actual PF',            t:'text',   unit:'PF'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',                t:'text',   unit:'MW'},
+        {n:'Following Setpoint',t:'select', opts:['','Yes','No'], alert:'No'},
+        {n:'kV',                t:'text',   unit:'kV'},
+        {n:'MVAR',              t:'text',   unit:'MVAR'},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [7.5+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [1]',   t:'text',   unit:'/1 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [15]', t:'text',   unit:'/15 Online'},
+        {n:'11+ Inverters',  t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'CNDR1', label:'Condor BESS', stats:'NP: 818MWh/200MW  V SET: 115kV  BAND: 109.25–120.75kV',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'1-CONTROL', fields:[
+        {n:'Real Power Control',  t:'select', opts:['','OP Center','ADS','AGC'], alert:''},
+        {n:'Voltage Regulation',  t:'select', opts:['','Enabled','Disabled'],    alert:'Disabled'},
+        {n:'PFR Control',         t:'select', opts:['','Enabled','Disabled'],    alert:'Disabled'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',                 t:'text',   unit:'MW'},
+        {n:'MWh',                t:'text',   unit:'MWh'},
+        {n:'kV',                 t:'text',   unit:'kV', kvMin:109.25, kvMax:120.75},
+        {n:'MVAR',               t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint', t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [200+]',  t:'select', opts:['','Yes','No'], alert:''},
+        {n:'MWh [818+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [3]',   t:'text',   unit:'/3 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'BESS [220]',         t:'text',   unit:'/220 Available'},
+        {n:'205+ BESS Available',t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage in place', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'COSO1', label:'COSO BESS', stats:'NP: 240MWh/60MW  V SET: 235kV  BAND: 230.3–239.7kV',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'1-CONTROL', fields:[
+        {n:'PF Limiter [ON]',       t:'select', opts:['','On','Off'],      alert:'Off'},
+        {n:'PPC Voltage [Voltage]', t:'select', opts:['','Voltage','Var'], alert:''},
+        {n:'PPC Setpoints [ON]',    t:'select', opts:['','On','Off'],      alert:'Off'},
+        {n:'SRC Mode [Auto]',       t:'select', opts:['','Auto','Manual'], alert:''},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',                 t:'text',   unit:'MW'},
+        {n:'MWh',                t:'text',   unit:'MWh'},
+        {n:'kV',                 t:'text',   unit:'kV', kvMin:230.3, kvMax:239.7},
+        {n:'MVAR',               t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint', t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [60+]',  t:'select', opts:['','Yes','No'], alert:''},
+        {n:'MWh [240+]',t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [3]',   t:'text',   unit:'/3 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'BESS Online',    t:'text', unit:' Online'},
+        {n:'BESS Available', t:'text', unit:''},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'DFRN1', label:'Dufferin', stats:'Wind 91MW',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',   t:'text', unit:'MW'},
+        {n:'kV',   t:'text', unit:'kV',   hint:'WindCONTROL – WCS-001 Power Control'},
+        {n:'MVAR', t:'text', unit:'MVAR', hint:'WindCONTROL – WCS-001 Power Control'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Turbines Online',    t:'text', unit:' Online'},
+        {n:'Turbines Available', t:'text', unit:''},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'FRMV1', label:'Farmersville', stats:'PV 5.4MW',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',   t:'text', unit:'MW'},
+        {n:'kV',   t:'text', unit:'kV',   hint:'Data Studio → Meter → Voltage'},
+        {n:'MVAR', t:'text', unit:'MVAR', hint:'Data Studio → Meter → Reactive Power'},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [4.5+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [3]', t:'text',   unit:'/3 Online'},
+        {n:'3+ Inverters',  t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'GLTA1', label:'Goleta BESS', stats:'NP: 160MWh/60MW  V SET: 66.00kV  BAND: 63.17–69.83kV',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'1-CONTROL', fields:[
+        {n:'System Mode [Remote]',          t:'select', opts:['','Yes','No'],    alert:''},
+        {n:'Frequency Droop [On]',          t:'select', opts:['','On','Off'],    alert:'Off'},
+        {n:'Voltage Control [On 66.00kV]',  t:'select', opts:['','On','Off'],    alert:'Off'},
+        {n:'Heat Mode [Off]',               t:'select', opts:['','On','Off'],    alert:'On'},
+        {n:'Closed Loop [On]',              t:'select', opts:['','On','Off'],    alert:''},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',                 t:'text',   unit:'MW'},
+        {n:'MWh',                t:'text',   unit:'MWh'},
+        {n:'kV',                 t:'text',   unit:'kV', kvMin:63.17, kvMax:69.83},
+        {n:'MVAR',               t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [60+]',   t:'select', opts:['','Yes','No'], alert:''},
+        {n:'MWh [160+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [4]',   t:'text',   unit:'/4 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'BESS [44]',  t:'text',   unit:'/44 Available'},
+        {n:'42+ BESS',   t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'HARQ1', label:'Harq 1', stats:'NP: +150MW',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'1-CONTROL', fields:[
+        {n:'PV AVR Status [Enabled]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',                 t:'text',   unit:'MW'},
+        {n:'kV',                 t:'text',   unit:'kV'},
+        {n:'MVAR',               t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [150+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [6]',   t:'text',   unit:'/6 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [47]', t:'text',   unit:'/47 Online'},
+        {n:'37+ Inverters',  t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'HARQ2', label:'Harq 2 Combo/BESS', stats:'NP: 1299MWh/300MW  V SET: 525kV  BAND: 498.75–551.25kV',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'1-CONTROL', fields:[
+        {n:'PV AVR Status [Enabled]',   t:'select', opts:['','Enabled','Disabled'], alert:''},
+        {n:'BESS AVR Status [Enabled]', t:'select', opts:['','Enabled','Disabled'], alert:''},
+      ]},
+      { title:'2-OUTPUT: HS', fields:[
+        {n:'HS MW',   t:'text', unit:'MW'},
+        {n:'HS kV',   t:'text', unit:'kV', kvMin:498.75, kvMax:551.25},
+        {n:'HS MVAR', t:'text', unit:'MVAR'},
+      ]},
+      { title:'2-OUTPUT: PV LS', fields:[
+        {n:'PV LS MW',   t:'text', unit:'MW'},
+        {n:'PV LS MWh',  t:'text', unit:'MWh'},
+        {n:'PV LS kV',   t:'text', unit:'kV'},
+        {n:'PV LS MVAR', t:'text', unit:'MVAR'},
+      ]},
+      { title:'2-OUTPUT: BESS LS', fields:[
+        {n:'BESS LS MW',            t:'text',   unit:'MW'},
+        {n:'BESS LS MWh',           t:'text',   unit:'MWh'},
+        {n:'BESS LS kV',            t:'text',   unit:'kV'},
+        {n:'BESS LS MVAR',          t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint',    t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [300+]',   t:'select', opts:['','Yes','No'], alert:''},
+        {n:'MWh [1200+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [19]',  t:'text',   unit:'/19 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [94]',  t:'text',   unit:'/94 Online'},
+        {n:'73+ PV Inverters',t:'select', opts:['','Yes','No'], alert:'No'},
+        {n:'BESS [354]',      t:'text',   unit:'/354 Available'},
+        {n:'306+ BESS',       t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'HNFD1', label:'Hanford', stats:'PV 3.6MW',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',   t:'text', unit:'MW'},
+        {n:'kV',   t:'text', unit:'kV',   hint:'Data Studio → Meter → Voltage'},
+        {n:'MVAR', t:'text', unit:'MVAR', hint:'Data Studio → Meter → Reactive Power'},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [3+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [2]', t:'text',   unit:'/2 Online'},
+        {n:'2+ Inverters',  t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'KUNA1', label:'Kuna BESS', stats:'NP: 600MWh/150MW  V SET: 142kV  BAND: 138–144.9kV',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'1-CONTROL', fields:[
+        {n:'AVRREPCC [On]', t:'select', opts:['','On','Off'], alert:''},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',                 t:'text',   unit:'MW'},
+        {n:'MWh',                t:'text',   unit:'MWh'},
+        {n:'kV',                 t:'text',   unit:'kV', kvMin:138, kvMax:144.9},
+        {n:'MVAR',               t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [150+]',  t:'select', opts:['','Yes','No'], alert:''},
+        {n:'MWh [600+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [4]',   t:'text',   unit:'/4 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'BESS [174]',  t:'text',   unit:'/174 Available'},
+        {n:'152+ BESS',   t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'LSTH1', label:'Lost Hills 1', stats:'PV 26MW',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',   t:'text', unit:'MW'},
+        {n:'kV',   t:'text', unit:'kV',   hint:'Data Studio → Meter → Voltage (line-to-line)'},
+        {n:'MVAR', t:'text', unit:'MVAR', hint:'Data Studio → Inverter → Reactive Power'},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [20+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [12]', t:'text',   unit:'/12 Online'},
+        {n:'10+ Inverters',  t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'LSTH2', label:'Lost Hills 2', stats:'NP: 20MW  V SET: 71kV  BAND: 70.29–71.71kV',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'1-CONTROL', fields:[
+        {n:'AVR Control Mode [Voltage]', t:'select', opts:['','On','Off'],  alert:''},
+        {n:'Voltage Set Point [71kV]',   t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',                 t:'text',   unit:'MW'},
+        {n:'kV',                 t:'text',   unit:'kV', kvMin:70.29, kvMax:71.71},
+        {n:'MVAR',               t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [20+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [3]',   t:'text',   unit:'/3 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [25]', t:'text',   unit:'/25 Online'},
+        {n:'17+ Inverters',  t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'MCLM1', label:'McLeans Mt', stats:'Wind 60MW',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',   t:'text', unit:'MW'},
+        {n:'kV',   t:'text', unit:'kV',   hint:'WindCONTROL – WCS-001 Power Control'},
+        {n:'MVAR', t:'text', unit:'MVAR', hint:'WindCONTROL – WCS-001 Power Control'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Turbines Online',    t:'text', unit:' Online'},
+        {n:'Turbines Available', t:'text', unit:''},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'NCLS1', label:'Nicolis', stats:'PV 26MW',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',   t:'text', unit:'MW'},
+        {n:'kV',   t:'text', unit:'kV'},
+        {n:'MVAR', t:'text', unit:'MVAR'},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [22+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [10]', t:'text',   unit:'/10 Online'},
+        {n:'8+ Inverters',   t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'NSTR1', label:'Northstar', stats:'NP: 60MW  V SET: 119kV  BAND: 117.81–120.19kV',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'1-CONTROL', fields:[
+        {n:'Plant Status [Local & Auto]', t:'select', opts:['','Local/Auto','Local/Manual'], alert:''},
+        {n:'AVR Control [Voltage]',       t:'select', opts:['','Voltage','Reactive Power'], alert:''},
+        {n:'Voltage Set Point [118kV]',   t:'text',   unit:'kV'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',                 t:'text',   unit:'MW'},
+        {n:'kV',                 t:'text',   unit:'kV', kvMin:117.81, kvMax:120.19},
+        {n:'MVAR',               t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [60+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [5]',   t:'text',   unit:'/5 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [77]', t:'text',   unit:'/77 Online'},
+        {n:'77+ Inverters',  t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'PRGN1', label:'Peregrine BESS', stats:'NP: 430MWh/200MW  V SET: 231.3kV  BAND: 228–234kV',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'1-CONTROL', fields:[
+        {n:'PPC Control Location [Local]', t:'select', opts:['','Yes','No'],           alert:''},
+        {n:'PPC Control [AVR]',            t:'select', opts:['','AVR','AVG','Other'],  alert:''},
+        {n:'Pri. Freq. Response [Enabled]',t:'select', opts:['','Enabled','Disabled'], alert:''},
+        {n:'PPC Status [Online]',          t:'select', opts:['','Online','Offline'],   alert:''},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',                 t:'text',   unit:'MW'},
+        {n:'MWh',                t:'text',   unit:'MWh'},
+        {n:'kV',                 t:'text',   unit:'kV', kvMin:228, kvMax:234},
+        {n:'MVAR',               t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [200+]',  t:'select', opts:['','Yes','No'], alert:''},
+        {n:'MWh [430+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [6]',   t:'text',   unit:'/6 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'BESS [112]',  t:'text',   unit:'/112 Available'},
+        {n:'102+ BESS',   t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'PRTV1', label:'Porterville', stats:'PV 3.6MW',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',   t:'text', unit:'MW'},
+        {n:'kV',   t:'text', unit:'kV',   hint:'Data Studio → Meter → Voltage'},
+        {n:'MVAR', t:'text', unit:'MVAR', hint:'Data Studio → Meter → Reactive Power'},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [3.6+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [2]', t:'text',   unit:'/2 Online'},
+        {n:'2+ Inverters',  t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'TLRE1', label:'Tulare', stats:'PV 3.6MW',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',   t:'text', unit:'MW'},
+        {n:'kV',   t:'text', unit:'kV',   hint:'Data Studio → Meter → Voltage'},
+        {n:'MVAR', t:'text', unit:'MVAR', hint:'Data Studio → Meter → Reactive Power'},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [3.6+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [4]', t:'text',   unit:'/4 Online'},
+        {n:'3+ Inverters',  t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+  { id:'TSMS1', label:'Tropico', stats:'PV 18.2MW',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',   t:'text', unit:'MW'},
+        {n:'kV',   t:'text', unit:'kV'},
+        {n:'MVAR', t:'text', unit:'MVAR'},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [15.4+]', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'MW [12+]',   t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [3]', t:'text', unit:'/3 Closed'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [7]', t:'text',   unit:'/7 Online'},
+        {n:'6+ Inverters',  t:'select', opts:['','Yes','No'], alert:'No'},
+        {n:'BESS [5]',      t:'text',   unit:'/5 Available'},
+        {n:'5+ BESS',       t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
+];
+
+// ─── ASSET SCAN ───────────────────────────────────────────────────────────────
+const AS_VAL_KEY  = 'rnwbl_asvals_v1';
+const AS_DONE_KEY = 'rnwbl_asdone_v1';
+const AS_CUSTOM_KEY = 'rnwbl_ascustom_v1'; // user-added/edited sites stored here
+
+let asVals = {};
+let asDone = {};        // {siteId: true} manually marked complete
+let asCustom = null;    // null = not yet loaded; [] or array = overrides AS_SITES
+let asActiveSite = '';
+
+// Effective site list: custom overrides defaults when set AND non-empty
+function asSites() { return (asCustom !== null && asCustom.length > 0) ? asCustom : AS_SITES; }
+
+function asLoadAll() {
+  try { const r=localStorage.getItem(AS_VAL_KEY); if(r) asVals=JSON.parse(r)||{}; } catch(e){}
+  try { const r=localStorage.getItem(AS_DONE_KEY); if(r) asDone=JSON.parse(r)||{}; } catch(e){}
+  try { const r=localStorage.getItem(AS_CUSTOM_KEY); if(r) { const p=JSON.parse(r); if(Array.isArray(p) && p.length > 0) asCustom=p; } } catch(e){}
+}
+function asSaveVals() { try{localStorage.setItem(AS_VAL_KEY,JSON.stringify(asVals));}catch(e){} }
+function asSaveDone() { try{localStorage.setItem(AS_DONE_KEY,JSON.stringify(asDone));}catch(e){} }
+function asSaveCustom() { try{localStorage.setItem(AS_CUSTOM_KEY,JSON.stringify(asSites()));}catch(e){} }
+
+function asKey(siteId, si, fi) { return siteId+'|'+si+'|'+fi; }
+
+// ── completion ────────────────────────────────────────────────────────────────
+function asSiteFilledPct(siteId) {
+  const site = asSites().find(s=>s.id===siteId); if(!site) return 0;
+  let total=0, filled=0;
+  site.sections.forEach((sec,si)=>sec.fields.forEach((f,fi)=>{
+    if(f.t==='textarea') return;
+    total++;
+    if((asVals[asKey(siteId,si,fi)]||'')!=='') filled++;
+  }));
+  return total===0?100:Math.round(filled/total*100);
+}
+function asSiteComplete(siteId) { return asDone[siteId]||asSiteFilledPct(siteId)===100; }
+function asSectionHasAlert(siteId, si) {
+  const site=asSites().find(s=>s.id===siteId); if(!site) return false;
+  return (site.sections[si]?.fields||[]).some((f,fi)=>
+    f.alert && (asVals[asKey(siteId,si,fi)]||'').toLowerCase()===f.alert.toLowerCase() && asVals[asKey(siteId,si,fi)]!==''
+  );
+}
+
+// ── init & render ──────────────────────────────────────────────────────────────
+function asInit() {
+  try {
+    console.log('Asset Scan: Initializing...');
+    document.getElementById('as-date').valueAsDate = new Date();
+    asLoadAll();
+    // Restore last visited tab; if none saved, skip ROCC1 and land on first real site
+    const saved = (()=>{try{return localStorage.getItem('rnwbl_asactive')||'';}catch(e){return '';}})();
+    const sites = asSites();
+    console.log('Asset Scan: Sites loaded:', sites.length, 'sites');
+    if(saved && sites.find(s=>s.id===saved)) {
+      asActiveSite = saved;
+    } else {
+      asActiveSite = (sites.find(s=>s.id!=='ROCC1') || sites[0])?.id || '';
+    }
+    console.log('Asset Scan: Active site:', asActiveSite);
+    asRenderTabs();
+    asRenderForm();
+    console.log('Asset Scan: Initialization complete');
+  } catch(e) {
+    console.error('Asset Scan: Initialization failed:', e);
+    showToast('Asset Scan initialization failed');
+  }
+}
+
+function asRenderTabs() {
+  try {
+    const sites = asSites();
+    console.log('Asset Scan: Rendering tabs for', sites.length, 'sites');
+    const tabsHtml = sites.map(s=>{
+      const done=asSiteComplete(s.id), pct=asSiteFilledPct(s.id);
+      const style=done?'border-color:var(--green);color:var(--green);background:var(--gbg);'
+                  :pct>0?'border-color:var(--amber);color:var(--amber);background:var(--abg);':'';
+      const icon=done?' ':pct>0?' ...':'';
+      const isActive=s.id===asActiveSite;
+      return `<button class="as-tab${isActive?' active':''}" style="${isActive?'':style}" onclick="asSwitch('${esc(s.id)}')">${esc(s.id)}${icon}</button>`;
+    }).join('');
+    document.getElementById('as-tabs').innerHTML = tabsHtml;
+    console.log('Asset Scan: Tabs rendered successfully');
+  } catch(e) {
+    console.error('Asset Scan: Failed to render tabs:', e);
+  }
+}
+
+function asSwitch(id) { asActiveSite=id; try{localStorage.setItem('rnwbl_asactive',id);}catch(e){} asRenderTabs(); asRenderForm(); }
+
+function asRenderForm() {
+  const site=asSites().find(s=>s.id===asActiveSite); if(!site) return;
+  const done=asSiteComplete(site.id), pct=asSiteFilledPct(site.id);
+  const bannerBg=done?'background:var(--green);':'';
+
+  let html=`<div class="as-banner" style="${bannerBg}">
+    <span class="as-banner-name">${esc(site.id)}</span>
+    ${site.stats?`<span class="as-banner-stats">${esc(site.stats)}</span>`:''}
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      ${done
+        ?`<span style="font-size:11px;font-weight:600;color:#fff;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:10px;">✓ Complete</span>
+          <button onclick="asUnmarkDone('${esc(site.id)}')" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;cursor:pointer;">Reopen</button>`
+        :`<span style="font-size:11px;color:rgba(255,255,255,.65);">${pct}% filled</span>
+          <button onclick="asMarkDone('${esc(site.id)}')" style="font-size:11px;padding:3px 10px;border-radius:5px;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;cursor:pointer;">✓ Mark complete</button>`
+      }
+    </div>
+  </div><div class="as-body">`;
+
+  site.sections.forEach((sec,si)=>{
+    const secAlert=asSectionHasAlert(site.id,si);
+    if(sec.title) html+=`<div class="as-section-hdr">${esc(sec.title)}${secAlert?` <span style="font-size:10px;font-weight:600;color:var(--red);background:var(--rbg);padding:1px 7px;border-radius:8px;">⚠ Alert</span>`:''}</div>`;
+    sec.fields.forEach((f,fi)=>{
+      const k=asKey(site.id,si,fi), val=asVals[k]||'';
+      const fid='asf_'+k.replace(/\|/g,'_'), aid='asa_'+k.replace(/\|/g,'_'), kid='askv_'+k.replace(/\|/g,'_');
+      html+=`<div class="as-row"><div><div class="as-lbl">${esc(f.n)}</div>${f.hint?`<div class="as-hint">${esc(f.hint)}</div>`:''}</div><div>`;
+      if(f.t==='select'){
+        html+=`<select class="as-sel" id="${fid}" onchange="asChange('${k}','${aid}','${esc(site.id)}',${si},this)">${(f.opts||[]).map(o=>`<option value="${esc(o)}"${val===o?' selected':''}>${esc(o)}</option>`).join('')}</select>`;
+      } else if(f.t==='textarea'){
+        html+=`<textarea class="as-textarea" id="${fid}" rows="2" onchange="asChange('${k}','','${esc(site.id)}',${si},this)">${esc(val)}</textarea>`;
+      } else {
+        const unit=f.unit||'', dispVal=(unit&&val.endsWith(unit))?val.slice(0,-unit.length):val;
+        html+=`<input class="as-inp" id="${fid}" value="${esc(dispVal)}" placeholder="${esc(f.n)}${unit?' ('+unit+')':''}" data-unit="${esc(unit)}" data-kv-min="${f.kvMin||''}" data-kv-max="${f.kvMax||''}" data-kv-id="${kid}" onblur="asTextBlur('${k}','${kid}','${esc(site.id)}',${si},this)" onchange="asChange('${k}','','${esc(site.id)}',${si},this)">`;
+      }
+      html+=`</div><div>`;
+      if(f.t==='select'&&f.alert){ const on=val&&val.toLowerCase()===f.alert.toLowerCase(); html+=`<span class="alert-pill${on?' on':''}" id="${aid}">⚠ TAKE ACTION</span>`; }
+      if(f.kvMin!=null) html+=`<span class="as-status" id="${kid}"></span>`;
+      html+=`</div></div>`;
+    });
+  });
+
+  html+=`<div class="as-export-bar"><button class="btn-p" onclick="asExportCSV()">Export CSV</button><span style="font-size:12px;color:var(--text3);">Fill in Date, Operator &amp; Shift above before exporting.</span></div></div>`;
+  document.getElementById('as-form-wrap').innerHTML=html;
+
+  // Restore kV indicators
+  site.sections.forEach((sec,si)=>sec.fields.forEach((f,fi)=>{
+    if(f.kvMin==null) return;
+    const k=asKey(site.id,si,fi), val=asVals[k]||'', unit=f.unit||'';
+    const num=parseFloat((unit&&val.endsWith(unit))?val.slice(0,-unit.length):val);
+    if(!isNaN(num)) asUpdateKv('askv_'+k.replace(/\|/g,'_'),num,f.kvMin,f.kvMax);
+  }));
+}
+
+function asChange(k, alertId, siteId, si, el) {
+  asVals[k]=el.value; asSaveVals();
+  if(alertId){
+    const pill=document.getElementById(alertId);
+    const site=asSites().find(s=>s.id===siteId);
+    const fi=parseInt(k.split('|')[2]), f=site?.sections[si]?.fields[fi];
+    if(pill&&f?.alert) pill.classList.toggle('on',el.value.toLowerCase()===f.alert.toLowerCase()&&el.value!=='');
+    // update section alert badge inline
+    if(site&&site.sections[si]?.title){
+      const hdrs=document.querySelectorAll('.as-section-hdr');
+      hdrs.forEach(hdr=>{
+        const titleMatch=hdr.textContent.trim().split('⚠')[0].trim()===site.sections[si].title;
+        if(titleMatch){
+          const existing=hdr.querySelector('span'); const hasAlert=asSectionHasAlert(siteId,si);
+          if(hasAlert&&!existing) hdr.insertAdjacentHTML('beforeend','<span style="font-size:10px;font-weight:600;color:var(--red);background:var(--rbg);padding:1px 7px;border-radius:8px;">⚠ Alert</span>');
+          else if(!hasAlert&&existing) existing.remove();
+        }
+      });
+    }
+  }
+  asRenderTabs();
+}
+
+function asTextBlur(k, kvId, siteId, si, el) {
+  const unit=el.getAttribute('data-unit')||'', kvMin=el.getAttribute('data-kv-min'), kvMax=el.getAttribute('data-kv-max');
+  let v=el.value.trim();
+  if(!v){asVals[k]='';asSaveVals();return;}
+  if(unit&&v.endsWith(unit)) v=v.slice(0,-unit.length).trim();
+  if(!isNaN(parseFloat(v))&&isFinite(v)){
+    if(unit) el.value=v+unit;
+    asVals[k]=el.value;
+    if(kvMin&&kvMax) asUpdateKv(kvId,parseFloat(v),parseFloat(kvMin),parseFloat(kvMax));
+  } else { asVals[k]=el.value; }
+  asSaveVals(); asRenderTabs();
+}
+
+function asUpdateKv(kvId, val, min, max) {
+  const sp=document.getElementById(kvId); if(!sp) return;
+  if(val>=min&&val<=max){sp.textContent='In band';sp.className='as-status kv-ok';}
+  else{sp.textContent='Out of band';sp.className='as-status kv-bad';}
+}
+
+function asMarkDone(siteId){asDone[siteId]=true;asSaveDone();asRenderTabs();asRenderForm();showToast(siteId+' marked complete ✓');}
+function asUnmarkDone(siteId){delete asDone[siteId];asSaveDone();asRenderTabs();asRenderForm();}
+
+function asStartFresh(){
+  if(!confirm('Clear all Asset Scan values and completion flags? Site definitions are kept.')) return;
+  asVals={};asDone={};asSaveVals();asSaveDone();asRenderTabs();asRenderForm();showToast('Asset Scan cleared — ready for next round');
+}
+
+// ── edit sites ────────────────────────────────────────────────────────────────
+function asOpenEdit(){
+  asRenderEditList(); asEditClear(); openModal('modal-as-edit');
+}
+function asRenderEditList(){
+  const el=document.getElementById('as-edit-list'); if(!el) return;
+  el.innerHTML=asSites().map((s,i)=>`<div class="task-item">
+    <span class="task-label">${esc(s.id)} <span style="color:var(--text3);font-size:11px;">— ${esc(s.label||'')} ${esc(s.stats||'')}</span></span>
+    <button class="tbtn" style="font-size:11px;padding:2px 8px;" onclick="asEditLoad(${i})">Edit</button>
+    <button class="task-del" onclick="asEditDel(${i})">✕</button>
+  </div>`).join('')||'<div class="empty">No sites</div>';
+}
+function asEditLoad(idx){
+  const s=asSites()[idx]; if(!s) return;
+  document.getElementById('as-edit-idx').value=idx;
+  document.getElementById('as-eid').value=s.id;
+  document.getElementById('as-elabel').value=s.label||'';
+  document.getElementById('as-estats').value=s.stats||'';
+  document.getElementById('as-ejson').value=JSON.stringify(s.sections,null,2);
+  document.getElementById('as-edit-form-hdr').textContent='Edit: '+s.id;
+}
+function asEditClear(){
+  document.getElementById('as-edit-idx').value='';
+  ['as-eid','as-elabel','as-estats','as-ejson'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('as-edit-form-hdr').textContent='Add new site';
+}
+function asEditSave(){
+  const id=document.getElementById('as-eid').value.trim();
+  if(!id){showToast('Site ID required');return;}
+  let sections=[];
+  const raw=document.getElementById('as-ejson').value.trim();
+  if(raw){try{sections=JSON.parse(raw);}catch(e){showToast('JSON error: '+e.message);return;}}
+  const site={id,label:document.getElementById('as-elabel').value.trim()||id,stats:document.getElementById('as-estats').value.trim(),sections};
+  if(asCustom===null) asCustom=[...AS_SITES]; // clone defaults on first edit
+  const idx=parseInt(document.getElementById('as-edit-idx').value);
+  if(!isNaN(idx)&&idx>=0) asCustom[idx]=site;
+  else {
+    if(asCustom.find(s=>s.id===id)){showToast('ID already exists');return;}
+    asCustom.push(site);
+  }
+  asSaveCustom(); asRenderEditList(); asEditClear();
+  if(!asActiveSite) asActiveSite=id;
+  asRenderTabs(); showToast('Site saved');
+}
+function asEditDel(idx){
+  if(!confirm('Remove this site?')) return;
+  if(asCustom===null) asCustom=[...AS_SITES];
+  const removed=asCustom.splice(idx,1)[0];
+  if(asActiveSite===removed?.id) asActiveSite=asCustom[0]?.id||'';
+  asSaveCustom(); asRenderEditList(); asRenderTabs(); asRenderForm();
+}
+
+function asExportCSV() {
+  const date=document.getElementById('as-date').value, op=document.getElementById('as-operator').value, shift=document.getElementById('as-shift').value;
+  let csv='Date,Operator,Shift,Site,Section,Field,Value\n';
+  asSites().forEach(site=>site.sections.forEach((sec,si)=>sec.fields.forEach((f,fi)=>{
+    const v=(asVals[asKey(site.id,si,fi)]||'').replace(/"/g,'""');
+    csv+=`"${date}","${op}","${shift}","${site.id}","${sec.title||''}","${f.n}","${v}"\n`;
+  })));
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`ROC_Asset_Scan_${op||'Op'}_${date||'nodate'}.csv`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
+}
+
+// ─── NEW ASSET SCAN ───────────────────────────────────────────────────────
+// Asset Scan tool for scanning sites during shifts
+
+const AS_SCAN_KEY = 'rnwbl_asset_scan_v1';
+
+// Site definitions with default values
+const ASSET_SITES = {
+  'ROCC1': {
+    name: 'ROCC1',
+    fields: [
+      { id: 'caiso_ads', label: 'CAISO ADS', type: 'select', options: ['', 'Online', 'Offline'], value: '' },
+      { id: 'caiso_visible', label: 'CAISO ADS Visible', type: 'select', options: ['', 'Yes', 'No'], value: '' },
+      { id: 'abnormal_conditions', label: 'Abnormal Conditions', type: 'text', value: '' },
+      { id: 'indji_online', label: 'Indji Watch Online', type: 'select', options: ['', 'Online', 'Offline'], value: '' },
+      { id: 'indji_visible', label: 'Indji Watch Visible', type: 'select', options: ['', 'Yes', 'No'], value: '' },
+      { id: 'tv_monitor', label: 'TV Monitor Vol [40?]', type: 'select', options: ['', 'Yes', 'No'], value: '' },
+      { id: 'staysafe_online', label: 'Stay Safe Online', type: 'select', options: ['', 'Online', 'Offline'], value: '' },
+      { id: 'staysafe_visible', label: 'Stay Safe Visible', type: 'select', options: ['', 'Yes', 'No'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'ANGF1': {
+    name: 'Angel Fire (ANGF1)',
+    fields: [
+      { id: 'abnormal_conditions', label: 'Abnormal Operating Conditions', type: 'select', options: ['', 'Yes', 'No'], value: '' },
+      { id: 'temperature', label: 'Temperature', type: 'text', unit: '°F', value: '' },
+      { id: 'weather', label: 'Weather Conditions', type: 'select', options: ['', 'Clear', 'Cloudy', 'Rain', 'Snow', 'Wind'], value: '' },
+      { id: 'lightning', label: 'Lightning Activity', type: 'select', options: ['', 'None', 'Distant', 'Local', 'Overhead'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'AVLN1': {
+    name: 'Avila (AVLN1)',
+    fields: [
+      { id: 'overall_status', label: 'Overall Status', type: 'select', options: ['', 'Normal', 'Alarm', 'Fault'], value: '' },
+      { id: 'power_output', label: 'Power Output', type: 'text', unit: 'MW', value: '' },
+      { id: 'battery_soc', label: 'Battery SOC', type: 'text', unit: '%', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'BLKW1': {
+    name: 'Blackwater (BLKW1)',
+    fields: [
+      { id: 'current_output', label: 'Current Output', type: 'text', unit: 'MW', value: '' },
+      { id: 'irradiance', label: 'Irradiance', type: 'text', unit: 'W/m²', value: '' },
+      { id: 'panel_temp', label: 'Panel Temperature', type: 'text', unit: '°C', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'CNDR1': {
+    name: 'Cedar (CNDR1)',
+    fields: [
+      { id: 'site_access', label: 'Site Access', type: 'select', options: ['', 'Clear', 'Restricted'], value: '' },
+      { id: 'security_check', label: 'Security Check', type: 'select', options: ['', 'Pass', 'Fail'], value: '' },
+      { id: 'permits_current', label: 'Permits Current', type: 'select', options: ['', 'Yes', 'No'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'COSO1': {
+    name: 'Cosco (COSO1)',
+    fields: [
+      { id: 'inverter_status', label: 'Inverter Status', type: 'select', options: ['', 'Running', 'Stopped', 'Fault'], value: '' },
+      { id: 'scada_status', label: 'SCADA Status', type: 'select', options: ['', 'Online', 'Offline'], value: '' },
+      { id: 'output_power', label: 'Output Power', type: 'text', unit: 'MW', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'DFRN1': {
+    name: 'Defiance (DFRN1)',
+    fields: [
+      { id: 'dc_voltage', label: 'DC Voltage', type: 'text', unit: 'V', value: '' },
+      { id: 'ac_voltage', label: 'AC Voltage', type: 'text', unit: 'V', value: '' },
+      { id: 'frequency', label: 'Frequency', type: 'text', unit: 'Hz', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'FRMV1': {
+    name: 'Farmersville (FRMV1)',
+    fields: [
+      { id: 'system_health', label: 'System Health', type: 'select', options: ['', 'Good', 'Warning', 'Critical'], value: '' },
+      { id: 'production', label: 'Production', type: 'text', unit: 'MWh', value: '' },
+      { id: 'availability', label: 'Availability', type: 'text', unit: '%', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'GLTA1': {
+    name: 'Glendale (GLTA1)',
+    fields: [
+      { id: 'string_monitoring', label: 'String Monitoring', type: 'select', options: ['', 'Normal', 'Abnormal'], value: '' },
+      { id: 'performance_ratio', label: 'Performance Ratio', type: 'text', unit: '%', value: '' },
+      { id: 'soiling_loss', label: 'Soiling Loss', type: 'text', unit: '%', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'HARQ1': {
+    name: 'Harper Lake 1 (HARQ1)',
+    fields: [
+      { id: 'state_of_charge', label: 'State of Charge', type: 'text', unit: '%', value: '' },
+      { id: 'charge_discharge', label: 'Charge/Discharge', type: 'select', options: ['', 'Charging', 'Discharging', 'Idle'], value: '' },
+      { id: 'temperature', label: 'Temperature', type: 'text', unit: '°C', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'HARQ2': {
+    name: 'Harper Lake 2 (HARQ2)',
+    fields: [
+      { id: 'state_of_charge', label: 'State of Charge', type: 'text', unit: '%', value: '' },
+      { id: 'charge_discharge', label: 'Charge/Discharge', type: 'select', options: ['', 'Charging', 'Discharging', 'Idle'], value: '' },
+      { id: 'temperature', label: 'Temperature', type: 'text', unit: '°C', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'HNFD1': {
+    name: 'Hanford (HNFD1)',
+    fields: [
+      { id: 'fencing_status', label: 'Fencing Status', type: 'select', options: ['', 'Secure', 'Breach'], value: '' },
+      { id: 'lighting_status', label: 'Lighting Status', type: 'select', options: ['', 'Operational', 'Failed'], value: '' },
+      { id: 'equipment_status', label: 'Equipment Status', type: 'select', options: ['', 'Normal', 'Maintenance', 'Fault'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'KUNA1': {
+    name: 'Kuna (KUNA1)',
+    fields: [
+      { id: 'current_output', label: 'Current Output', type: 'text', unit: 'MW', value: '' },
+      { id: 'daily_production', label: 'Daily Production', type: 'text', unit: 'MWh', value: '' },
+      { id: 'efficiency', label: 'Efficiency', type: 'text', unit: '%', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'LSTH1': {
+    name: 'Lathrop 1 (LSTH1)',
+    fields: [
+      { id: 'inverter_status', label: 'Inverter Status', type: 'select', options: ['', 'Online', 'Offline', 'Fault'], value: '' },
+      { id: 'power_output', label: 'Power Output', type: 'text', unit: 'MW', value: '' },
+      { id: 'weather_impact', label: 'Weather Impact', type: 'select', options: ['', 'Clear', 'Cloudy', 'Storm'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'LSTH2': {
+    name: 'Lathrop 2 (LSTH2)',
+    fields: [
+      { id: 'inverter_status', label: 'Inverter Status', type: 'select', options: ['', 'Online', 'Offline', 'Fault'], value: '' },
+      { id: 'power_output', label: 'Power Output', type: 'text', unit: 'MW', value: '' },
+      { id: 'weather_impact', label: 'Weather Impact', type: 'select', options: ['', 'Clear', 'Cloudy', 'Storm'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'MCLM1': {
+    name: 'McCalM (MCLM1)',
+    fields: [
+      { id: 'array_status', label: 'Array Status', type: 'select', options: ['', 'Tracking', 'Fixed', 'Manual'], value: '' },
+      { id: 'dc_voltage', label: 'DC Voltage', type: 'text', unit: 'V', value: '' },
+      { id: 'ac_power', label: 'AC Power', type: 'text', unit: 'kW', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'NCLS1': {
+    name: 'Niles (NCLS1)',
+    fields: [
+      { id: 'scada_connection', label: 'SCADA Connection', type: 'select', options: ['', 'Connected', 'Lost'], value: '' },
+      { id: 'data_quality', label: 'Data Quality', type: 'select', options: ['', 'Good', 'Poor'], value: '' },
+      { id: 'performance_index', label: 'Performance Index', type: 'text', unit: '%', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'NSTR1': {
+    name: 'Mustang (NSTR1)',
+    fields: [
+      { id: 'access_road', label: 'Access Road', type: 'select', options: ['', 'Clear', 'Blocked'], value: '' },
+      { id: 'weather_station', label: 'Weather Station', type: 'select', options: ['', 'Working', 'Failed'], value: '' },
+      { id: 'communication', label: 'Communication', type: 'select', options: ['', 'Normal', 'Intermittent'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'PRGN1': {
+    name: 'Piru (PRGN1)',
+    fields: [
+      { id: 'breaker_status', label: 'Breaker Status', type: 'select', options: ['', 'Closed', 'Open', 'Trip'], value: '' },
+      { id: 'voltage_level', label: 'Voltage Level', type: 'text', unit: 'kV', value: '' },
+      { id: 'load_current', label: 'Load Current', type: 'text', unit: 'A', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'PRTV1': {
+    name: 'Porterville (PRTV1)',
+    fields: [
+      { id: 'inverter_efficiency', label: 'Inverter Efficiency', type: 'text', unit: '%', value: '' },
+      { id: 'array_performance', label: 'Array Performance', type: 'select', options: ['', 'Optimal', 'Suboptimal'], value: '' },
+      { id: 'maintenance_required', label: 'Maintenance Required', type: 'select', options: ['', 'No', 'Yes'], value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'TLRE1': {
+    name: 'Tulare (TLRE1)',
+    fields: [
+      { id: 'active_power', label: 'Active Power', type: 'text', unit: 'MW', value: '' },
+      { id: 'reactive_power', label: 'Reactive Power', type: 'text', unit: 'MVar', value: '' },
+      { id: 'power_factor', label: 'Power Factor', type: 'text', unit: '', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  },
+  'TSMS1': {
+    name: 'Tehachapi (TSMS1)',
+    fields: [
+      { id: 'tracker_operation', label: 'Tracker Operation', type: 'select', options: ['', 'Auto', 'Manual', 'Stopped'], value: '' },
+      { id: 'soiling_level', label: 'Soiling Level', type: 'select', options: ['', 'Clean', 'Light', 'Moderate', 'Heavy'], value: '' },
+      { id: 'wind_speed', label: 'Wind Speed', type: 'text', unit: 'mph', value: '' },
+      { id: 'notes', label: 'Notes', type: 'textarea', value: '' }
+    ]
+  }
+};
+
+let assetScanData = {};
+let currentSite = '';
+
+// Initialize Asset Scan
+function initAssetScan() {
+  console.log('Asset Scan: Initializing...');  
+  // Load saved data
+  try {
+    const saved = localStorage.getItem(AS_SCAN_KEY);
+    if (saved) {
+      assetScanData = JSON.parse(saved) || {};
+    }
+  } catch(e) {
+    console.error('Failed to load Asset Scan data:', e);
+  }
+  
+  // Populate site dropdown
+  populateSiteDropdown();
+  
+  // Set current date
+  document.getElementById('as-date').valueAsDate = new Date();
+  
+  console.log('Asset Scan: Initialized successfully');
+}
+
+// Populate site dropdown
+function populateSiteDropdown() {
+  const select = document.getElementById('as-site-select');
+  select.innerHTML = '<option value="">Choose a site...</option>';
+  
+  Object.keys(ASSET_SITES).forEach(siteId => {
+    const option = document.createElement('option');
+    option.value = siteId;
+    option.textContent = ASSET_SITES[siteId].name;
+    select.appendChild(option);
+  });
+}
+
+// Handle site selection
+function selectSite(siteId) {
+  if (!siteId) {
+    document.getElementById('as-site-form').style.display = 'none';
+    return;
+  }
+  
+  currentSite = siteId;
+  renderSiteForm(siteId);
+}
+
+// Render form for selected site
+function renderSiteForm(siteId) {
+  const site = ASSET_SITES[siteId];
+  if (!site) return;
+  
+  const formContent = document.getElementById('as-form-content');
+  formContent.innerHTML = '';
+  
+  // Create form sections
+  let html = `<div class="card">
+    <div class="card-title">${site.name}</div>`;
+  
+  site.fields.forEach(field => {
+    const savedValue = assetScanData[siteId] && assetScanData[siteId][field.id] ? assetScanData[siteId][field.id] : '';
+    
+    html += `<div style="margin-bottom:12px;">
+      <label style="display:block;font-weight:500;margin-bottom:4px;color:var(--text2);">${field.label}${field.unit ? ' (' + field.unit + ')' : ''}</label>`;
+    
+    if (field.type === 'select') {
+      html += `<select id="field-${field.id}" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);">`;
+      html += `<option value="">Select...</option>`;
+      field.options.forEach(option => {
+        const selected = option === savedValue ? 'selected' : '';
+        html += `<option value="${option}" ${selected}>${option}</option>`;
+      });
+      html += `</select>`;
+    } else if (field.type === 'textarea') {
+      html += `<textarea id="field-${field.id}" rows="3" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);resize:vertical;">${savedValue}</textarea>`;
+    } else {
+      html += `<input type="text" id="field-${field.id}" value="${savedValue}" placeholder="${field.label}" style="width:100%;padding:6px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);">`;
+    }
+    
+    html += `</div>`;
+  });
+  
+  html += `</div>`;
+  formContent.innerHTML = html;
+  
+  // Show form
+  document.getElementById('as-site-form').style.display = 'block';
+  
+  // Add change listeners
+  site.fields.forEach(field => {
+    const element = document.getElementById(`field-${field.id}`);
+    if (element) {
+      element.addEventListener('change', () => saveFieldValue(siteId, field.id, element.value));
+    }
+  });
+}
+
+// Save field value
+function saveFieldValue(siteId, fieldId, value) {
+  if (!assetScanData[siteId]) {
+    assetScanData[siteId] = {};
+  }
+  assetScanData[siteId][fieldId] = value;
+  
+  try {
+    localStorage.setItem(AS_SCAN_KEY, JSON.stringify(assetScanData));
+  } catch(e) {
+    console.error('Failed to save Asset Scan data:', e);
+  }
+}
+
+// Mark site as complete
+function asMarkComplete() {
+  if (!currentSite) {
+    showToast('Please select a site first');
+    return;
+  }
+  
+  // Add completion timestamp
+  if (!assetScanData[currentSite]) {
+    assetScanData[currentSite] = {};
+  }
+  assetScanData[currentSite].completed = true;
+  assetScanData[currentSite].completedAt = new Date().toISOString();
+  
+  try {
+    localStorage.setItem(AS_SCAN_KEY, JSON.stringify(assetScanData));
+    showToast(`${ASSET_SITES[currentSite].name} marked as complete ✓`);
+  } catch(e) {
+    console.error('Failed to save completion:', e);
+  }
+}
+
+// Start fresh (clear all data)
+function asStartFresh() {
+  if (!confirm('Clear all Asset Scan data? This will remove all entered values and completion status.')) {
+    return;
+  }
+  
+  assetScanData = {};
+  currentSite = '';
+  
+  try {
+    localStorage.setItem(AS_SCAN_KEY, JSON.stringify(assetScanData));
+    document.getElementById('as-site-form').style.display = 'none';
+    document.getElementById('as-site-select').value = '';
+    showToast('Asset Scan cleared - ready for new shift');
+  } catch(e) {
+    console.error('Failed to clear Asset Scan data:', e);
+  }
+}
+
+// Export to CSV
+function asExportCSV() {
+  if (Object.keys(assetScanData).length === 0) {
+    showToast('No data to export');
+    return;
+  }
+  
+  let csv = 'Site,Field,Value,Completed,Completed At\n';
+  
+  Object.keys(assetScanData).forEach(siteId => {
+    const site = ASSET_SITES[siteId];
+    const siteData = assetScanData[siteId];
+    
+    if (siteData) {
+      Object.keys(siteData).forEach(fieldId => {
+        if (fieldId !== 'completed' && fieldId !== 'completedAt') {
+          const field = site.fields.find(f => f.id === fieldId);
+          if (field) {
+            csv += `"${site.name}","${field.label}","${siteData[fieldId] || ''}","${siteData.completed || 'No'}","${siteData.completedAt || ''}"\n`;
+          }
+        }
+      });
+    }
+  });
+  
+  // Create download
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `asset_scan_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  window.URL.revokeObjectURL(url);
+  
+  showToast('Asset Scan exported to CSV');
+}
+
+// OPS TOOLS FUNCTIONS
+
+// SoftWrench Log Builder
+const SW_KEY = 'rnwbl_sw_flows_v1';
+let swFlows = [];
+let swActiveFlow = null;
+let swFieldValues = {};
+
+function swLoadFlows() {
+  try { const r = localStorage.getItem(SW_KEY); if (r) swFlows = JSON.parse(r) || []; } catch(e) {}
+  swRenderFlowSelect();
+}
+
+function swSaveFlows() {
+  try { localStorage.setItem(SW_KEY, JSON.stringify(swFlows)); } catch(e) {}
+}
+
+function swRenderFlowSelect() {
+  const sel = document.getElementById('sw-flow-sel');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Select a flow...</option>' + 
+    swFlows.map((f, i) => `<option value="${i}">${esc(f.name)}</option>`).join('');
+}
+
+function swSelectFlow() {
+  const sel = document.getElementById('sw-flow-sel');
+  const idx = parseInt(sel.value);
+  if (isNaN(idx) || !swFlows[idx]) {
+    swActiveFlow = null;
+    swFieldValues = {};
+    swRenderFields();
+    return;
+  }
+  swActiveFlow = swFlows[idx];
+  swFieldValues = {};
+  swRenderFields();
+}
+
+function swRenderFields() {
+  const container = document.getElementById('sw-fields');
+  const outputWrap = document.getElementById('sw-output-wrap');
+  const empty = document.getElementById('sw-empty');
+  if (!container) return;
+
+  if (!swActiveFlow) {
+    container.innerHTML = '';
+    outputWrap.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+
+  const fields = swExtractFields(swActiveFlow.template);
+  container.innerHTML = fields.map(field => `
+    <div style="display:flex;gap:6px;align-items:center;">
+      <label style="font-size:12px;font-weight:500;color:var(--text2);min-width:80px;">${esc(field)}:</label>
+      <input type="text" style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:13px;color:var(--text);" 
+             data-field="${esc(field)}" oninput="swUpdateField('${esc(field)}', this.value)" value="${esc(swFieldValues[field] || '')}">
+    </div>
+  `).join('');
+
+  empty.style.display = 'none';
+  swUpdateOutput();
+}
+
+function swExtractFields(template) {
+  const matches = template.match(/\{([^}]+)\}/g);
+  if (!matches) return [];
+  return matches.map(m => m.slice(1, -1)).filter((f, i, arr) => arr.indexOf(f) === i);
+}
+
+function swUpdateField(field, value) {
+  swFieldValues[field] = value;
+  swUpdateOutput();
+}
+
+function swUpdateOutput() {
+  const output = document.getElementById('sw-output');
+  if (!output || !swActiveFlow) return;
+
+  let result = swActiveFlow.template;
+  for (const [field, value] of Object.entries(swFieldValues)) {
+    result = result.replace(new RegExp(`\\{${field.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\}`, 'g'), value || `{${field}}`);
+  }
+
+  output.textContent = result;
+  document.getElementById('sw-output-wrap').style.display = 'block';
+}
+
+function swCopy() {
+  const output = document.getElementById('sw-output');
+  if (!output) return;
+  output.select();
+  document.execCommand('copy');
+  showToast('Log entry copied to clipboard');
+}
+
+function swClear() {
+  swFieldValues = {};
+  swRenderFields();
+}
+
+function swOpenManage() {
+  swRenderFlowList();
+  swFormClear();
+  openModal('modal-sw-manage');
+}
+
+function swRenderFlowList() {
+  const list = document.getElementById('sw-flow-list');
+  if (!list) return;
+  
+  list.innerHTML = swFlows.length === 0 ? '<div style="color:var(--text3);font-size:12px;text-align:center;padding:20px;">No flows created yet</div>' :
+    swFlows.map((f, i) => `
+      <div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg3);border-radius:6px;">
+        <span style="flex:1;font-size:13px;">${esc(f.name)}</span>
+        <button class="tbtn" style="font-size:11px;padding:2px 8px;" onclick="swEditFlow(${i})">Edit</button>
+        <button class="task-del" onclick="swDeleteFlow(${i})">??</button>
+      </div>
+    `).join('');
+}
+
+function swEditFlow(idx) {
+  const flow = swFlows[idx];
+  if (!flow) return;
+  
+  document.getElementById('sw-edit-idx').value = idx;
+  document.getElementById('sw-fname').value = flow.name;
+  document.getElementById('sw-ftemplate').value = flow.template;
+  document.getElementById('sw-form-hdr').textContent = 'Edit flow';
+  swPreviewFields();
+}
+
+function swDeleteFlow(idx) {
+  if (!confirm('Delete this flow?')) return;
+  swFlows.splice(idx, 1);
+  swSaveFlows();
+  swRenderFlowList();
+  swRenderFlowSelect();
+}
+
+function swFormClear() {
+  document.getElementById('sw-edit-idx').value = '';
+  document.getElementById('sw-fname').value = '';
+  document.getElementById('sw-ftemplate').value = '';
+  document.getElementById('sw-form-hdr').textContent = 'Add new flow';
+  swPreviewFields();
+}
+
+function swPreviewFields() {
+  const template = document.getElementById('sw-ftemplate').value;
+  const fields = swExtractFields(template);
+  const preview = document.getElementById('sw-field-preview');
+  
+  if (!preview) return;
+  
+  preview.innerHTML = fields.length === 0 
+    ? 'Type a template above - fields will appear here as you use <span style="color:var(--blue);">{curly braces}</span>.'
+    : fields.map(f => `<code style="background:var(--bbg);color:var(--blue);padding:2px 6px;border-radius:3px;margin:2px;">{${esc(f)}}</code>`).join(' ');
+}
+
+function swSaveFlow() {
+  const name = document.getElementById('sw-fname').value.trim();
+  const template = document.getElementById('sw-ftemplate').value.trim();
+  
+  if (!name || !template) {
+    showToast('Name and template are required');
+    return;
+  }
+  
+  const idx = parseInt(document.getElementById('sw-edit-idx').value);
+  const flow = { name, template };
+  
+  if (!isNaN(idx) && idx >= 0) {
+    swFlows[idx] = flow;
+  } else {
+    swFlows.push(flow);
+  }
+  
+  swSaveFlows();
+  swRenderFlowList();
+  swRenderFlowSelect();
+  swFormClear();
+  showToast('Flow saved');
+}
+
+// NATO Phonetic Alphabet
+const NATO = {
+  'A': 'Alpha', 'B': 'Bravo', 'C': 'Charlie', 'D': 'Delta', 'E': 'Echo',
+  'F': 'Foxtrot', 'G': 'Golf', 'H': 'Hotel', 'I': 'India', 'J': 'Juliett',
+  'K': 'Kilo', 'L': 'Lima', 'M': 'Mike', 'N': 'November', 'O': 'Oscar',
+  'P': 'Papa', 'Q': 'Quebec', 'R': 'Romeo', 'S': 'Sierra', 'T': 'Tango',
+  'U': 'Uniform', 'V': 'Victor', 'W': 'Whiskey', 'X': 'X-ray', 'Y': 'Yankee', 'Z': 'Zulu',
+  '0': 'Zero', '1': 'One', '2': 'Two', '3': 'Three', '4': 'Four',
+  '5': 'Five', '6': 'Six', '7': 'Seven', '8': 'Eight', '9': 'Nine'
+};
+
+function renderPhonetic() {
+  const input = document.getElementById('ph-input').value.toUpperCase();
+  const output = document.getElementById('ph-output');
+  const empty = document.getElementById('ph-empty');
+  
+  if (!input) {
+    output.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  
+  const phonetic = input.split('').map(char => NATO[char] || char).join(' ');
+  output.textContent = phonetic;
+  output.style.display = 'block';
+  empty.style.display = 'none';
+}
+
+function copyPhonetic() {
+  const output = document.getElementById('ph-output');
+  if (!output) return;
+  
+  const text = output.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Phonetic text copied');
+  }).catch(() => {
+    // Fallback for older browsers
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    showToast('Phonetic text copied');
+  });
+}
+
+// Elapsed Time
+let etInterval = null;
+let etStartTime = null;
+
+function etSetNow() {
+  const now = new Date();
+  const timeStr = now.toTimeString().slice(0, 5);
+  document.getElementById('et-start').value = timeStr;
+  etStartTimer();
+}
+
+function etStartTimer() {
+  const timeInput = document.getElementById('et-start').value;
+  if (!timeInput) return;
+  
+  const [hours, minutes] = timeInput.split(':').map(Number);
+  const now = new Date();
+  const start = new Date();
+  start.setHours(hours, minutes, 0, 0);
+  
+  // If the time is in the past, assume it's today
+  if (start > now) {
+    start.setDate(start.getDate() - 1);
+  }
+  
+  etStartTime = start;
+  
+  if (etInterval) clearInterval(etInterval);
+  etInterval = setInterval(etUpdateTimer, 1000);
+  etUpdateTimer();
+  
+  document.getElementById('et-label').style.display = 'block';
+  document.getElementById('et-display').style.display = 'block';
+  document.getElementById('et-since').style.display = 'block';
+  document.getElementById('et-empty').style.display = 'none';
+  document.getElementById('et-copy-btn').style.display = 'inline-block';
+}
+
+function etUpdateTimer() {
+  if (!etStartTime) return;
+  
+  const now = new Date();
+  const diff = now - etStartTime;
+  
+  const hours = Math.floor(diff / 3600000);
+  const minutes = Math.floor((diff % 3600000) / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+  
+  const display = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  document.getElementById('et-display').textContent = display;
+  
+  const sinceStr = `Since ${etStartTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}`;
+  document.getElementById('et-since').textContent = sinceStr;
+}
+
+function etReset() {
+  if (etInterval) clearInterval(etInterval);
+  etInterval = null;
+  etStartTime = null;
+  
+  document.getElementById('et-start').value = '';
+  document.getElementById('et-label').style.display = 'none';
+  document.getElementById('et-display').style.display = 'none';
+  document.getElementById('et-since').style.display = 'none';
+  document.getElementById('et-empty').style.display = 'block';
+  document.getElementById('et-copy-btn').style.display = 'none';
+}
+
+function etCopyLog() {
+  if (!etStartTime) return;
+  
+  const now = new Date();
+  const diff = now - etStartTime;
+  const minutes = Math.floor(diff / 60000);
+  
+  const logText = `Event started: ${etStartTime.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}\nElapsed: ${minutes} minutes`;
+  
+  navigator.clipboard.writeText(logText).then(() => {
+    showToast('Elapsed time copied to log');
+  }).catch(() => {
+    // Fallback
+    const textarea = document.createElement('textarea');
+    textarea.value = logText;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    showToast('Elapsed time copied to log');
+  });
+}
+
+// Initialize ops tools when page loads
+function initOpsTools() {
+  swLoadFlows();
+  renderPhonetic();
+}
+
+// Simple test function
+function testAssetScan() {
+  console.log('=== ASSET SCAN TEST ===');
+  
+  // Test 1: Check if elements exist
+  const viewAsset = document.getElementById('view-asset');
+  const asTabs = document.getElementById('as-tabs');
+  const asFormWrap = document.getElementById('as-form-wrap');
+  
+  console.log('view-asset exists:', !!viewAsset);
+  console.log('as-tabs exists:', !!asTabs);
+  console.log('as-form-wrap exists:', !!asFormWrap);
+  
+  // Test 2: Check if AS_SITES is defined
+  console.log('AS_SITES defined:', typeof AS_SITES !== 'undefined');
+  console.log('AS_SITES length:', AS_SITES ? AS_SITES.length : 'undefined');
+  
+  // Test 3: Try to manually add content
+  if (asTabs) {
+    asTabs.innerHTML = '<button style="padding:5px;border:1px solid #ccc;">TEST BUTTON</button>';
+    console.log('Manual content added to as-tabs');
+  }
+  
+  if (asFormWrap) {
+    asFormWrap.innerHTML = '<div style="padding:20px;border:1px solid #ccc;">TEST FORM</div>';
+    console.log('Manual content added to as-form-wrap');
+  }
+  
+  console.log('=== END TEST ===');
+}
+
+// Initialize everything
+load().then(() => {
+  initOpsTools();
+  
+  // Run test
+  testAssetScan();
+  
+  // Initialize Asset Scan if we're on that view
+  if (document.getElementById('view-asset').classList.contains('active')) {
+    initAssetScan();
+  }
+  
+  // Add Asset Scan site dropdown listener
+  const siteSelect = document.getElementById('as-site-select');
+  if (siteSelect) {
+    siteSelect.addEventListener('change', (e) => {
+      selectSite(e.target.value);
+    });
+  }
+});
 </script>
 </body>
 </html>
