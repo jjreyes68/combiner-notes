@@ -1421,6 +1421,74 @@ const AS_SITES = [
       ]},
     ]
   },
+  { id:'CTLF', label:'Centenial Flats', stats:'NP: 1200MWh/400MW',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'1-CONTROL', fields:[
+        {n:'PV AVR Status [Enabled]',   t:'select', opts:['','Enabled','Disabled'], alert:''},
+        {n:'BESS AVR Status [Enabled]', t:'select', opts:['','Enabled','Disabled'], alert:''},
+      ]},
+      { title:'2-OUTPUT: HS', fields:[
+        {n:'HS MW',   t:'text', unit:'MW'},
+        {n:'HS kV',   t:'text', unit:'kV'},
+        {n:'HS MVAR', t:'text', unit:'MVAR'},
+      ]},
+      { title:'2-OUTPUT: PV1 & BESS1', fields:[
+        {n:'PV1 MW',   t:'text', unit:'MW'},
+        {n:'PV1 MWh',  t:'text', unit:'MWh'},
+        {n:'PV1 kV',   t:'text', unit:'kV'},
+        {n:'PV1 MVAR', t:'text', unit:'MVAR'},
+        {n:'BESS1 MW',            t:'text',   unit:'MW'},
+        {n:'BESS1 MWh',           t:'text',   unit:'MWh'},
+        {n:'BESS1 kV',            t:'text',   unit:'kV'},
+        {n:'BESS1 MVAR',          t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint',    t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'2-OUTPUT: PV2 & BESS2', fields:[
+        {n:'PV2 MW',   t:'text', unit:'MW'},
+        {n:'PV2 MWh',  t:'text', unit:'MWh'},
+        {n:'PV2 kV',   t:'text', unit:'kV'},
+        {n:'PV2 MVAR', t:'text', unit:'MVAR'},
+        {n:'BESS2 MW',            t:'text',   unit:'MW'},
+        {n:'BESS2 MWh',           t:'text',   unit:'MWh'},
+        {n:'BESS2 kV',            t:'text',   unit:'kV'},
+        {n:'BESS2 MVAR',          t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint',    t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'2-OUTPUT: PV3 & BESS3', fields:[
+        {n:'PV3 MW',   t:'text', unit:'MW'},
+        {n:'PV3 MWh',  t:'text', unit:'MWh'},
+        {n:'PV3 kV',   t:'text', unit:'kV'},
+        {n:'PV3 MVAR', t:'text', unit:'MVAR'},
+        {n:'BESS3 MW',            t:'text',   unit:'MW'},
+        {n:'BESS3 MWh',           t:'text',   unit:'MWh'},
+        {n:'BESS3 kV',            t:'text',   unit:'kV'},
+        {n:'BESS3 MVAR',          t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint',    t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [400+]',   t:'select', opts:['','Yes','No'], alert:''},
+        {n:'MWh [1200+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [15]',  t:'text',   unit:'/15 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [82]',  t:'text',   unit:'/82 Online'},
+        {n:'65+ PV Inverters',t:'select', opts:['','Yes','No'], alert:'No'},
+        {n:'BESS [312]',      t:'text',   unit:'/312 Available'},
+        {n:'280+ BESS',       t:'select', opts:['','Yes','No'], alert:'No'},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
   { id:'DFRN1', label:'Dufferin', stats:'Wind 91MW',
     sections:[
       { title:'0-STATUS', fields:[
