@@ -1348,6 +1348,42 @@ const AS_SITES = [
       ]},
     ]
   },
+  { id:'BYPS1', label:'Bypass', stats:'NP: 400MWh/200MW  V SET: ERCOT  BAND: +/-4kV',
+    sections:[
+      { title:'0-STATUS', fields:[
+        {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+      { title:'1-CONTROL', fields:[
+        {n:'AVRREPCC [On]', t:'select', opts:['','On','Off'], alert:''},
+      ]},
+      { title:'2-OUTPUT', fields:[
+        {n:'MW',                 t:'text',   unit:'MW'},
+        {n:'MWh',                t:'text',   unit:'MWh'},
+        {n:'kV',                 t:'text',   unit:'kV'},
+        {n:'MVAR',               t:'text',   unit:'MVAR'},
+        {n:'Following Setpoint', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'3-CAPACITY', fields:[
+        {n:'MW [200+]',  t:'select', opts:['','Yes','No'], alert:''},
+        {n:'MWh [400+]', t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'4-SUB EQUIP', fields:[
+        {n:'Breakers [9]',   t:'text',   unit:'/9 Closed'},
+        {n:'TO/SC Notified', t:'select', opts:['N/A','Yes','No'], alert:'No'},
+      ]},
+      { title:'5-FIELD EQUIP', fields:[
+        {n:'Inverters [65]', t:'text',   unit:'/65 Online'},
+        {n:'55+ Inverters',  t:'select', opts:['','Yes','No'], alert:''},
+        {n:'BESS [106]',     t:'text',   unit:'/106 Available'},
+        {n:'98+ BESS',       t:'select', opts:['','Yes','No'], alert:''},
+      ]},
+      { title:'6-SCHEDULING', fields:[
+        {n:'Outage In Place', t:'select', opts:['','Yes','No'], alert:''},
+        {n:'Notes', t:'textarea'},
+      ]},
+    ]
+  },
   { id:'CNDR1', label:'Condor BESS', stats:'NP: 818MWh/200MW  V SET: 115kV  BAND: 109.25–120.75kV',
     sections:[
       { title:'0-STATUS', fields:[
