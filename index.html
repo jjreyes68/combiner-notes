@@ -196,7 +196,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;
 .m-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;}
 .handoff-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:var(--m);font-size:12px;line-height:1.9;color:var(--text2);white-space:pre-wrap;max-height:420px;overflow-y:auto;}
 
-/* FIELD INTEL */
+/* Weather */
 .intel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
 .intel-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;box-shadow:var(--shs);display:flex;flex-direction:column;gap:10px;}
 .intel-card-hdr{display:flex;align-items:flex-start;gap:10px;}
@@ -327,7 +327,7 @@ select,option{background:var(--bg3);}
   </div>
   <button class="nav-tab active" onclick="switchView('scans',this)">Scans</button>
   <button class="nav-tab" onclick="switchView('asset',this)">Asset Scan</button>
-  <button class="nav-tab" onclick="switchView('intel',this)">Field Intel</button>
+  <button class="nav-tab" onclick="switchView('intel',this)">Weather</button>
   <button class="nav-tab" onclick="switchView('ops',this)">Tasks</button>
   <button class="nav-tab" onclick="switchView('swbuilder',this)">SW Builder</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('notes',this)">Notepad</button>
@@ -448,10 +448,10 @@ select,option{background:var(--bg3);}
   <div id="log-list" style="max-height:520px;overflow-y:auto;"></div>
 </div>
 
-<!-- FIELD INTEL -->
+<!-- Weather -->
 <div class="view" id="view-intel">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-    <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">Field Intel</div>
+    <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">Weather</div>
     <span style="font-size:12px;color:var(--text3);">Site weather &amp; conditions</span>
   </div>
   <div style="max-width:480px;">
