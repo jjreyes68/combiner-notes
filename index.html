@@ -750,16 +750,11 @@ select,option{background:var(--bg3);}
 <div class="view" id="view-map">
   <div class="map-toolbar">
     <span class="map-toolbar-title">Site Map</span>
-    <span style="font-size:11px;color:var(--text3);font-family:var(--m);" id="map-site-count"></span>
-    <button class="tbtn" style="font-size:11px;padding:4px 10px;" onclick="mapFitBounds()">Fit all sites</button>
-    <div class="map-legend">
-      <span class="map-legend-item"><span class="map-legend-dot" style="background:#2d9e6b;border-color:#1a6e4a;"></span>OK</span>
-      <span class="map-legend-item"><span class="map-legend-dot" style="background:#f5a623;border-color:#b36b00;"></span>Due soon</span>
-      <span class="map-legend-item"><span class="map-legend-dot" style="background:#e05540;border-color:#b33000;"></span>Overdue</span>
-      <span class="map-legend-item"><span class="map-legend-dot" style="background:#9e9a94;border-color:#6b6760;"></span>Never scanned</span>
-    </div>
+    <span style="font-size:11px;color:var(--text3);">Powered by BatchGeo</span>
+    <div class="nav-spacer"></div>
+    <a href="https://batchgeo.com/map/32d1a39cc9b52f667552861cfb472bef" target="_blank" class="tbtn" style="font-size:11px;padding:4px 10px;text-decoration:none;">Open Full Map</a>
   </div>
-  <div id="map-container"></div>
+  <iframe id="batchgeo-embed" src="https://batchgeo.com/map/32d1a39cc9b52f667552861cfb472bef?embed=1" style="flex:1;width:100%;height:100%;border:none;" allowfullscreen></iframe>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -2886,28 +2881,14 @@ function mapRefreshMarkers() {
   });
 }
 
-// Fit to all markers
-function mapFitBounds() {
-  if (!_map) return;
-  const pts = SITES.filter(s => s.lat && s.lng).map(s => [s.lat, s.lng]);
-  if (pts.length) _map.fitBounds(pts, { padding: [36, 36], maxZoom: 7 });
-}
-
-// Called when switching to Map tab
-let _mapFirstVisit = true;
+// Called by switchView('map'). BatchGeo iframe handles everything.
 function mapActivate() {
-  if (typeof L === 'undefined') {
-    document.getElementById('map-container').innerHTML = '<div style="padding:20px;color:var(--red);">Map library failed to load. Check internet connection.</div>';
-    return;
-  }
-  if (!_map) {
-    mapCreate();
-    mapFitBounds();
-    _mapFirstVisit = false;
-  } else {
-    _map.invalidateSize();
-    mapRefreshMarkers();
-    if (_mapFirstVisit) { mapFitBounds(); _mapFirstVisit = false; }
+  // BatchGeo iframe is already embedded, nothing to initialize
+  const iframe = document.getElementById('batchgeo-embed');
+  if (iframe) {
+    // Force refresh on tab switch to ensure proper sizing
+    iframe.style.opacity = '0.99';
+    setTimeout(() => iframe.style.opacity = '1', 50);
   }
 }
 
