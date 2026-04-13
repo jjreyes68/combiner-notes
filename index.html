@@ -324,7 +324,7 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 .map-legend{display:flex;align-items:center;gap:12px;margin-left:auto;flex-wrap:wrap;}
 .map-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);font-family:var(--m);}
 .map-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(0,0,0,.18);}
-#map-container{flex:1;min-height:0;height:calc(100vh - 48px - 44px);background:var(--bg3);}
+#batchgeo-embed{flex:1;min-height:0;width:100%;border:none;display:block;}
 /* Leaflet popup styled to match ops dashboard */
 .lf-popup .leaflet-popup-content-wrapper{background:var(--bg2);border:1px solid var(--border);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:0;font-family:'DM Sans',sans-serif;}
 .lf-popup .leaflet-popup-tip{background:var(--bg2);}
@@ -754,7 +754,7 @@ select,option{background:var(--bg3);}
     <div class="nav-spacer"></div>
     <a href="https://batchgeo.com/map/32d1a39cc9b52f667552861cfb472bef" target="_blank" class="tbtn" style="font-size:11px;padding:4px 10px;text-decoration:none;">Open Full Map</a>
   </div>
-  <iframe id="batchgeo-embed" src="https://batchgeo.com/map/32d1a39cc9b52f667552861cfb472bef?embed=1" style="flex:1;width:100%;height:100%;border:none;" allowfullscreen></iframe>
+  <iframe id="batchgeo-embed" src="https://batchgeo.com/map/32d1a39cc9b52f667552861cfb472bef?embed=1" allowfullscreen></iframe>
 </div>
 
 <div class="toast" id="toast"></div>
