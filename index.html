@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RNWBL — Ops Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
 :root{
   --bg:#f5f4f2;--bg2:#fff;--bg3:#eeece9;--bg4:#e4e1dc;
@@ -196,7 +197,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;
 .m-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;}
 .handoff-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:var(--m);font-size:12px;line-height:1.9;color:var(--text2);white-space:pre-wrap;max-height:420px;overflow-y:auto;}
 
-/* FIELD INTEL */
+/* Weather */
 .intel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
 .intel-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;box-shadow:var(--shs);display:flex;flex-direction:column;gap:10px;}
 .intel-card-hdr{display:flex;align-items:flex-start;gap:10px;}
@@ -281,6 +282,62 @@ body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;
 .toast.show{opacity:1;}
 .empty{font-size:12px;color:var(--text3);text-align:center;padding:16px 0;}
 select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;color:var(--text);font-family:var(--f);font-size:13px;}
+/* ── Log BUILDER ─────────────────────────────────────────────────────────────── */
+.sw-wrap{display:grid;grid-template-columns:320px 1fr;gap:14px;align-items:start;}
+@media(max-width:680px){.sw-wrap{grid-template-columns:1fr;}}
+.sw-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;box-shadow:var(--shs);}
+.sw-box-title{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.09em;text-transform:uppercase;margin-bottom:10px;}
+.sw-tpls{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;}
+.sw-tpl{display:flex;align-items:center;gap:0;padding:0;border-radius:7px;border:1.5px solid var(--border);background:var(--bg3);cursor:pointer;font-family:var(--f);font-size:12px;font-weight:600;transition:all .15s;overflow:hidden;text-align:left;}
+.sw-tpl:hover{border-color:var(--border2);background:var(--bg2);}
+.sw-tpl.sel-de{border-color:var(--red)!important;background:var(--rbg)!important;color:var(--red)!important;}
+.sw-tpl.sel-re{border-color:var(--green)!important;background:var(--gbg)!important;color:var(--green)!important;}
+.sw-tpl-stripe{width:4px;align-self:stretch;flex-shrink:0;}
+.sw-tpl-stripe.de{background:var(--red);}
+.sw-tpl-stripe.re{background:var(--green);}
+.sw-tpl-body{padding:8px 10px;flex:1;}
+.sw-tpl-site{font-size:10px;font-weight:500;color:var(--text3);display:block;margin-bottom:1px;}
+.sw-tpl.sel-de .sw-tpl-site,.sw-tpl.sel-re .sw-tpl-site{color:inherit;opacity:.75;}
+.sw-field{margin-bottom:10px;}
+.sw-field label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:4px;}
+.sw-field input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--f);font-size:13px;}
+.sw-field input:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.sw-out-hdr{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.09em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.sw-copy{padding:5px 16px;border-radius:6px;border:1px solid var(--green);background:var(--gbg);color:var(--green);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--f);transition:all .15s;}
+.sw-copy:hover,.sw-copy.ok{background:var(--green);color:#fff;border-color:var(--green);}
+.sw-result-hdr{font-size:12px;font-weight:700;text-align:center;padding:5px 10px;border-radius:5px;margin-bottom:10px;letter-spacing:.03em;}
+.sw-result-hdr.de{background:var(--rbg);color:var(--red);}
+.sw-result-hdr.re{background:var(--gbg);color:var(--green);}
+.sw-result-body{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:var(--m);font-size:12.5px;line-height:1.85;color:var(--text);min-height:100px;white-space:pre-wrap;word-break:break-word;}
+.sw-empty{color:var(--text3);font-size:12px;text-align:center;padding:28px 0;font-family:var(--f);}
+.sw-hist-list{display:flex;flex-direction:column;gap:4px;max-height:240px;overflow-y:auto;margin-top:6px;}
+.sw-hist-row{padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;cursor:pointer;transition:border-color .15s;}
+.sw-hist-row:hover{border-color:var(--border2);}
+.sw-hist-meta{font-size:10px;color:var(--text3);font-family:var(--m);}
+.sw-hist-snip{font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+/* ── MAP VIEW ───────────────────────────────────────────────────────────────── */
+#view-map{padding:0;display:none;flex-direction:column;}
+#view-map.active{display:flex;}
+.map-toolbar{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;}
+.map-toolbar-title{font-size:13px;font-weight:600;margin-right:4px;}
+.map-legend{display:flex;align-items:center;gap:12px;margin-left:auto;flex-wrap:wrap;}
+.map-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);font-family:var(--m);}
+.map-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(0,0,0,.18);}
+#map-container{flex:1;min-height:0;height:calc(100vh - 48px - 44px);}
+/* Leaflet popup styled to match ops dashboard */
+.lf-popup .leaflet-popup-content-wrapper{background:var(--bg2);border:1px solid var(--border);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.12);padding:0;font-family:'DM Sans',sans-serif;}
+.lf-popup .leaflet-popup-tip{background:var(--bg2);}
+.lf-popup .leaflet-popup-content{margin:0;padding:0;}
+.map-popup{padding:13px 15px;min-width:200px;}
+.map-popup-name{font-size:14px;font-weight:700;color:#1a1917;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.map-popup-meta{font-size:11px;color:#6b6760;font-family:'DM Mono',monospace;margin-bottom:3px;}
+.map-popup-badges{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
+.map-popup-scan{width:100%;padding:6px 0;border-radius:6px;border:none;background:#1a6e4a;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;}
+.map-popup-scan:hover{background:#2d9e6b;}
+/* Custom SVG marker — sized for ops readability */
+.map-marker-svg{filter:drop-shadow(0 2px 4px rgba(0,0,0,.22));}
+
+select,option{background:var(--bg3);}
 </style>
 </head>
 <body>
@@ -292,8 +349,10 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
   </div>
   <button class="nav-tab active" onclick="switchView('scans',this)">Scans</button>
   <button class="nav-tab" onclick="switchView('asset',this)">Asset Scan</button>
-  <button class="nav-tab" onclick="switchView('intel',this)">Field Intel</button>
+  <button class="nav-tab" onclick="switchView('intel',this)">Weather</button>
   <button class="nav-tab" onclick="switchView('ops',this)">Tasks</button>
+  <button class="nav-tab" onclick="switchView('swbuilder',this)">Log Builder</button>
+  <button class="nav-tab" onclick="switchView('map',this)">Map</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('notes',this)">Notepad</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('log',this)">Log</button>
   <div class="nav-spacer"></div>
@@ -412,10 +471,10 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
   <div id="log-list" style="max-height:520px;overflow-y:auto;"></div>
 </div>
 
-<!-- FIELD INTEL -->
+<!-- Weather -->
 <div class="view" id="view-intel">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-    <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">Field Intel</div>
+    <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">Weather</div>
     <span style="font-size:12px;color:var(--text3);">Site weather &amp; conditions</span>
   </div>
   <div style="max-width:480px;">
@@ -483,6 +542,11 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
     <input id="site-threshold" type="number" value="5" min="1">
     <label>Location (city/state — used for weather search)</label>
     <input id="site-location" placeholder="e.g. Tehachapi, CA">
+    <label>Latitude & Longitude (optional — for map display)</label>
+    <div style="display:flex;gap:8px;">
+      <input id="site-lat" type="number" step="0.001" placeholder="e.g. 35.373" style="flex:1;">
+      <input id="site-lng" type="number" step="0.001" placeholder="e.g. -119.018" style="flex:1;">
+    </div>
     <label>Reference info (shown on hover — NP, voltage, band)</label>
     <textarea id="site-notes" placeholder="NP: 818MWh / 200MW&#10;V SET POINT: 115kV&#10;BAND: 109.25kV–120.75kV"></textarea>
     <div class="m-actions">
@@ -600,6 +664,103 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
   </div>
 </div>
 
+<!-- Log BUILDER ─────────────────────────────────────────────────────────────── -->
+<div class="view" id="view-swbuilder">
+  <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:14px;">
+    <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">SoftWrench Log Builder</div>
+    <span style="font-size:12px;color:var(--text3);">Select template → fill name &amp; number → copy</span>
+  </div>
+  <div class="sw-wrap">
+
+    <!-- LEFT PANEL ─────────────────────── -->
+    <div>
+      <div class="sw-box">
+        <div class="sw-box-title">Template</div>
+
+        <!-- ALL 6 HARDCODED — always visible, no JS needed to render -->
+        <div class="sw-tpls">
+          <button class="sw-tpl" id="swtpl-harq-de" onclick="swSelect('harq-de',this)">
+            <span class="sw-tpl-stripe de"></span>
+            <span class="sw-tpl-body"><span class="sw-tpl-site">HARQ · Feeder Breaker</span>De-Energize</span>
+          </button>
+          <button class="sw-tpl" id="swtpl-harq-re" onclick="swSelect('harq-re',this)">
+            <span class="sw-tpl-stripe re"></span>
+            <span class="sw-tpl-body"><span class="sw-tpl-site">HARQ · Feeder Breaker</span>Re-Energize</span>
+          </button>
+          <button class="sw-tpl" id="swtpl-prgrn-de" onclick="swSelect('prgrn-de',this)">
+            <span class="sw-tpl-stripe de"></span>
+            <span class="sw-tpl-body"><span class="sw-tpl-site">PRGRN · MVT</span>De-Energize</span>
+          </button>
+          <button class="sw-tpl" id="swtpl-prgrn-re" onclick="swSelect('prgrn-re',this)">
+            <span class="sw-tpl-stripe re"></span>
+            <span class="sw-tpl-body"><span class="sw-tpl-site">PRGRN · MVT</span>Re-Energize</span>
+          </button>
+          <button class="sw-tpl" id="swtpl-cndr-de" onclick="swSelect('cndr-de',this)">
+            <span class="sw-tpl-stripe de"></span>
+            <span class="sw-tpl-body"><span class="sw-tpl-site">Condor · MVT Local</span>De-Energize</span>
+          </button>
+          <button class="sw-tpl" id="swtpl-cndr-re" onclick="swSelect('cndr-re',this)">
+            <span class="sw-tpl-stripe re"></span>
+            <span class="sw-tpl-body"><span class="sw-tpl-site">Condor · MVT Local</span>Re-Energize</span>
+          </button>
+        </div>
+
+        <div class="sw-field">
+          <label>Field Tech Name</label>
+          <input id="sw-tech" list="sw-tech-list" placeholder="e.g. Jake Zulaf" oninput="swBuild()">
+          <datalist id="sw-tech-list">
+            <option>Adam McCauley</option><option>Alexander Conway</option><option>Christopher Hill</option>
+            <option>Jake Zulaf</option><option>Jesse Snygg-Carrasco</option><option>Jonathan Osborne</option>
+            <option>Mar'Cell Edwards</option><option>Morgan Shearer</option><option>Rob Seffern</option>
+            <option>Sergio Torres</option><option>Tineiaifi Malala</option><option>Tykeith</option>
+          </datalist>
+        </div>
+        <div class="sw-field">
+          <label id="sw-num-lbl">Number</label>
+          <input id="sw-num" type="text" placeholder="Select a template first" oninput="swBuild()">
+        </div>
+        <button class="btn-p" style="width:100%;margin-top:2px;" onclick="swSaveHistory()">Save to history</button>
+      </div>
+
+      <!-- HISTORY ────────────────────── -->
+      <div style="margin-top:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px;margin-bottom:4px;">
+          <span style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.09em;text-transform:uppercase;">Recent</span>
+          <button class="tbtn" style="font-size:11px;padding:2px 8px;" onclick="swClearHistory()">Clear</button>
+        </div>
+        <div id="sw-hist-wrap"><div class="sw-empty">No history yet</div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL ────────────────────── -->
+    <div class="sw-box">
+      <div class="sw-out-hdr">
+        <span>Output — ready to paste into SoftWrench</span>
+        <button class="sw-copy" id="sw-copy-btn" onclick="swCopy()">Copy</button>
+      </div>
+      <div id="sw-out-hdr-badge"></div>
+      <div id="sw-out-body"><div class="sw-empty">Select a template to begin</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MAP VIEW ────────────────────────────────────────────────────────────────── -->
+<div class="view" id="view-map">
+  <div class="map-toolbar">
+    <span class="map-toolbar-title">Site Map</span>
+    <span style="font-size:11px;color:var(--text3);font-family:var(--m);" id="map-site-count"></span>
+    <button class="tbtn" style="font-size:11px;padding:4px 10px;" onclick="mapFitBounds()">Fit all sites</button>
+    <div class="map-legend">
+      <span class="map-legend-item"><span class="map-legend-dot" style="background:#2d9e6b;border-color:#1a6e4a;"></span>OK</span>
+      <span class="map-legend-item"><span class="map-legend-dot" style="background:#f5a623;border-color:#b36b00;"></span>Due soon</span>
+      <span class="map-legend-item"><span class="map-legend-dot" style="background:#e05540;border-color:#b33000;"></span>Overdue</span>
+      <span class="map-legend-item"><span class="map-legend-dot" style="background:#9e9a94;border-color:#6b6760;"></span>Never scanned</span>
+    </div>
+  </div>
+  <div id="map-container"></div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -612,68 +773,73 @@ function defaultSites() {
   return [
     // NERC BESS ---------------------------------------------------------------
     {id:101,name:'CNDR1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Tehachapi, CA',
+     lat:35.13,lng:-118.45,
      notes:'NP: 818MWh / 200MW\nV SET: 115kV\nBAND: 109.25kV–120.75kV\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
     {id:102,name:'PRGN1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Mojave, CA',
+     lat:35.05,lng:-118.17,
      notes:'NP: 430MWh / 200MW\nV SET: 231.3kV\nBAND: 228kV–234kV\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
     {id:103,name:'HARQ2',nerc:true,interval:30,threshold:5,lastScan:null,location:'Harper Lake, CA',
+     lat:34.925,lng:-117.312,
      notes:'NP: 1299MWh / 300MW\nV SET: 525kV\nBAND: 498.75kV–551.25kV\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
     {id:104,name:'KUNA1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Kuna, ID',
+     lat:43.491,lng:-116.420,
      notes:'NP: 600MWh / 150MW\nV SET: 142kV\nBAND: 138kV–144.9kV\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
     {id:105,name:'BLKW1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Bakersfield, CA',
+     lat:35.373,lng:-119.018,
      notes:'NP: 12MW\nV SET: 11.7kV\nNO BAND\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
     {id:106,name:'GLTA1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Goleta, CA',
+     lat:34.436,lng:-119.827,
      notes:'NP: 160MWh / 60MW\nV SET: 66.00kV\nBAND: 63.17kV–69.83kV\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
     {id:107,name:'COSO1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Coso Junction, CA',
+     lat:36.043,lng:-117.952,
      notes:'NP: 240MWh / 60MW\nV SET: 235kV\nBAND: 230.3kV–239.7kV\nAVR/Voltage · Receive/Follow Dispatch · Nameplate'},
     // Solar -------------------------------------------------------------------
-    {id:201,name:'HARQ1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Harper Lake, CA',
+    {id:201,name:'HARQ1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Harper Lake, CA',
+     lat:34.910,lng:-117.295,
      notes:'PV 200MW\nInverters inverting?\nRates about the same?'},
-    {id:202,name:'ANGF1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Angel Fire, NM',
-     notes:'PV 7.7MW  BESS 3.5MW / 7MWh\nInverters inverting?\nRates about the same?'},
-    {id:203,name:'AVLN1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Taos, NM',
+    {id:203,name:'AVLN1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Taos, NM',
+     lat:36.408,lng:-105.573,
      notes:'PV 19.7MW  BESS 12MW / 24MWh\nInverters inverting?\nRates about the same?'},
-    {id:204,name:'NCLS1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Nicolis, CA',
+    {id:204,name:'NCLS1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Nicolis, CA',
+     lat:38.831,lng:-121.553,
      notes:'PV 26MW\nInverters inverting?\nRates about the same?'},
-    {id:205,name:'TSMS1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Rosamond, CA',
-     notes:'PV 18.2MW\nInverters inverting?\nRates about the same?'},
-    {id:206,name:'TLRE1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Tulare, CA',
-     notes:'PV 3.6MW\nInverters inverting?\nRates about the same?'},
-    {id:207,name:'PRTV1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Porterville, CA',
-     notes:'PV 3.6MW\nInverters inverting?\nRates about the same?'},
-    {id:208,name:'LSTH1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Lost Hills, CA',
-     notes:'PV 26MW\nInverters inverting?\nRates about the same?'},
-    {id:209,name:'HNFD1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Hanford, CA',
-     notes:'PV 3.6MW\nInverters inverting?\nRates about the same?'},
-    {id:210,name:'FRMV1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Farmersville, CA',
-     notes:'PV 5.4MW\nInverters inverting?\nRates about the same?'},
-    {id:211,name:'AVLN2',nerc:false,interval:30,threshold:5,lastScan:null,location:'Avalon, CA',
+    {id:211,name:'AVLN2',nerc:true,interval:30,threshold:5,lastScan:null,location:'Avalon, CA',
+     lat:33.343,lng:-118.328,
      notes:'PV 25MW\nInverters inverting?\nRates about the same?'},
-    {id:212,name:'BLKW2',nerc:false,interval:30,threshold:5,lastScan:null,location:'Blackwell, OK',
+    {id:212,name:'BLKW2',nerc:true,interval:30,threshold:5,lastScan:null,location:'Blackwell, OK',
+     lat:36.803,lng:-97.284,
      notes:'PV 16.2MW\nInverters inverting?\nRates about the same?'},
-    {id:213,name:'LSTH2',nerc:false,interval:30,threshold:5,lastScan:null,location:'Lost Hills, CA',
+    {id:213,name:'LSTH2',nerc:true,interval:30,threshold:5,lastScan:null,location:'Lost Hills, CA',
+     lat:35.615,lng:-119.692,
      notes:'PV 27.6MW\nNP: 20MW  V SET: 71kV  BAND: 70.29–71.71kV\nInverters inverting?\nRates about the same?'},
-    {id:214,name:'NSTR1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Kern County, CA',
+    {id:214,name:'NSTR1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Kern County, CA',
+     lat:35.452,lng:-119.150,
      notes:'PV 60MW\nNP: 60MW  V SET: 119kV  BAND: 117.81–120.19kV\nInverters inverting?\nRates about the same?'},
     // Wind --------------------------------------------------------------------
-    {id:301,name:'DFRN1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Dufferin, Ontario',
+    {id:301,name:'DFRN1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Dufferin, Ontario',
+     lat:44.152,lng:-80.109,
      notes:'Wind 91MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
-    {id:302,name:'MCLM1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Manitoulin Island, Ontario',
+    {id:302,name:'MCLM1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Manitoulin Island, Ontario',
+     lat:45.768,lng:-82.019,
      notes:'Wind 60MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
-    {id:303,name:'GDWL1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Goodwell, OK',
+    {id:303,name:'GDWL1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Goodwell, OK',
+     lat:36.600,lng:-101.630,
      notes:'Wind 200MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
-    {id:304,name:'LNDL1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Lincoln County, MN',
+    {id:304,name:'LNDL1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Lincoln County, MN',
+     lat:44.414,lng:-96.272,
      notes:'Wind 150MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
-    {id:305,name:'ORGN1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Kern County, CA',
+    {id:305,name:'ORGN1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Kern County, CA',
+     lat:35.500,lng:-118.800,
      notes:'Wind 150MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
-    {id:306,name:'RKRD1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Kern County, CA',
+    {id:306,name:'RKRD1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Kern County, CA',
+     lat:35.480,lng:-118.840,
      notes:'Wind 149MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
-    {id:307,name:'PRRS1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Elk County, KS',
+    {id:307,name:'PRRS1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Elk County, KS',
+     lat:37.363,lng:-96.252,
      notes:'Wind 200MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
-    {id:308,name:'DIBL1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Diablo Range, CA',
+    {id:308,name:'DIBL1',nerc:true,interval:30,threshold:5,lastScan:null,location:'Diablo Range, CA',
+     lat:37.120,lng:-121.350,
      notes:'Wind 16.68MW\nInverters inverting?\nRates about the same?\nCheck for Trips'},
-    // ROC ---------------------------------------------------------------------
-    {id:401,name:'ROCC1',nerc:false,interval:30,threshold:5,lastScan:null,location:'Remote Ops Center',
-     notes:'CAISO ADS\nIndji Watch\nStay Safe systems'},
   ];
 }
 
@@ -750,6 +916,7 @@ async function load() {
   renderEquip();
   restoreAdhocTimers();
   asInit();
+  swInit();
   // Restore escalation contacts
   const rows = document.querySelectorAll('#esc-tbody tr');
   const tkeys = ['t1','t2','t3'];
@@ -768,6 +935,7 @@ function switchView(v, el) {
   if(v==='log') renderLog();
   if(v==='scans') { refreshScanStatuses(); renderSites(); }
   if(v==='asset') { asRenderTabs(); asRenderForm(); }
+  if(v==='map') mapActivate();
 }
 
 // ─── 30-MIN TIMER ─────────────────────────────────────────────────────────────
@@ -971,8 +1139,18 @@ function scanAll(){
 function saveSite(){
   const name=document.getElementById('site-name').value.trim(); if(!name)return;
   const editId=document.getElementById('site-edit-id').value;
-  const d={name,nerc:document.getElementById('site-nerc').value==='1',interval:parseInt(document.getElementById('site-interval').value)||30,threshold:parseInt(document.getElementById('site-threshold').value)||5,location:document.getElementById('site-location').value.trim(),notes:document.getElementById('site-notes').value.trim()};
-  if(editId){ const s=SITES.find(x=>x.id===parseInt(editId)); if(s)Object.assign(s,d); }
+  const lat=parseFloat(document.getElementById('site-lat').value)||null;
+  const lng=parseFloat(document.getElementById('site-lng').value)||null;
+  const d={name,nerc:document.getElementById('site-nerc').value==='1',interval:parseInt(document.getElementById('site-interval').value)||30,threshold:parseInt(document.getElementById('site-threshold').value)||5,location:document.getElementById('site-location').value.trim(),notes:document.getElementById('site-notes').value.trim(),lat,lng};
+  if(editId){
+    const s=SITES.find(x=>x.id===parseInt(editId));
+    if(s){
+      // Preserve lat/lng if new values aren't provided (inputs left blank)
+      if(!lat) d.lat=s.lat;
+      if(!lng) d.lng=s.lng;
+      Object.assign(s,d);
+    }
+  }
   else SITES.push({id:Date.now(),lastScan:null,...d});
   closeModal('modal-add-site'); saveSites(SITES); renderSites(); showToast('Site saved');
 }
@@ -985,6 +1163,8 @@ function editSite(id){
   document.getElementById('site-interval').value=s.interval||30;
   document.getElementById('site-threshold').value=s.threshold||5;
   document.getElementById('site-location').value=s.location||'';
+  document.getElementById('site-lat').value=s.lat||'';
+  document.getElementById('site-lng').value=s.lng||'';
   document.getElementById('site-notes').value=s.notes||'';
   openModal('modal-add-site');
 }
@@ -2408,7 +2588,317 @@ function asExportCSV() {
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
 }
 
+// ─── Log BUILDER ──────────────────────────────────────────────────────────────
+// Templates hardcoded — identical to the 6 Excel formulas provided
+const SW_TPLS = {
+  'harq-de': {
+    cls: 'de',
+    hdr: 'Harq De Energize',
+    numLbl: 'Feeder Breaker #',
+    numPlaceholder: 'e.g. 24',
+    build: (t, n) =>
+      `Call received from field tech ${t} requesting de-energization of Feeder Breaker 52F${n}:\n` +
+      `– Associated Megapacks disabled remotely\n` +
+      `– MVT AC Level Breakers opened remotely\n` +
+      `– Feeder Breaker 52F${n} opened remotely`
+  },
+  'harq-re': {
+    cls: 're',
+    hdr: 'Harq Energize',
+    numLbl: 'Feeder Breaker #',
+    numPlaceholder: 'e.g. 15',
+    build: (t, n) =>
+      `Call received from field tech ${t} requesting energization of Feeder Breaker 52F${n}:\n` +
+      `– Feeder Breaker 52F${n} closed remotely\n` +
+      `– MVT AC Level Breakers closed remotely\n` +
+      `– Associated Megapacks enabled remotely`
+  },
+  'prgrn-de': {
+    cls: 'de',
+    hdr: 'PRGRN De Energize',
+    numLbl: 'MVT #',
+    numPlaceholder: 'e.g. 41',
+    build: (t, n) =>
+      `Call received from field tech ${t} requesting de-energization of MVT ${n}:\n` +
+      `– Associated Megapacks disabled remotely\n` +
+      `– MVT AC Level Breakers opened remotely\n` +
+      `– Oil switch opened locally`
+  },
+  'prgrn-re': {
+    cls: 're',
+    hdr: 'PRGRN RE Energize',
+    numLbl: 'MVT #',
+    numPlaceholder: 'e.g. 40',
+    build: (t, n) =>
+      `Call received from field tech ${t} requesting energization of MVT ${n}:\n` +
+      `– Oil switch closed locally\n` +
+      `– MVT AC Level Breakers closed remotely\n` +
+      `– Associated Megapacks enabled remotely`
+  },
+  'cndr-de': {
+    cls: 'de',
+    hdr: 'Condor De Energize',
+    numLbl: 'MVT #',
+    numPlaceholder: 'e.g. 8',
+    build: (t, n) =>
+      `Call received from field tech ${t} requesting permission to de-energize MVT ${n} Locally. ` +
+      `Permission was granted, and local switching was completed.`
+  },
+  'cndr-re': {
+    cls: 're',
+    hdr: 'Condor RE Energize',
+    numLbl: 'MVT #',
+    numPlaceholder: 'e.g. 8',
+    build: (t, n) =>
+      `Call received from field tech ${t} requesting permission to Energize MVT ${n} Locally. ` +
+      `Permission was granted, and local switching was completed.`
+  }
+};
+
+let swActive = null;   // active template id string
+let swHist   = [];     // in-memory + localStorage
+
+function swInit() {
+  try { swHist = JSON.parse(localStorage.getItem('sw_hist_v1') || '[]'); } catch(e) { swHist = []; }
+  swRenderHist();
+}
+
+function swSelect(id, el) {
+  swActive = id;
+  // Clear all selection classes
+  document.querySelectorAll('.sw-tpl').forEach(b => { b.classList.remove('sel-de','sel-re'); });
+  const tpl = SW_TPLS[id]; if (!tpl) return;
+  el.classList.add('sel-' + tpl.cls);
+  // Update number label + placeholder
+  document.getElementById('sw-num-lbl').textContent = tpl.numLbl;
+  document.getElementById('sw-num').placeholder = tpl.numPlaceholder;
+  swBuild();
+}
+
+function swBuild() {
+  const tpl = SW_TPLS[swActive];
+  if (!tpl) return;
+  const tech = document.getElementById('sw-tech').value.trim() || '[Tech Name]';
+  const num  = document.getElementById('sw-num').value.trim()  || '[Number]';
+  const text = tpl.build(tech, num);
+  document.getElementById('sw-out-hdr-badge').innerHTML =
+    `<div class="sw-result-hdr ${tpl.cls}">${tpl.hdr}</div>`;
+  document.getElementById('sw-out-body').textContent = text;
+}
+
+function swGetText() {
+  const tpl = SW_TPLS[swActive]; if (!tpl) return '';
+  const tech = document.getElementById('sw-tech').value.trim() || '[Tech Name]';
+  const num  = document.getElementById('sw-num').value.trim()  || '[Number]';
+  return tpl.build(tech, num);
+}
+
+function swCopy() {
+  const text = swGetText();
+  if (!text) { showToast('Select a template first'); return; }
+  try {
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('sw-copy-btn');
+      btn.textContent = 'Copied ✓'; btn.classList.add('ok');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1800);
+    });
+  } catch(e) { showToast('Use Ctrl+C — clipboard blocked'); }
+}
+
+function swSaveHistory() {
+  const tpl = SW_TPLS[swActive];
+  if (!tpl) { showToast('Select a template first'); return; }
+  const tech = document.getElementById('sw-tech').value.trim();
+  const num  = document.getElementById('sw-num').value.trim();
+  if (!tech) { showToast('Enter a tech name first'); return; }
+  if (!num)  { showToast('Enter a number first'); return; }
+  const entry = {
+    id: Date.now(), tplId: swActive, cls: tpl.cls,
+    hdr: tpl.hdr, tech, num,
+    text: tpl.build(tech, num),
+    ts: Date.now()
+  };
+  swHist.unshift(entry);
+  if (swHist.length > 30) swHist.length = 30;
+  try { localStorage.setItem('sw_hist_v1', JSON.stringify(swHist)); } catch(e) {}
+  swRenderHist();
+  showToast('Saved to history');
+}
+
+function swLoadHist(id) {
+  const h = swHist.find(x => x.id === id); if (!h) return;
+  // Reselect template button
+  const btn = document.getElementById('swtpl-' + h.tplId);
+  if (btn) swSelect(h.tplId, btn);
+  document.getElementById('sw-tech').value = h.tech;
+  document.getElementById('sw-num').value  = h.num;
+  swBuild();
+}
+
+function swClearHistory() {
+  if (!swHist.length) return;
+  if (!confirm('Clear all history?')) return;
+  swHist = [];
+  try { localStorage.removeItem('sw_hist_v1'); } catch(e) {}
+  swRenderHist();
+}
+
+function swRenderHist() {
+  const wrap = document.getElementById('sw-hist-wrap');
+  if (!swHist.length) { wrap.innerHTML = '<div class="sw-empty">No history yet</div>'; return; }
+  const rows = swHist.map(h => {
+    const t = new Date(h.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const col = h.cls === 're' ? 'var(--green)' : 'var(--red)';
+    return `<div class="sw-hist-row" onclick="swLoadHist(${h.id})">
+      <div class="sw-hist-meta">${t} · <span style="color:${col};font-weight:600;">${esc(h.hdr)}</span></div>
+      <div class="sw-hist-snip">${esc(h.tech)} · #${esc(h.num)}</div>
+    </div>`;
+  }).join('');
+  wrap.innerHTML = '<div class="sw-hist-list">' + rows + '</div>';
+}
+
+// ─── MAP ─────────────────────────────────────────────────────────────────────
+// Leaflet is loaded from CDN. We create the map once and reuse it — calling
+// invalidateSize() fixes the common "grey tile" bug when Leaflet initialises
+// inside a hidden element.
+
+// Marker fill colors keyed by siteStatus() return values
+const MAP_COLORS = {
+  ok:      { fill:'#2d9e6b', stroke:'#1a6e4a' },
+  due:     { fill:'#f5a623', stroke:'#b36b00' },
+  overdue: { fill:'#e05540', stroke:'#b33000' },
+  never:   { fill:'#9e9a94', stroke:'#6b6760' }
+};
+
+let _map        = null;  // Leaflet map instance — created once
+let _mapMarkers = {};    // siteId → L.marker, for fast status updates
+
+// Build an SVG circle DivIcon sized for operator readability
+function mapMakeIcon(status) {
+  const c = MAP_COLORS[status] || MAP_COLORS.never;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" class="map-marker-svg">
+    <circle cx="11" cy="11" r="8" fill="${c.fill}" stroke="${c.stroke}" stroke-width="2"/>
+    <circle cx="11" cy="11" r="3" fill="rgba(255,255,255,0.55)"/>
+  </svg>`;
+  return L.divIcon({
+    html: svg, className: '', iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -14]
+  });
+}
+
+// Build the HTML string inside each popup
+function mapPopupHtml(site) {
+  const st    = siteStatus(site);
+  const last  = site.lastScan ? timeSince(site.lastScan) : '—';
+  const c     = MAP_COLORS[st] || MAP_COLORS.never;
+  const label = STATUS_LABEL[st] || st;
+  const nerc  = site.nerc
+    ? `<span style="font-size:10px;background:#e8f0fb;color:#1a4d8a;border-radius:10px;padding:1px 7px;font-weight:600;">NERC</span>`
+    : '';
+  return `<div class="map-popup">
+    <div class="map-popup-name">
+      ${esc(site.name)}
+      ${nerc}
+      <span style="font-size:10px;background:${c.fill}22;color:${c.stroke};border-radius:10px;padding:1px 7px;font-weight:700;">${label}</span>
+    </div>
+    <div class="map-popup-meta">📍 ${esc(site.location||'—')}</div>
+    <div class="map-popup-meta" style="margin-bottom:8px;">🕐 Last scan: ${last}</div>
+    <button class="map-popup-scan" onclick="mapLogScan(${site.id})">Log scan</button>
+  </div>`;
+}
+
+// Called by popup button — closes popup then opens the scan modal
+function mapLogScan(id) {
+  if (_map) _map.closePopup();
+  openScanNote(id);
+}
+
+// First-time map creation. Runs once; subsequent calls to mapActivate() are cheap.
+function mapCreate() {
+  if (_map) return;                        // already exists
+  if (typeof L === 'undefined') return;    // Leaflet not loaded yet
+
+  _map = L.map('map-container', {
+    // Slightly warmer default zoom to show all US + Canada sites
+    zoomControl: true,
+    attributionControl: true
+  });
+
+  // CartoDB Positron — clean, monochrome, ops-appropriate, no API key required
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(_map);
+
+  mapBuildMarkers();
+}
+
+// Add/replace all markers. Runs once on creation; called again if SITES changes.
+function mapBuildMarkers() {
+  if (!_map) return;
+  // Remove any stale markers
+  Object.values(_mapMarkers).forEach(m => m.remove());
+  _mapMarkers = {};
+
+  const mappable = SITES.filter(s => s.lat && s.lng);
+  mappable.forEach(site => {
+    const marker = L.marker([site.lat, site.lng], { icon: mapMakeIcon(siteStatus(site)) })
+      .bindPopup(mapPopupHtml(site), { className: 'lf-popup', maxWidth: 260 })
+      .addTo(_map);
+    _mapMarkers[site.id] = marker;
+  });
+
+  // Update toolbar count
+  const el = document.getElementById('map-site-count');
+  if (el) el.textContent = `${mappable.length} of ${SITES.length} sites plotted`;
+}
+
+// Refresh marker icons + popup content when scan status may have changed.
+// Much cheaper than rebuilding markers from scratch.
+function mapRefreshMarkers() {
+  if (!_map) return;
+  SITES.forEach(site => {
+    const m = _mapMarkers[site.id];
+    if (!m) return;
+    m.setIcon(mapMakeIcon(siteStatus(site)));
+    // Rebuild popup content so "last scan" time is current
+    m.setPopupContent(mapPopupHtml(site));
+  });
+}
+
+// Fit the viewport to include all plotted markers
+function mapFitBounds() {
+  if (!_map) return;
+  const pts = SITES.filter(s => s.lat && s.lng).map(s => [s.lat, s.lng]);
+  if (pts.length) _map.fitBounds(pts, { padding: [36, 36], maxZoom: 7 });
+}
+
+// Called by switchView('map'). Creates map if needed, fixes grey-tile bug,
+// refreshes marker colors, and fits bounds on first visit.
+let _mapFirstVisit = true;
+function mapActivate() {
+  // Leaflet must be initialised after the container is visible
+  // (the view has just become active at this point)
+  if (typeof L === 'undefined') {
+    // Leaflet script not yet parsed — shouldn't happen with sync CDN include
+    document.getElementById('map-container').textContent = 'Map library failed to load.';
+    return;
+  }
+  if (!_map) {
+    mapCreate();
+    mapFitBounds();
+    _mapFirstVisit = false;
+  } else {
+    // invalidateSize() is essential after being hidden — forces tile recalculation
+    _map.invalidateSize();
+    mapRefreshMarkers();
+    if (_mapFirstVisit) { mapFitBounds(); _mapFirstVisit = false; }
+  }
+}
+
 load();
 </script>
+<!-- Leaflet loaded after app script so the map-container DOM exists -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 </body>
 </html>
