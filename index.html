@@ -335,6 +335,120 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 /* Custom SVG marker — sized for ops readability */
 .map-marker-svg{filter:drop-shadow(0 2px 4px rgba(0,0,0,.22));}
 
+/* ── TIME ZONE DASHBOARD ───────────────────────────────────────────────────── */
+#view-timezones{padding:0;height:calc(100vh - 48px);overflow:auto;background:var(--bg);}
+.tz-container{max-width:1400px;margin:0 auto;padding:16px}
+.tz-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.tz-header h1{font-size:20px;margin:0;font-weight:600}
+.tz-muted{color:var(--text2);font-size:12px}
+.tz-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tz-btn{font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;font-family:var(--f)}
+.tz-btn.active{background:var(--text);color:var(--bg2)}
+.tz-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+@media (max-width:900px){.tz-strip{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:600px){.tz-strip{grid-template-columns:repeat(2,1fr)}}
+.tz-strip-item{border:1px solid var(--border);border-radius:10px;background:var(--bg2);padding:10px 12px;display:flex;justify-content:space-between;align-items:center}
+.tz-strip-key{color:var(--text2);font-size:11px}
+.tz-strip-time{font-family:var(--m);font-size:18px;font-weight:500}
+.tz-search{position:relative;max-width:400px;margin-bottom:16px}
+.tz-search input{width:100%;padding:9px 12px 9px 34px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);font-family:var(--f);font-size:13px}
+.tz-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text2)}
+.tz-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:1200px){.tz-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:768px){.tz-grid{grid-template-columns:1fr}}
+.tz-card{border:1px solid var(--border);border-radius:14px;background:var(--bg2)}
+.tz-card-header{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border)}
+.tz-card-left{display:flex;gap:10px;align-items:center}
+.tz-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff}
+.tz-card-title{font-size:15px;font-weight:600}
+.tz-badge{font-size:10px;padding:2px 6px;border-radius:999px;background:var(--bg3);color:var(--text2)}
+.tz-card-content{display:grid;grid-template-columns:1fr 1px 1fr;gap:16px;align-items:center;padding:16px}
+@media (max-width:500px){.tz-card-content{grid-template-columns:1fr}}
+.tz-clock{font-family:var(--m);font-size:42px;line-height:1}
+.tz-date{color:var(--text2);margin-top:6px;font-size:13px}
+.tz-divider{width:1px;height:100%;background:var(--border)}
+@media (max-width:500px){.tz-divider{display:none}}
+.tz-sites-hdr{color:var(--text2);font-size:11px;text-transform:uppercase;margin-bottom:8px}
+.tz-sites{max-height:180px;overflow:auto}
+.tz-sites li{display:flex;justify-content:space-between;gap:8px;padding:3px 0;font-size:13px}
+.tz-sites .tz-loc{color:var(--text2);font-size:12px}
+.tz-footer{font-size:11px;color:var(--text2);margin-top:16px}
+
+/* ── PASSDOWN ────────────────────────────────────────────────────────────────── */
+#view-passdown{padding:0;}
+.pd-shell{display:grid;grid-template-columns:1fr 420px;height:calc(100vh - 48px);overflow:hidden;}
+@media(max-width:960px){.pd-shell{grid-template-columns:1fr;height:auto;overflow:visible;}}
+.pd-editor{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+.pd-preview-col{border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg2);overflow:hidden;}
+.pd-preview-toolbar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;}
+.pd-preview-title{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;flex:1;}
+.pd-preview-body{flex:1;overflow-y:auto;padding:16px;}
+.pd-preview-out{font-family:var(--m);font-size:12px;line-height:1.8;white-space:pre-wrap;color:var(--text);}
+.pd-ai-out{margin-top:12px;background:var(--bbg);border:1px solid var(--blue);border-radius:8px;padding:14px;font-size:12.5px;line-height:1.75;color:var(--text);display:none;font-family:var(--f);}
+.pd-ai-out.visible{display:block;}
+.pd-ai-loading{display:none;align-items:center;gap:8px;padding:10px 14px;font-size:12px;color:var(--blue);font-family:var(--m);}
+.pd-ai-loading.visible{display:flex;}
+.pd-ai-spinner{width:14px;height:14px;border:2px solid var(--bbg);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Header card */
+.pd-hdr-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px;box-shadow:var(--shs);}
+.pd-hdr-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.pd-hdr-field{display:flex;flex-direction:column;gap:3px;flex:1;min-width:120px;}
+.pd-hdr-field label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;}
+.pd-hdr-field input,.pd-hdr-field select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:13px;color:var(--text);font-family:var(--f);}
+.pd-hdr-field input:focus,.pd-hdr-field select:focus{outline:none;border-color:var(--blue);}
+
+/* Section */
+.pd-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);box-shadow:var(--shs);overflow:hidden;}
+.pd-section-hdr{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none;border-bottom:1px solid var(--border);}
+.pd-section-hdr:hover{background:var(--bg3);}
+.pd-section-icon{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.pd-section-label{font-size:12px;font-weight:700;letter-spacing:.04em;flex:1;}
+.pd-section-count{font-size:11px;color:var(--text3);font-family:var(--m);}
+.pd-section-arrow{font-size:10px;color:var(--text3);transition:transform .2s;}
+.pd-section-arrow.open{transform:rotate(90deg);}
+.pd-section-body{display:none;padding:8px 10px;display:flex;flex-direction:column;gap:5px;}
+
+/* Site row */
+.pd-site-row{display:grid;grid-template-columns:auto 1fr auto;gap:6px;align-items:start;padding:8px 10px;border-radius:7px;background:var(--bg3);border:1px solid transparent;transition:border-color .15s;}
+.pd-site-row:hover{border-color:var(--border);}
+.pd-site-row.has-note{background:var(--bg2);border-color:var(--border);}
+.pd-site-name-col{display:flex;flex-direction:column;gap:3px;min-width:80px;}
+.pd-site-name{font-size:12px;font-weight:700;color:var(--text);font-family:var(--m);}
+.pd-site-loc{font-size:10px;color:var(--text3);}
+.pd-site-inputs{display:flex;flex-direction:column;gap:4px;}
+.pd-site-top{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
+.pd-status-btns{display:flex;gap:3px;}
+.pd-status-btn{padding:3px 8px;border-radius:10px;border:1px solid var(--border);background:var(--bg4);color:var(--text3);font-size:10px;font-weight:600;cursor:pointer;font-family:var(--f);transition:all .12s;white-space:nowrap;}
+.pd-status-btn:hover{border-color:var(--border2);color:var(--text2);}
+.pd-status-btn.s-none{background:var(--bg4);color:var(--text3);}
+.pd-status-btn.s-none.active{background:var(--bg4);color:var(--text2);border-color:var(--border2);}
+.pd-status-btn.s-monitor.active{background:var(--abg);color:var(--amber);border-color:var(--amber);}
+.pd-status-btn.s-active.active{background:var(--rbg);color:var(--red);border-color:var(--red);}
+.pd-status-btn.s-resolved.active{background:var(--gbg);color:var(--green);border-color:var(--green);}
+.pd-log-inp{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:3px 7px;font-size:11px;font-family:var(--m);color:var(--text2);width:90px;}
+.pd-log-inp:focus{outline:none;border-color:var(--blue);}
+.pd-notes-inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-size:12px;font-family:var(--f);color:var(--text);resize:vertical;min-height:34px;line-height:1.5;}
+.pd-notes-inp:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.pd-site-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:3px;border-radius:4px;opacity:.5;align-self:flex-start;margin-top:2px;}
+.pd-site-del:hover{color:var(--red);opacity:1;background:var(--rbg);}
+.pd-add-site-row{display:flex;gap:6px;padding:8px 10px;border-top:1px solid var(--border);margin-top:4px;}
+.pd-add-inp{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:12px;font-family:var(--m);color:var(--text);}
+.pd-add-inp:focus{outline:none;border-color:var(--green);}
+.pd-add-btn{padding:4px 10px;background:var(--gbg);border:1px solid var(--green);border-radius:6px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;}
+.pd-add-btn:hover{background:var(--green);color:#fff;}
+
+/* History sidebar item */
+.pd-hist-item{padding:9px 11px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:border-color .15s;}
+.pd-hist-item:hover{border-color:var(--border2);}
+.pd-hist-meta{font-size:10px;color:var(--text3);font-family:var(--m);margin-bottom:2px;}
+.pd-hist-snip{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* Copy flash */
+.pd-copy-flash{animation:flash .4s;}
+@keyframes flash{0%,100%{background:var(--gbg);}50%{background:var(--gmid);color:#fff;}}
+
 select,option{background:var(--bg3);}
 </style>
 </head>
@@ -351,6 +465,8 @@ select,option{background:var(--bg3);}
   <button class="nav-tab" onclick="switchView('ops',this)">Tasks</button>
   <button class="nav-tab" onclick="switchView('swbuilder',this)">Log Builder</button>
   <button class="nav-tab" onclick="switchView('map',this)">Map</button>
+  <button class="nav-tab" onclick="switchView('timezones',this)">Time Zones</button>
+  <button class="nav-tab" onclick="switchView('passdown',this)">Passdown</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('notes',this)">Notepad</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('log',this)">Log</button>
   <div class="nav-spacer"></div>
@@ -754,6 +870,158 @@ select,option{background:var(--bg3);}
   <iframe id="batchgeo-embed" src="https://batchgeo.com/map/32d1a39cc9b52f667552861cfb472bef?embed=1" allowfullscreen></iframe>
 </div>
 
+<!-- TIME ZONE DASHBOARD ────────────────────────────────────────────────────────── -->
+<div class="view" id="view-timezones">
+  <div class="tz-container">
+    <div class="tz-header">
+      <div>
+        <h1>Control Room – Time Zone Dashboard</h1>
+        <div class="tz-muted">Live clocks for all RNWBL sites. Arizona does not observe DST.</div>
+      </div>
+      <div class="tz-controls">
+        <button id="tz-btn24" class="tz-btn active">24h</button>
+        <button id="tz-btn12" class="tz-btn">12h</button>
+      </div>
+    </div>
+    <div class="tz-strip" id="tz-strip"></div>
+    <div class="tz-search">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="m19 19-4-4m1-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <input id="tz-search" placeholder="Search site, city, or zone…" />
+    </div>
+    <div class="tz-grid" id="tz-grid"></div>
+    <div class="tz-footer">Last update: <span id="tz-lastUpdate"></span> (auto-refreshing)</div>
+  </div>
+</div>
+
+<!-- PASSDOWN ─────────────────────────────────────────────────────────────────── -->
+<div class="view" id="view-passdown">
+<div class="pd-shell">
+
+  <!-- LEFT: EDITOR ──────────────────────────────────────────────── -->
+  <div class="pd-editor" id="pd-editor">
+
+    <!-- Header -->
+    <div class="pd-hdr-card">
+      <div class="pd-hdr-row">
+        <div class="pd-hdr-field">
+          <label>Date</label>
+          <input type="date" id="pd-date">
+        </div>
+        <div class="pd-hdr-field">
+          <label>Shift</label>
+          <select id="pd-shift">
+            <option value="Day">Day Shift</option>
+            <option value="Night">Night Shift</option>
+          </select>
+        </div>
+        <div class="pd-hdr-field" style="min-width:160px;">
+          <label>Author</label>
+          <input id="pd-author" list="pd-auth-list" placeholder="Your name">
+          <datalist id="pd-auth-list">
+            <option>Adam McCauley</option><option>Alexander Conway</option><option>Christopher Hill</option>
+            <option>Jesse Snygg-Carrasco</option><option>Jonathan Osborne</option><option>Mar'Cell Edwards</option>
+            <option>Morgan Shearer</option><option>Rob Seffern</option><option>Sergio Torres</option>
+          </datalist>
+        </div>
+        <div class="pd-hdr-field" style="min-width:160px;">
+          <label>Relieved by</label>
+          <input id="pd-relieved" list="pd-auth-list" placeholder="Incoming operator">
+        </div>
+      </div>
+    </div>
+
+    <!-- BESS section -->
+    <div class="pd-section" id="pds-bess">
+      <div class="pd-section-hdr" onclick="pdToggleSection('bess')">
+        <span class="pd-section-icon" style="background:#1a4d8a;"></span>
+        <span class="pd-section-label" style="color:var(--blue);">⚡ BESS Sites</span>
+        <span class="pd-section-count" id="pdc-bess">0 active</span>
+        <span class="pd-section-arrow open" id="pda-bess">▶</span>
+      </div>
+      <div class="pd-section-body" id="pdb-bess"></div>
+      <div class="pd-add-site-row">
+        <input class="pd-add-inp" id="pdadd-bess" placeholder="Site code, e.g. BYPS" onkeydown="if(event.key==='Enter')pdAddSite('bess')">
+        <button class="pd-add-btn" onclick="pdAddSite('bess')">+ Add</button>
+      </div>
+    </div>
+
+    <!-- Solar section -->
+    <div class="pd-section" id="pds-solar">
+      <div class="pd-section-hdr" onclick="pdToggleSection('solar')">
+        <span class="pd-section-icon" style="background:#b36b00;"></span>
+        <span class="pd-section-label" style="color:var(--amber);">☀ Solar (PV) Sites</span>
+        <span class="pd-section-count" id="pdc-solar">0 active</span>
+        <span class="pd-section-arrow open" id="pda-solar">▶</span>
+      </div>
+      <div class="pd-section-body" id="pdb-solar"></div>
+      <div class="pd-add-site-row">
+        <input class="pd-add-inp" id="pdadd-solar" placeholder="Site code, e.g. NSTR1" onkeydown="if(event.key==='Enter')pdAddSite('solar')">
+        <button class="pd-add-btn" onclick="pdAddSite('solar')">+ Add</button>
+      </div>
+    </div>
+
+    <!-- Wind section -->
+    <div class="pd-section" id="pds-wind">
+      <div class="pd-section-hdr" onclick="pdToggleSection('wind')">
+        <span class="pd-section-icon" style="background:#1a6e4a;"></span>
+        <span class="pd-section-label" style="color:var(--green);">💨 Wind Sites</span>
+        <span class="pd-section-count" id="pdc-wind">0 active</span>
+        <span class="pd-section-arrow open" id="pda-wind">▶</span>
+      </div>
+      <div class="pd-section-body" id="pdb-wind"></div>
+      <div class="pd-add-site-row">
+        <input class="pd-add-inp" id="pdadd-wind" placeholder="Site code, e.g. MCLM1" onkeydown="if(event.key==='Enter')pdAddSite('wind')">
+        <button class="pd-add-btn" onclick="pdAddSite('wind')">+ Add</button>
+      </div>
+    </div>
+
+    <!-- General section -->
+    <div class="pd-section" id="pds-general">
+      <div class="pd-section-hdr" onclick="pdToggleSection('general')">
+        <span class="pd-section-icon" style="background:var(--text3);"></span>
+        <span class="pd-section-label">📋 General / Action Items</span>
+        <span class="pd-section-count" id="pdc-general">0 active</span>
+        <span class="pd-section-arrow open" id="pda-general">▶</span>
+      </div>
+      <div class="pd-section-body" id="pdb-general"></div>
+      <div class="pd-add-site-row">
+        <input class="pd-add-inp" id="pdadd-general" placeholder="Item label, e.g. CTFL Testing" onkeydown="if(event.key==='Enter')pdAddSite('general')">
+        <button class="pd-add-btn" onclick="pdAddSite('general')">+ Add</button>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;">Saved Passdowns</span>
+        <button class="tbtn" style="font-size:11px;padding:2px 8px;" onclick="pdClearHistory()">Clear all</button>
+      </div>
+      <div id="pd-history" style="display:flex;flex-direction:column;gap:5px;"></div>
+    </div>
+
+  </div><!-- /pd-editor -->
+
+  <!-- RIGHT: LIVE PREVIEW ───────────────────────────────────────── -->
+  <div class="pd-preview-col">
+    <div class="pd-preview-toolbar">
+      <span class="pd-preview-title">Live Preview</span>
+      <button class="tbtn" style="font-size:11px;padding:4px 10px;" id="pd-copy-btn" onclick="pdCopy()">Copy</button>
+      <button class="btn-p" style="font-size:11px;padding:4px 12px;" onclick="pdSave()">Save</button>
+      <button class="tbtn" style="font-size:11px;padding:4px 10px;border-color:var(--blue);color:var(--blue);" onclick="pdSummarize()">✦ AI Summary</button>
+    </div>
+    <div class="pd-preview-body">
+      <div class="pd-ai-loading" id="pd-ai-loading">
+        <div class="pd-ai-spinner"></div>
+        <span>Generating summary…</span>
+      </div>
+      <div class="pd-ai-out" id="pd-ai-out"></div>
+      <div class="pd-preview-out" id="pd-preview-out">Fill in site notes to see the passdown preview here.</div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /view-passdown -->
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -931,6 +1199,7 @@ async function load() {
   restoreAdhocTimers();
   asInit();
   swInit();
+  pdInit();
   // Restore escalation contacts
   const rows = document.querySelectorAll('#esc-tbody tr');
   const tkeys = ['t1','t2','t3'];
@@ -950,7 +1219,37 @@ function switchView(v, el) {
   if(v==='scans') { refreshScanStatuses(); renderSites(); }
   if(v==='asset') { asRenderTabs(); asRenderForm(); }
   if(v==='map') mapActivate();
+  if(v==='timezones') initTimeZones();
+  if(v==='passdown') pdActivate();
 }
+
+// ─── TIME ZONE DASHBOARD ──────────────────────────────────────────────────────
+const TZ_ZONES=[
+  {key:'AZ',label:'Arizona (No DST)',tz:'America/Phoenix',accent:['#f5a623','#d97706'],sites:[
+    {name:'ROC',location:'Tempe, AZ'},{name:'CFLATS',location:'Salome, AZ'},{name:'MRCP1',location:'Maricopa County, AZ'},
+    {name:'Pediment',location:'Mesa, AZ'},{name:'HARQ 1&2',location:'Tonopah, AZ'},{name:'Avalon',location:'Sahuarita, AZ'}]},
+  {key:'PT',label:'Pacific Time',tz:'America/Los_Angeles',accent:['#6366f1','#4f46e5'],sites:[
+    {name:'Diablo',location:'Tracy, CA'},{name:'Blackwell',location:'Lost Hills, CA'},{name:'Condor',location:'Grand Terrace, CA'},
+    {name:'COSO',location:'Little Lake, CA'},{name:'Goleta',location:'Goleta, CA'},{name:'Farmersville',location:'Farmersville, CA'},
+    {name:'Hanford',location:'Hanford, CA'},{name:'Lost Hills 1',location:'Lost Hills, CA'},{name:'Lost Hills 2',location:'Lost Hills, CA'},
+    {name:'Nicholis',location:'Delano, CA'},{name:'Northstar',location:'Mendota, CA'},{name:'Peregrine',location:'San Diego, CA'},
+    {name:'Porterville',location:'Porterville, CA'},{name:'Tulare',location:'Tulare, CA'},{name:'Tropico',location:'Delano, CA'}]},
+  {key:'MT',label:'Mountain Time',tz:'America/Denver',accent:['#f59e0b','#d97706'],sites:[
+    {name:'Angel Fire',location:'Angel Fire, NM'},{name:'Kuna',location:'Kuna, ID'},{name:'Taos Mesa',location:'El Prado, NM'}]},
+  {key:'CT',label:'Central Time',tz:'America/Chicago',accent:['#10b981','#059669'],sites:[
+    {name:'Goodwell',location:'Goodwell, OK'},{name:'Lindahl',location:'Tioga, ND'},{name:'Origin',location:'Hennepin, OK'},
+    {name:'Rocky Ridge',location:'Hobart, OK'},{name:'Prairie Rose',location:'Hardwick, MN'},{name:'Bypass',location:'Richmond, TX'}]},
+  {key:'ET',label:'Eastern Time',tz:'America/Toronto',accent:['#3b82f6','#2563eb'],sites:[
+    {name:'Dufferin',location:'Shelburne, ON'},{name:'McLeans Mt',location:'Little Current, ON'}]}
+];
+let tzHour12=false, tzInterval=null;
+function fmtTzTime(d,tz){return new Intl.DateTimeFormat(undefined,{timeZone:tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:tzHour12}).format(d)}
+function fmtTzDate(d,tz){return new Intl.DateTimeFormat(undefined,{timeZone:tz,weekday:'short',month:'short',day:'2-digit'}).format(d)}
+function tzOffset(d,tz){const p=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'shortOffset'}).formatToParts(d).find(x=>x.type==='timeZoneName');return p?.value||''}
+function renderTzStrip(now){const el=document.getElementById('tz-strip');if(!el)return;el.innerHTML=TZ_ZONES.map(z=>`<div class="tz-strip-item"><span class="tz-strip-key">${z.key}</span><span class="tz-strip-time">${new Intl.DateTimeFormat(undefined,{timeZone:z.tz,hour:'2-digit',minute:'2-digit',hour12:tzHour12}).format(now)}</span></div>`).join('')}
+function renderTzCards(now){const q=(document.getElementById('tz-search')?.value||'').toLowerCase();const grid=document.getElementById('tz-grid');if(!grid)return;grid.innerHTML='';TZ_ZONES.forEach(z=>{const filtered=q?z.sites.filter(s=>s.name.toLowerCase().includes(q)||s.location.toLowerCase().includes(q)||z.label.toLowerCase().includes(q)):z.sites;if(q&&filtered.length===0)return;const card=document.createElement('div');card.className='tz-card';card.innerHTML=`<div class="tz-card-header"><div class="tz-card-left"><div class="tz-icon" style="background:linear-gradient(135deg,${z.accent[0]},${z.accent[1]})"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div><div class="tz-card-title">${z.label}</div><div style="display:flex;gap:6px;margin-top:2px"><span class="tz-badge">${z.tz}</span>${tzOffset(now,z.tz)?`<span class="tz-badge">${tzOffset(now,z.tz)}</span>`:''}</div></div></div></div><div class="tz-card-content"><div><div class="tz-clock" data-tz="${z.tz}">${fmtTzTime(now,z.tz)}</div><div class="tz-date">${fmtTzDate(now,z.tz)}</div></div><div class="tz-divider"></div><div><div class="tz-sites-hdr">Sites (${filtered.length})</div><ul class="tz-sites">${filtered.map(s=>`<li><span>${s.name}</span><span class="tz-loc">${s.location}</span></li>`).join('')}</ul></div></div>`;grid.appendChild(card)})}
+function updateTzAll(){const now=new Date();renderTzStrip(now);const clocks=document.querySelectorAll('.tz-clock');if(clocks.length){clocks.forEach(c=>c.textContent=fmtTzTime(now,c.dataset.tz))}else{renderTzCards(now)}document.getElementById('tz-lastUpdate').textContent=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(now)}
+function initTimeZones(){if(tzInterval)return;document.getElementById('tz-btn24').onclick=()=>{tzHour12=false;document.getElementById('tz-btn24').classList.add('active');document.getElementById('tz-btn12').classList.remove('active');updateTzAll()};document.getElementById('tz-btn12').onclick=()=>{tzHour12=true;document.getElementById('tz-btn12').classList.add('active');document.getElementById('tz-btn24').classList.remove('active');updateTzAll()};document.getElementById('tz-search').oninput=()=>{renderTzCards(new Date())};updateTzAll();tzInterval=setInterval(updateTzAll,1000)}
 
 // ─── 30-MIN TIMER ─────────────────────────────────────────────────────────────
 let timerInt=null;
@@ -2887,6 +3186,347 @@ function mapActivate() {
     iframe.style.opacity = '0.99';
     setTimeout(() => iframe.style.opacity = '1', 50);
   }
+}
+
+// ─── PASSDOWN ────────────────────────────────────────────────────────────────
+// Data model: pd.sections = { bess:[], solar:[], wind:[], general:[] }
+// Each entry: { id, name, status:'none'|'monitor'|'active'|'resolved', notes, log }
+
+const PD_KEY = 'rnwbl_pd_v1';      // current draft
+const PD_HIST_KEY = 'rnwbl_pd_hist_v1';
+
+// Default site lists per section (drawn from real passdowns + SITES array)
+const PD_DEFAULTS = {
+  bess: [
+    {name:'CNDR1',  loc:'Condor — Tehachapi, CA'},
+    {name:'PRGN1',  loc:'Peregrine — Mojave, CA'},
+    {name:'HARQ2',  loc:'HARQ2 BESS — Harper Lake, CA'},
+    {name:'KUNA1',  loc:'Kuna — Kuna, ID'},
+    {name:'BLKW1',  loc:'Goleta — Goleta, CA'},
+    {name:'GLTA1',  loc:'Goleta — Goleta, CA'},
+    {name:'COSO1',  loc:'Coso — Coso Junction, CA'},
+    {name:'BYPS',   loc:'Bypass'},
+    {name:'PDMT',   loc:'Pediment'},
+  ],
+  solar: [
+    {name:'CTFL',   loc:'Centennial Flats'},
+    {name:'HARQ1',  loc:'HARQ1 PV — Harper Lake, CA'},
+    {name:'HARQ2',  loc:'HARQ2 PV — Harper Lake, CA'},
+    {name:'LSTH2',  loc:'Lost Hills 2 — Lost Hills, CA'},
+    {name:'BLKW2',  loc:'Blackwell — Blackwell, OK'},
+    {name:'AVLN1',  loc:'Avalon — Taos, NM'},
+    {name:'AVLN2',  loc:'Avalon 2'},
+    {name:'NCLS1',  loc:'Nicolis — Nicolis, CA'},
+    {name:'NSTR1',  loc:'Northstar — Kern County, CA'},
+  ],
+  wind: [
+    {name:'GDWL1',  loc:'Goodwell — Goodwell, OK'},
+    {name:'ORGN1',  loc:'Origin — Kern County, CA'},
+    {name:'RKRD1',  loc:'Rocky Ridge — Kern County, CA'},
+    {name:'PRRS1',  loc:'Prairie Rose — Elk County, KS'},
+    {name:'MCLM1',  loc:'McLeans — Manitoulin Island, ON'},
+    {name:'DFRN1',  loc:'Dufferin — Dufferin, ON'},
+    {name:'LNDL1',  loc:'Lindahl — Lincoln County, MN'},
+    {name:'DIBL1',  loc:'Diablo — Diablo Range, CA'},
+  ],
+  general: []
+};
+
+// Runtime state — rebuilt on each pdActivate() or loaded from localStorage
+let pdState = null;
+let pdHistory = [];
+
+function pdBlankEntry(name, loc) {
+  return { id: Date.now() + Math.random(), name: name||'', loc: loc||'', status:'none', notes:'', log:'' };
+}
+
+function pdBlankState() {
+  const today = new Date().toISOString().slice(0,10);
+  return {
+    date: today,
+    shift: 'Day',
+    author: '',
+    relieved: '',
+    sections: {
+      bess:    PD_DEFAULTS.bess.map(s=>pdBlankEntry(s.name, s.loc)),
+      solar:   PD_DEFAULTS.solar.map(s=>pdBlankEntry(s.name, s.loc)),
+      wind:    PD_DEFAULTS.wind.map(s=>pdBlankEntry(s.name, s.loc)),
+      general: []
+    },
+    collapsed: {}
+  };
+}
+
+function pdSaveDraft() {
+  try { localStorage.setItem(PD_KEY, JSON.stringify(pdState)); } catch(e) {}
+}
+
+function pdLoadDraft() {
+  try {
+    const raw = localStorage.getItem(PD_KEY);
+    if (raw) { const p = JSON.parse(raw); if (p && p.sections) return p; }
+  } catch(e) {}
+  return pdBlankState();
+}
+
+function pdLoadHistory() {
+  try { pdHistory = JSON.parse(localStorage.getItem(PD_HIST_KEY)||'[]'); } catch(e) { pdHistory=[]; }
+}
+
+function pdInit() {
+  pdLoadHistory();
+  pdState = pdLoadDraft();
+  // Set today's date as default if blank
+  if (!document.getElementById('pd-date').value) {
+    document.getElementById('pd-date').value = pdState.date || new Date().toISOString().slice(0,10);
+  }
+  document.getElementById('pd-date').value = pdState.date || new Date().toISOString().slice(0,10);
+  document.getElementById('pd-shift').value = pdState.shift || 'Day';
+  document.getElementById('pd-author').value = pdState.author || '';
+  document.getElementById('pd-relieved').value = pdState.relieved || '';
+
+  // Wire header inputs
+  ['pd-date','pd-shift','pd-author','pd-relieved'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => { pdReadHeader(); pdSaveDraft(); pdUpdatePreview(); });
+  });
+
+  ['bess','solar','wind','general'].forEach(sec => pdRenderSection(sec));
+  pdUpdatePreview();
+  pdRenderHistory();
+}
+
+function pdActivate() { /* already inited in load() — just re-render preview */ pdUpdatePreview(); }
+
+function pdReadHeader() {
+  pdState.date     = document.getElementById('pd-date').value;
+  pdState.shift    = document.getElementById('pd-shift').value;
+  pdState.author   = document.getElementById('pd-author').value;
+  pdState.relieved = document.getElementById('pd-relieved').value;
+}
+
+// ── Section rendering ───────────────────────────────────────────────────────
+function pdRenderSection(sec) {
+  const body = document.getElementById('pdb-' + sec);
+  const entries = pdState.sections[sec] || [];
+  body.innerHTML = entries.length === 0
+    ? '<div style="font-size:12px;color:var(--text3);padding:6px 4px;">No sites — add one below.</div>'
+    : entries.map((e,i) => pdRowHtml(sec, i, e)).join('');
+  pdUpdateSectionCount(sec);
+}
+
+function pdRowHtml(sec, i, e) {
+  const statuses = ['none','monitor','active','resolved'];
+  const labels   = ['No Change','Monitor','Active Issue','Resolved'];
+  const hasnote  = e.notes || e.log ? ' has-note' : '';
+  const btns = statuses.map((s,si) =>
+    `<button class="pd-status-btn s-${s}${e.status===s?' active':''}" onclick="pdSetStatus('${sec}',${i},'${s}')">${labels[si]}</button>`
+  ).join('');
+  return `<div class="pd-site-row${hasnote}" id="pdrow-${sec}-${i}">
+    <div class="pd-site-name-col">
+      <span class="pd-site-name">${esc(e.name)}</span>
+      ${e.loc?`<span class="pd-site-loc">${esc(e.loc.split('—')[0].trim())}</span>`:''}
+    </div>
+    <div class="pd-site-inputs">
+      <div class="pd-site-top">
+        <div class="pd-status-btns">${btns}</div>
+        <input class="pd-log-inp" value="${esc(e.log)}" placeholder="Log #" title="Log number"
+          oninput="pdSetField('${sec}',${i},'log',this.value)">
+      </div>
+      <textarea class="pd-notes-inp" rows="1" placeholder="Notes — leave blank if no change"
+        oninput="pdSetField('${sec}',${i},'notes',this.value);autoGrow(this)">${esc(e.notes)}</textarea>
+    </div>
+    <button class="pd-site-del" onclick="pdDelEntry('${sec}',${i})" title="Remove site">✕</button>
+  </div>`;
+}
+
+function autoGrow(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+function pdSetStatus(sec, i, status) {
+  pdState.sections[sec][i].status = status;
+  pdSaveDraft(); pdRenderSection(sec); pdUpdatePreview();
+}
+
+function pdSetField(sec, i, field, val) {
+  pdState.sections[sec][i][field] = val;
+  pdSaveDraft(); pdUpdateSectionCount(sec); pdUpdatePreview();
+}
+
+function pdAddSite(sec) {
+  const inp = document.getElementById('pdadd-'+sec);
+  const name = inp.value.trim(); if (!name) return;
+  pdState.sections[sec].push(pdBlankEntry(name, ''));
+  inp.value = '';
+  pdSaveDraft(); pdRenderSection(sec); pdUpdatePreview();
+}
+
+function pdDelEntry(sec, i) {
+  pdState.sections[sec].splice(i, 1);
+  pdSaveDraft(); pdRenderSection(sec); pdUpdatePreview();
+}
+
+function pdToggleSection(sec) {
+  const body  = document.getElementById('pdb-'  + sec);
+  const arrow = document.getElementById('pda-'  + sec);
+  const open  = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'flex';
+  arrow.classList.toggle('open', !open);
+  pdState.collapsed = pdState.collapsed || {};
+  pdState.collapsed[sec] = open;
+  pdSaveDraft();
+}
+
+function pdUpdateSectionCount(sec) {
+  const active = (pdState.sections[sec]||[]).filter(e => e.status !== 'none' || e.notes || e.log).length;
+  const el = document.getElementById('pdc-'+sec);
+  if (el) el.textContent = active > 0 ? active + ' active' : 'all clear';
+}
+
+// ── Preview builder ─────────────────────────────────────────────────────────
+function pdBuildText() {
+  const d = pdState;
+  const dateStr = d.date ? new Date(d.date+'T12:00:00').toLocaleDateString([],{month:'numeric',day:'numeric',year:'numeric'}) : '—';
+  let out = `OFF-SHIFT LOG – ${dateStr}\n`;
+  out += `Shift: ${d.shift || '—'}`;
+  if (d.author)   out += `  |  Operator: ${d.author}`;
+  if (d.relieved) out += `  |  Relieved by: ${d.relieved}`;
+  out += '\n';
+
+  const SEC_LABELS = { bess:'——BESS——', solar:'——SOLAR——', wind:'——WIND——', general:'——GENERAL——' };
+  ['bess','solar','wind','general'].forEach(sec => {
+    const entries = (d.sections[sec]||[]).filter(e => e.status !== 'none' || e.notes || e.log);
+    if (!entries.length) return;
+    out += '\n' + SEC_LABELS[sec] + '\n\n';
+    entries.forEach(e => {
+      out += `${e.name}:\n`;
+      if (e.status === 'active')   out += `⚠ ACTIVE ISSUE\n`;
+      if (e.status === 'monitor')  out += `● Monitor\n`;
+      if (e.status === 'resolved') out += `✓ Resolved\n`;
+      if (e.notes) out += e.notes + '\n';
+      if (e.log)   out += `>LOG: ${e.log}\n`;
+      out += '\n';
+    });
+  });
+
+  // Append no-change sites per section as a compact footer
+  ['bess','solar','wind','general'].forEach(sec => {
+    const nc = (d.sections[sec]||[]).filter(e => e.status === 'none' && !e.notes && !e.log);
+    if (nc.length) out += `${nc.map(e=>e.name).join(', ')}: No change\n`;
+  });
+
+  return out.trim();
+}
+
+function pdUpdatePreview() {
+  const el = document.getElementById('pd-preview-out');
+  if (el) el.textContent = pdBuildText();
+}
+
+// ── Copy ────────────────────────────────────────────────────────────────────
+function pdCopy() {
+  const text = pdBuildText();
+  try {
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('pd-copy-btn');
+      btn.textContent = 'Copied ✓'; btn.classList.add('pd-copy-flash');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('pd-copy-flash'); }, 1800);
+    });
+  } catch(e) { showToast('Select and copy manually'); }
+}
+
+// ── Save to history ─────────────────────────────────────────────────────────
+function pdSave() {
+  pdReadHeader();
+  const snap = JSON.parse(JSON.stringify(pdState));
+  snap.savedAt = Date.now();
+  snap.id = Date.now();
+  pdHistory.unshift(snap);
+  if (pdHistory.length > 20) pdHistory.length = 20;
+  try { localStorage.setItem(PD_HIST_KEY, JSON.stringify(pdHistory)); } catch(e) {}
+  pdRenderHistory();
+  showToast('Passdown saved');
+}
+
+function pdLoadSnap(id) {
+  const snap = pdHistory.find(h => h.id === id); if (!snap) return;
+  pdState = JSON.parse(JSON.stringify(snap));
+  pdInit();
+  showToast('Passdown loaded');
+}
+
+function pdClearHistory() {
+  if (!pdHistory.length) return;
+  if (!confirm('Clear all saved passdowns?')) return;
+  pdHistory = [];
+  localStorage.removeItem(PD_HIST_KEY);
+  pdRenderHistory();
+}
+
+function pdRenderHistory() {
+  const el = document.getElementById('pd-history');
+  if (!pdHistory.length) { el.innerHTML = '<div style="font-size:12px;color:var(--text3);">No saved passdowns yet.</div>'; return; }
+  el.innerHTML = pdHistory.map(h => {
+    const d = h.date ? new Date(h.date+'T12:00:00').toLocaleDateString([],{month:'short',day:'numeric'}) : '?';
+    const t = new Date(h.savedAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    const active = Object.values(h.sections||{}).flat().filter(e=>e.status!=='none'||e.notes||e.log).length;
+    return `<div class="pd-hist-item" onclick="pdLoadSnap(${h.id})">
+      <div class="pd-hist-meta">${d} ${h.shift||''} · saved ${t} · ${active} items</div>
+      <div class="pd-hist-snip">${h.author||'Unknown'} → ${h.relieved||'?'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── AI Summary via Claude API ────────────────────────────────────────────────
+async function pdSummarize() {
+  const text = pdBuildText();
+  if (text.length < 40) { showToast('Fill in some site notes first'); return; }
+
+  const loading = document.getElementById('pd-ai-loading');
+  const out     = document.getElementById('pd-ai-out');
+  loading.classList.add('visible');
+  out.classList.remove('visible');
+  out.textContent = '';
+
+  const prompt =
+    `You are an ops center summarizer for a renewable energy remote operations center (ROC).\n` +
+    `Given the following shift passdown log, write a concise, well-structured summary that:\n` +
+    `1. Leads with any ACTIVE ISSUES or urgent items (safety, curtailments, voltage O-O-B, site outages)\n` +
+    `2. Groups by BESS / Solar / Wind / General\n` +
+    `3. Lists monitoring items the incoming shift must watch\n` +
+    `4. Ends with a brief "All Clear" list of sites with no changes\n` +
+    `Keep it tight — this is read during a shift handoff. No padding or filler.\n\n` +
+    `PASSDOWN:\n${text}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const reply = (data.content||[]).map(b=>b.type==='text'?b.text:'').join('').trim();
+    out.textContent = reply || 'No response received.';
+    out.classList.add('visible');
+  } catch(e) {
+    out.textContent = 'API error — check network connection.';
+    out.classList.add('visible');
+  } finally {
+    loading.classList.remove('visible');
+  }
+}
+
+// ── New passdown ─────────────────────────────────────────────────────────────
+function pdNew() {
+  if (!confirm('Start a new passdown? Unsaved changes will be lost.')) return;
+  pdState = pdBlankState();
+  pdSaveDraft();
+  pdInit();
 }
 
 load();
