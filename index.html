@@ -408,7 +408,22 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 .pd-section-count{font-size:11px;color:var(--text3);font-family:var(--m);}
 .pd-section-arrow{font-size:10px;color:var(--text3);transition:transform .2s;}
 .pd-section-arrow.open{transform:rotate(90deg);}
-.pd-section-body{display:none;padding:8px 10px;display:flex;flex-direction:column;gap:5px;}
+.pd-section-body{
+  display: none;
+  padding: 8px 10px;
+  flex-direction: column;
+  gap: 5px;
+
+  /* ✅ enable scrolling inside each Passdown section */
+  max-height: 320px;   /* adjust if you want taller/shorter */
+  overflow-y: auto;
+  padding-right: 4px; /* space for scrollbar */
+}
+
+.pd-section-body.open{
+  display: flex;
+}
+
 
 /* Site row */
 .pd-site-row{display:grid;grid-template-columns:auto 1fr auto;gap:6px;align-items:start;padding:8px 10px;border-radius:7px;background:var(--bg3);border:1px solid transparent;transition:border-color .15s;}
