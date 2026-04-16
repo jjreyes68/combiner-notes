@@ -3527,14 +3527,15 @@ function pdBuildText() {
     });
   }
 
-  // Report by exception: add summary line for normal sites per section
-  const SEC_NAMES = { bess:'BESS', solar:'Solar', wind:'Wind' };
-  ['bess','solar','wind'].forEach(sec => {
+  // Report by exception: single summary line for all normal sites
+  const hasNormalSites = ['bess','solar','wind'].some(sec => {
     const nc = (d.sections[sec]||[]).filter(e => e.status === 'none' && !e.notes && !e.log);
-    if (nc.length && (d.sections[sec]||[]).filter(e => e.status !== 'none' || e.notes || e.log).length > 0) {
-      out += `\nAll other ${SEC_NAMES[sec]} sites: normal operations\n`;
-    }
+    const hasIssues = (d.sections[sec]||[]).filter(e => e.status !== 'none' || e.notes || e.log).length > 0;
+    return nc.length && hasIssues;
   });
+  if (hasNormalSites) {
+    out += `\nAll other sites: normal operations\n`;
+  }
 
   return out.trim();
 }
