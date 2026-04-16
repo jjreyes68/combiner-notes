@@ -414,6 +414,7 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
   flex-direction: column;
   gap: 5px;
   max-height: 460px;   /* tall enough for ~6 sites with notes */
+  min-height: 30px;    /* ensure visible when empty */
   overflow-y: auto;
   padding-right: 6px;  /* space for scrollbar */
   scroll-behavior: smooth;
@@ -3275,7 +3276,7 @@ function pdBlankState() {
       bess:    PD_DEFAULTS.bess.map(s=>pdBlankEntry(s.name, s.loc)),
       solar:   PD_DEFAULTS.solar.map(s=>pdBlankEntry(s.name, s.loc)),
       wind:    PD_DEFAULTS.wind.map(s=>pdBlankEntry(s.name, s.loc)),
-      general: []
+      general: [pdBlankEntry('Action Item', 'Click to edit or delete')]
     },
     collapsed: {}
   };
