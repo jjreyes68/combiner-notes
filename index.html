@@ -413,13 +413,11 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
   padding: 8px 10px;
   flex-direction: column;
   gap: 5px;
-
-  /* ✅ enable scrolling inside each Passdown section */
-  max-height: 320px;   /* adjust if you want taller/shorter */
+  max-height: 460px;   /* tall enough for ~6 sites with notes */
   overflow-y: auto;
-  padding-right: 4px; /* space for scrollbar */
+  padding-right: 6px;  /* space for scrollbar */
+  scroll-behavior: smooth;
 }
-
 .pd-section-body.open{
   display: flex;
 }
@@ -479,7 +477,7 @@ select,option{background:var(--bg3);}
   <button class="nav-tab" onclick="switchView('intel',this)">Weather</button>
   <button class="nav-tab" onclick="switchView('ops',this)">Tasks</button>
   <button class="nav-tab" onclick="switchView('swbuilder',this)">Log Builder</button>
-  <button class="nav-tab" onclick="switchView('map',this)">Map</button>
+  <button class="nav-tab" style="display:none;" onclick="switchView('map',this)">Map</button>
   <button class="nav-tab" onclick="switchView('timezones',this)">Time Zones</button>
   <button class="nav-tab" onclick="switchView('passdown',this)">Passdown</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('notes',this)">Notepad</button>
@@ -3207,41 +3205,52 @@ function mapActivate() {
 // Data model: pd.sections = { bess:[], solar:[], wind:[], general:[] }
 // Each entry: { id, name, status:'none'|'monitor'|'active'|'resolved', notes, log }
 
-const PD_KEY = 'rnwbl_pd_v1';      // current draft
+const PD_KEY = 'rnwbl_pd_v2';      // v2 — new site distribution
 const PD_HIST_KEY = 'rnwbl_pd_hist_v1';
 
 // Default site lists per section (drawn from real passdowns + SITES array)
 const PD_DEFAULTS = {
+  // ── BESS (row 1: Condor, Peregrine, Harq2, Kuna | row 2: Bypass, Goleta, COSO, Pediment | row 3: CFLATS, Maricopa, Ferdinand)
   bess: [
     {name:'CNDR1',  loc:'Condor — Tehachapi, CA'},
     {name:'PRGN1',  loc:'Peregrine — Mojave, CA'},
-    {name:'HARQ2',  loc:'HARQ2 BESS — Harper Lake, CA'},
+    {name:'HARQ2',  loc:'Harq 2 — Harper Lake, CA'},
     {name:'KUNA1',  loc:'Kuna — Kuna, ID'},
-    {name:'BLKW1',  loc:'Goleta — Goleta, CA'},
-    {name:'GLTA1',  loc:'Goleta — Goleta, CA'},
-    {name:'COSO1',  loc:'Coso — Coso Junction, CA'},
     {name:'BYPS',   loc:'Bypass'},
+    {name:'GLTA1',  loc:'Goleta — Goleta, CA'},
+    {name:'COSO1',  loc:'COSO — Coso Junction, CA'},
     {name:'PDMT',   loc:'Pediment'},
+    {name:'CTFL',   loc:'CFLATS BESS — Centennial Flats'},
+    {name:'MRCP',   loc:'Maricopa'},
+    {name:'FRDN',   loc:'Ferdinand'},
   ],
+  // ── SOLAR (row 1: Harq1, Angel Fire, Taos Mesa, Nicolis | row 2: Tropico, Tulare, Porterville, Lost Hills 1 | row 3: Hanford, Farmersville, Avalon, Blackwell | row 4: Lost Hills 2, Northstar, CFLATS PV)
   solar: [
-    {name:'CTFL',   loc:'Centennial Flats'},
-    {name:'HARQ1',  loc:'HARQ1 PV — Harper Lake, CA'},
-    {name:'HARQ2',  loc:'HARQ2 PV — Harper Lake, CA'},
-    {name:'LSTH2',  loc:'Lost Hills 2 — Lost Hills, CA'},
-    {name:'BLKW2',  loc:'Blackwell — Blackwell, OK'},
-    {name:'AVLN1',  loc:'Avalon — Taos, NM'},
-    {name:'AVLN2',  loc:'Avalon 2'},
+    {name:'HARQ1',  loc:'Harq 1 — Harper Lake, CA'},
+    {name:'ANGF1',  loc:'Angel Fire — Angel Fire, NM'},
+    {name:'AVLN1',  loc:'Taos Mesa — Taos, NM'},
     {name:'NCLS1',  loc:'Nicolis — Nicolis, CA'},
+    {name:'TRPC1',  loc:'Tropico — Kern County, CA'},
+    {name:'TLRE1',  loc:'Tulare — Tulare, CA'},
+    {name:'PRTV1',  loc:'Porterville — Porterville, CA'},
+    {name:'LSTH1',  loc:'Lost Hills 1 — Lost Hills, CA'},
+    {name:'HNFD1',  loc:'Hanford — Hanford, CA'},
+    {name:'FRMV1',  loc:'Farmersville — Farmersville, CA'},
+    {name:'AVLN2',  loc:'Avalon — Avalon, CA'},
+    {name:'BLKW2',  loc:'Blackwell — Blackwell, OK'},
+    {name:'LSTH2',  loc:'Lost Hills 2 — Lost Hills, CA'},
     {name:'NSTR1',  loc:'Northstar — Kern County, CA'},
+    {name:'CTFL-PV',loc:'CFLATS PV — Centennial Flats'},
   ],
+  // ── WIND (row 1: Dufferin, McLeans Mt, Goodwell, Lindahl | row 2: Origin, Rocky Ridge, Prairie Rose, Diablo)
   wind: [
+    {name:'DFRN1',  loc:'Dufferin — Dufferin, ON'},
+    {name:'MCLM1',  loc:'McLeans Mt — Manitoulin Island, ON'},
     {name:'GDWL1',  loc:'Goodwell — Goodwell, OK'},
+    {name:'LNDL1',  loc:'Lindahl — Lincoln County, MN'},
     {name:'ORGN1',  loc:'Origin — Kern County, CA'},
     {name:'RKRD1',  loc:'Rocky Ridge — Kern County, CA'},
     {name:'PRRS1',  loc:'Prairie Rose — Elk County, KS'},
-    {name:'MCLM1',  loc:'McLeans — Manitoulin Island, ON'},
-    {name:'DFRN1',  loc:'Dufferin — Dufferin, ON'},
-    {name:'LNDL1',  loc:'Lindahl — Lincoln County, MN'},
     {name:'DIBL1',  loc:'Diablo — Diablo Range, CA'},
   ],
   general: []
@@ -3305,7 +3314,16 @@ function pdInit() {
     document.getElementById(id).addEventListener('input', () => { pdReadHeader(); pdSaveDraft(); pdUpdatePreview(); });
   });
 
-  ['bess','solar','wind','general'].forEach(sec => pdRenderSection(sec));
+  ['bess','solar','wind','general'].forEach(sec => {
+    pdRenderSection(sec);
+    // Explicitly open each section body so display:flex is set via inline style,
+    // fixing the pdToggleSection state-check which reads style.display (not CSS).
+    const body  = document.getElementById('pdb-'  + sec);
+    const arrow = document.getElementById('pda-'  + sec);
+    const isCollapsed = pdState.collapsed && pdState.collapsed[sec];
+    body.style.display  = isCollapsed ? 'none' : 'flex';
+    if (arrow) arrow.classList.toggle('open', !isCollapsed);
+  });
   pdUpdatePreview();
   pdRenderHistory();
 }
@@ -3324,8 +3342,10 @@ function pdRenderSection(sec) {
   const body = document.getElementById('pdb-' + sec);
   const entries = pdState.sections[sec] || [];
   body.innerHTML = entries.length === 0
-    ? '<div style="font-size:12px;color:var(--text3);padding:6px 4px;">No sites — add one below.</div>'
+    ? '<div style="font-size:12px;color:var(--text3);padding:6px 4px;">No items — add one below.</div>'
     : entries.map((e,i) => pdRowHtml(sec, i, e)).join('');
+  // Preserve open/closed state — don't let innerHTML reset clobber style.display
+  // (body.style.display is already set by pdInit/pdToggleSection; leave it alone)
   pdUpdateSectionCount(sec);
 }
 
@@ -3374,7 +3394,11 @@ function pdAddSite(sec) {
   const name = inp.value.trim(); if (!name) return;
   pdState.sections[sec].push(pdBlankEntry(name, ''));
   inp.value = '';
-  pdSaveDraft(); pdRenderSection(sec); pdUpdatePreview();
+  pdSaveDraft(); pdRenderSection(sec);
+  // Keep body open after add
+  const body = document.getElementById('pdb-' + sec);
+  if (body.style.display === 'none') body.style.display = 'flex';
+  pdUpdatePreview();
 }
 
 function pdDelEntry(sec, i) {
