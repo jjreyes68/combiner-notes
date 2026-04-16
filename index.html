@@ -997,8 +997,10 @@ select,option{background:var(--bg3);}
         <span class="pd-section-count" id="pdc-general">0 items</span>
         <span class="pd-section-arrow open" id="pda-general">▶</span>
       </div>
-      <div class="pd-section-body" id="pdb-general"></div>
-      <div class="pd-add-site-row" style="border-top:1px solid var(--border);margin-top:4px;">
+      <div class="pd-section-body" id="pdb-general" style="display:flex;min-height:30px;">
+        <div style="font-size:12px;color:var(--text3);padding:6px 4px;">No general items — add one below.</div>
+      </div>
+      <div class="pd-add-site-row" style="border-top:1px solid var(--border);margin-top:4px;padding:8px 10px;display:flex;gap:6px;">
         <button class="pd-add-btn" onclick="pdAddGeneralEntry()">+ Add General Item</button>
       </div>
     </div>
@@ -3288,7 +3290,16 @@ function pdSaveDraft() {
 function pdLoadDraft() {
   try {
     const raw = localStorage.getItem(PD_KEY);
-    if (raw) { const p = JSON.parse(raw); if (p && p.sections) return p; }
+    if (raw) { const p = JSON.parse(raw); if (p && p.sections) {
+      // Migrate old generalNotes to new general array format
+      if (p.generalNotes && !p.general) {
+        p.general = [{ id: Date.now() + Math.random(), text: p.generalNotes }];
+        delete p.generalNotes;
+      }
+      // Ensure general array exists
+      if (!p.general) p.general = [];
+      return p;
+    }}
   } catch(e) {}
   return pdBlankState();
 }
@@ -3372,17 +3383,22 @@ function pdRenderGeneralSection() {
   const entries = pdState.general || [];
   const countEl = document.getElementById('pdc-general');
   if (countEl) countEl.textContent = entries.length + ' items';
-  body.innerHTML = entries.length === 0
-    ? '<div style="font-size:12px;color:var(--text3);padding:6px 4px;">No general items — add one below.</div>'
-    : entries.map((e, i) => `
-      <div class="pd-site-row">
-        <div class="pd-site-inputs" style="flex:1;">
-          <textarea class="pd-notes-inp" rows="2" placeholder="Enter general issue or action item..."
-            oninput="pdSetGeneralText(${e.id}, this.value)">${esc(e.text)}</textarea>
-        </div>
-        <button class="pd-site-del" onclick="pdDelGeneralEntry(${e.id})" title="Remove">✕</button>
-      </div>
-    `).join('');
+  if (entries.length === 0) {
+    body.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:6px 4px;">No general items — add one below.</div>';
+    return;
+  }
+  let html = '';
+  entries.forEach((e, i) => {
+    const idStr = String(e.id);
+    html += '<div class="pd-site-row">';
+    html += '<div class="pd-site-inputs" style="flex:1;">';
+    html += '<textarea class="pd-notes-inp" rows="2" placeholder="Enter general issue or action item..."';
+    html += ' oninput="pdSetGeneralText(' + idStr + ', this.value)">' + esc(e.text) + '</textarea>';
+    html += '</div>';
+    html += '<button class="pd-site-del" onclick="pdDelGeneralEntry(' + idStr + ')" title="Remove">✕</button>';
+    html += '</div>';
+  });
+  body.innerHTML = html;
 }
 
 // ── Section rendering ───────────────────────────────────────────────────────
