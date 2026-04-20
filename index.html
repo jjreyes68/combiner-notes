@@ -410,8 +410,10 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 /* Kiosk mode - fullscreen */
 .schedule-view.kiosk-mode{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;padding:0;background:var(--bg);display:flex;flex-direction:column;}
 .schedule-view.kiosk-mode .schedule-header{padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0;}
-.schedule-view.kiosk-mode .schedule-iframe-container{max-width:none;height:1;flex:1;margin:0;padding:16px;}
+.schedule-view.kiosk-mode > div:last-child{flex:1;overflow:hidden;padding:0;}
+.schedule-view.kiosk-mode .schedule-iframe-container{max-width:none;height:100%;margin:0;padding:16px;}
 .schedule-view.kiosk-mode .schedule-iframe-container iframe{height:100%;border:none;}
+.schedule-view.kiosk-mode .schedule-srd-combo{height:100%;}
 /* SRD combo view - side by side */
 .schedule-srd-combo{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:800px;}
 @media(max-width:900px){.schedule-srd-combo{grid-template-columns:1fr;height:600px;}}
@@ -1138,8 +1140,8 @@ select,option{background:var(--bg3);}
         <span style="font-size:12px;color:var(--text3);">SharePoint schedule view</span>
       </div>
       <div class="schedule-controls">
-        <button class="schedule-view-btn active" id="btn-view-embed1" onclick="setScheduleView('embed1')">Embed 1</button>
-        <button class="schedule-view-btn" id="btn-view-embed2" onclick="setScheduleView('embed2')">Embed 2</button>
+        <button class="schedule-view-btn active" id="btn-view-embed1" onclick="setScheduleView('embed1')">Outages Schedule</button>
+        <button class="schedule-view-btn" id="btn-view-embed2" onclick="setScheduleView('embed2')">Upcoming Outages</button>
         <button class="schedule-view-btn" id="btn-view-srd" onclick="setScheduleView('srd')">SRD Combo</button>
         <div style="flex:1;"></div>
         <button class="schedule-kiosk-btn" id="btn-kiosk" onclick="toggleKioskMode()">⛶ Kiosk Mode</button>
@@ -4106,4 +4108,3 @@ load();
 </script>
 </body>
 </html>
-
