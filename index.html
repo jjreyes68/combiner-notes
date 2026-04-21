@@ -334,6 +334,81 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 .sw-hist-row:hover{border-color:var(--border2);}
 .sw-hist-meta{font-size:10px;color:var(--text3);font-family:var(--m);}
 .sw-hist-snip{font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+/* ── SW CUSTOM TEMPLATES ────────────────────────────────────────────────────── */
+.sw-tpl-stripe.other{background:var(--blue);}
+.sw-tpl.sel-other{border-color:var(--blue)!important;background:var(--bbg)!important;color:var(--blue)!important;}
+.sw-tpl.sel-other .sw-tpl-site{color:inherit;opacity:.75;}
+.sw-tpl-actions{display:flex;gap:2px;flex-shrink:0;padding-right:6px;opacity:0;transition:opacity .15s;}
+.sw-tpl:hover .sw-tpl-actions{opacity:1;}
+.sw-tpl-act-btn{background:none;border:none;cursor:pointer;font-size:12px;color:var(--text3);padding:3px 5px;border-radius:4px;transition:all .15s;line-height:1;}
+.sw-tpl-act-btn:hover{color:var(--text);background:var(--bg4);}
+.sw-tpl-lock{font-size:9px;color:var(--text3);padding:0 8px 0 4px;flex-shrink:0;opacity:.45;align-self:center;}
+.sw-new-tpl-btn{width:100%;padding:7px;border:1.5px dashed var(--border2);border-radius:7px;background:transparent;color:var(--text3);font-size:12px;cursor:pointer;font-family:var(--f);transition:all .15s;margin-bottom:6px;margin-top:4px;}
+.sw-new-tpl-btn:hover{border-color:var(--green);color:var(--green);background:var(--gbg);}
+.sw-result-hdr.other{background:var(--bbg);color:var(--blue);}
+/* ── CHRON LOG ──────────────────────────────────────────────────────────────── */
+.cl-input-bar{display:flex;gap:6px;align-items:stretch;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:10px 12px;box-shadow:var(--shs);margin-bottom:12px;flex-wrap:wrap;}
+.cl-input-bar input{flex:1;min-width:160px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--f);font-size:13px;}
+.cl-input-bar input:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.cl-input-bar select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;color:var(--text);font-family:var(--f);font-size:13px;flex-shrink:0;}
+.cl-log-btn{padding:7px 16px;background:var(--green);border:1px solid var(--green);border-radius:6px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--f);white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.cl-log-btn:hover{background:var(--gmid);}
+.cl-feed{display:flex;flex-direction:column;gap:4px;max-width:900px;}
+.cl-entry{display:flex;gap:8px;align-items:flex-start;background:var(--bg2);border:1px solid var(--border);border-left:3px solid transparent;border-radius:8px;padding:8px 10px;transition:border-color .15s;}
+.cl-entry:hover{border-color:var(--border2);border-left-color:transparent;}
+.cl-entry.starred{border-left-color:var(--amber)!important;}
+.cl-time{font-family:var(--m);font-size:11px;color:var(--text3);white-space:nowrap;margin-top:2px;min-width:38px;flex-shrink:0;}
+.cl-cat{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;flex-shrink:0;margin-top:1px;align-self:flex-start;line-height:1.5;}
+.cl-cat-alarm{background:var(--rbg);color:var(--red);}
+.cl-cat-curtailment{background:var(--abg);color:var(--amber);}
+.cl-cat-dispatch{background:var(--bbg);color:var(--blue);}
+.cl-cat-fieldtech{background:var(--pbg);color:var(--purple);}
+.cl-cat-monitor{background:#fffaeb;color:#92600a;}
+.cl-cat-normal{background:var(--bg4);color:var(--text3);}
+.cl-site-tag{font-family:var(--m);font-size:10px;font-weight:600;background:var(--bg4);border:1px solid var(--border2);padding:1px 6px;border-radius:4px;color:var(--text2);flex-shrink:0;align-self:flex-start;margin-top:2px;white-space:nowrap;}
+.cl-body{flex:1;font-size:13px;line-height:1.5;color:var(--text);word-break:break-word;}
+.cl-star{background:none;border:none;cursor:pointer;font-size:14px;padding:0 2px;color:var(--border2);transition:all .15s;flex-shrink:0;line-height:1;margin-top:1px;}
+.cl-star:hover,.cl-star.on{color:var(--amber);}
+.cl-del{background:none;border:none;cursor:pointer;font-size:11px;color:var(--text3);padding:2px 4px;border-radius:4px;opacity:.35;transition:all .15s;flex-shrink:0;line-height:1;margin-top:1px;}
+.cl-del:hover{color:var(--red);opacity:1;background:var(--rbg);}
+.cl-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px;max-width:900px;}
+.cl-starred-count{font-size:10px;color:var(--amber);background:var(--abg);padding:2px 8px;border-radius:10px;font-weight:600;border:1px solid #e8c84a;}
+.cl-preview{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px;max-height:400px;overflow-y:auto;font-family:var(--m);font-size:12px;line-height:1.6;color:var(--text);}
+.cl-preview-section{margin-bottom:12px;}
+.cl-preview-section:last-child{margin-bottom:0;}
+.cl-preview-section-title{font-weight:600;color:var(--accent);margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px;}
+.cl-preview-entry{margin-bottom:4px;color:var(--text2);}
+.cl-preview-entry.starred{color:var(--amber);font-weight:500;}
+/* ── FLEET WEATHER ──────────────────────────────────────────────────────────── */
+.wx-fleet-section{margin-top:24px;padding-top:20px;border-top:2px solid var(--border);max-width:960px;}
+.wx-fleet-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap;}
+.wx-fleet-title{font-size:15px;font-weight:600;margin-bottom:2px;}
+.wx-pin-row{display:flex;gap:6px;margin-bottom:6px;position:relative;}
+.wx-pin-row input{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:7px 10px;color:var(--text);font-family:var(--f);font-size:13px;box-shadow:var(--shs);}
+.wx-pin-row input:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.wx-pin-matches{display:none;position:absolute;top:100%;left:0;right:0;z-index:20;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;box-shadow:0 4px 16px rgba(0,0,0,.1);overflow:hidden;margin-top:2px;}
+.wx-pin-match-item{padding:8px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);}
+.wx-pin-match-item:last-child{border-bottom:none;}
+.wx-pin-match-item:hover{background:var(--bbg);}
+.wx-pins-list{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;min-height:10px;}
+.wx-pin-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 6px 4px 11px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;font-size:12px;font-weight:600;color:var(--text);box-shadow:var(--shs);}
+.wx-pin-chip-del{background:none;border:none;cursor:pointer;font-size:12px;color:var(--text3);padding:0 2px;line-height:1;border-radius:50%;transition:all .15s;}
+.wx-pin-chip-del:hover{color:var(--red);background:var(--rbg);}
+.wx-fleet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;}
+.wx-fleet-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;box-shadow:var(--shs);transition:border-color .2s,background .2s;}
+.wx-fleet-card.wind-warn{border-color:var(--amber);background:#fffbf0;}
+.wx-fleet-card.wind-alert{border-color:var(--red);background:var(--rbg);}
+.wx-fc-site{font-family:var(--m);font-size:13px;font-weight:700;color:var(--text);}
+.wx-fc-loc{font-size:10px;color:var(--text3);margin-top:1px;margin-bottom:8px;line-height:1.3;}
+.wx-fc-main{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.wx-fc-icon{font-size:26px;line-height:1;}
+.wx-fc-temp{font-size:22px;font-weight:700;font-family:var(--m);color:var(--text);}
+.wx-fc-desc{font-size:11px;color:var(--text2);margin-bottom:4px;}
+.wx-fc-wind{font-size:11px;color:var(--text2);margin-bottom:2px;}
+.wx-fc-hum{font-size:11px;color:var(--text3);}
+.wx-fc-ts{font-size:10px;color:var(--text3);font-family:var(--m);margin-top:7px;border-top:1px solid var(--border);padding-top:5px;}
+.wx-fc-loading{text-align:center;padding:16px 0;color:var(--text3);font-size:12px;font-style:italic;}
+.wx-fc-err{font-size:11px;color:var(--red);padding:8px 0;font-style:italic;}
 /* ── MAP VIEW ───────────────────────────────────────────────────────────────── */
 #view-map{padding:0;display:none;flex-direction:column;height:calc(100vh - 48px);}
 #view-map.active{display:flex;}
@@ -392,9 +467,6 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 .tz-sites .tz-loc{color:var(--text2);font-size:12px}
 .tz-footer{font-size:11px;color:var(--text2);margin-top:16px}
 
-/* ── PASSDOWN ────────────────────────────────────────────────────────────────── */
-#view-passdown{padding:0;}
-
 /* ── SCHEDULE (SharePoint iframe) ────────────────────────────────────────────── */
 .schedule-iframe-container{width:100%;max-width:1400px;margin:0 auto;}
 .schedule-iframe-container iframe{width:100%;height:800px;border:1px solid var(--border);border-radius:var(--rl);box-shadow:var(--shs);}
@@ -419,142 +491,6 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 @media(max-width:900px){.schedule-srd-combo{grid-template-columns:1fr;height:600px;}}
 @media(max-width:600px){.schedule-srd-combo{grid-template-columns:1fr;height:500px;}}
 .schedule-srd-combo iframe{width:100%;height:100%;border:1px solid var(--border);border-radius:var(--rl);box-shadow:var(--shs);}
-.pd-shell{display:grid;grid-template-columns:1fr 420px;height:calc(100vh - 48px);overflow:hidden;}
-@media(max-width:960px){.pd-shell{grid-template-columns:1fr;height:auto;overflow:visible;}}
-.pd-editor{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
-.pd-preview-col{border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg2);overflow:hidden;}
-.pd-preview-toolbar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;}
-.pd-preview-title{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;flex:1;}
-.pd-preview-body{flex:1;overflow-y:auto;padding:16px;}
-.pd-preview-out{font-family:var(--m);font-size:12px;line-height:1.8;white-space:pre-wrap;color:var(--text);}
-.pd-ai-out{margin-top:12px;background:var(--bbg);border:1px solid var(--blue);border-radius:8px;padding:14px;font-size:12.5px;line-height:1.75;color:var(--text);display:none;font-family:var(--f);}
-.pd-ai-out.visible{display:block;}
-.pd-ai-loading{display:none;align-items:center;gap:8px;padding:10px 14px;font-size:12px;color:var(--blue);font-family:var(--m);}
-.pd-ai-loading.visible{display:flex;}
-.pd-ai-spinner{width:14px;height:14px;border:2px solid var(--bbg);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* Header card */
-.pd-hdr-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px;box-shadow:var(--shs);}
-.pd-hdr-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-.pd-hdr-field{display:flex;flex-direction:column;gap:3px;flex:1;min-width:120px;}
-.pd-hdr-field label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;}
-.pd-hdr-field input,.pd-hdr-field select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:13px;color:var(--text);font-family:var(--f);}
-.pd-hdr-field input:focus,.pd-hdr-field select:focus{outline:none;border-color:var(--blue);}
-
-/* Section */
-.pd-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);box-shadow:var(--shs);overflow:hidden;}
-.pd-section-hdr{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none;border-bottom:1px solid var(--border);}
-.pd-section-hdr:hover{background:var(--bg3);}
-.pd-section-icon{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.pd-section-label{font-size:12px;font-weight:700;letter-spacing:.04em;flex:1;}
-.pd-section-count{font-size:11px;color:var(--text3);font-family:var(--m);}
-.pd-section-arrow{font-size:10px;color:var(--text3);transition:transform .2s;}
-.pd-section-arrow.open{transform:rotate(90deg);}
-.pd-section-body{
-  display: none;
-  padding: 8px 10px;
-  flex-direction: column;
-  gap: 5px;
-  max-height: 460px;   /* tall enough for ~6 sites with notes */
-  min-height: 30px;    /* ensure visible when empty */
-  overflow-y: auto;
-  padding-right: 6px;  /* space for scrollbar */
-  scroll-behavior: smooth;
-}
-.pd-section-body.open{
-  display: flex;
-}
-
-
-/* Site row */
-.pd-site-row{display:grid;grid-template-columns:auto 1fr auto;gap:6px;align-items:start;padding:8px 10px;border-radius:7px;background:var(--bg3);border:1px solid transparent;transition:border-color .15s;}
-.pd-site-row:hover{border-color:var(--border);}
-.pd-site-row.has-note{background:var(--bg2);border-color:var(--border);}
-.pd-site-name-col{display:flex;flex-direction:column;gap:3px;min-width:80px;}
-.pd-site-name{font-size:12px;font-weight:700;color:var(--text);font-family:var(--m);}
-.pd-site-loc{font-size:10px;color:var(--text3);}
-.pd-site-inputs{display:flex;flex-direction:column;gap:4px;}
-.pd-site-top{display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
-.pd-status-btns{display:flex;gap:3px;}
-.pd-status-btn{padding:3px 8px;border-radius:10px;border:1px solid var(--border);background:var(--bg4);color:var(--text3);font-size:10px;font-weight:600;cursor:pointer;font-family:var(--f);transition:all .12s;white-space:nowrap;}
-.pd-status-btn:hover{border-color:var(--border2);color:var(--text2);}
-.pd-status-btn.s-none{background:var(--bg4);color:var(--text3);}
-.pd-status-btn.s-none.active{background:var(--bg4);color:var(--text2);border-color:var(--border2);}
-.pd-status-btn.s-monitor.active{background:var(--abg);color:var(--amber);border-color:var(--amber);}
-.pd-status-btn.s-active.active{background:var(--rbg);color:var(--red);border-color:var(--red);}
-.pd-status-btn.s-resolved.active{background:var(--gbg);color:var(--green);border-color:var(--green);}
-.pd-log-inp{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:3px 7px;font-size:11px;font-family:var(--m);color:var(--text2);width:90px;}
-.pd-log-inp:focus{outline:none;border-color:var(--blue);}
-.pd-notes-inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-size:12px;font-family:var(--f);color:var(--text);resize:vertical;min-height:34px;line-height:1.5;}
-.pd-notes-inp:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
-.pd-site-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:3px;border-radius:4px;opacity:.5;align-self:flex-start;margin-top:2px;}
-.pd-site-del:hover{color:var(--red);opacity:1;background:var(--rbg);}
-.pd-add-site-row{display:flex;gap:6px;padding:8px 10px;border-top:1px solid var(--border);margin-top:4px;}
-.pd-add-inp{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:12px;font-family:var(--m);color:var(--text);}
-.pd-add-inp:focus{outline:none;border-color:var(--green);}
-.pd-add-btn{padding:4px 10px;background:var(--gbg);border:1px solid var(--green);border-radius:6px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer;}
-.pd-add-btn:hover{background:var(--green);color:#fff;}
-
-/* History sidebar item */
-.pd-hist-item{padding:9px 11px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:border-color .15s;}
-.pd-hist-item:hover{border-color:var(--border2);}
-.pd-hist-meta{font-size:10px;color:var(--text3);font-family:var(--m);margin-bottom:2px;}
-.pd-hist-snip{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-
-/* Copy flash */
-.pd-copy-flash{animation:flash .4s;}
-@keyframes flash{0%,100%{background:var(--gbg);}50%{background:var(--gmid);color:#fff;}}
-
-/* General entry — flex row so textarea fills properly */
-.pd-gen-entry{display:flex;gap:6px;align-items:flex-start;padding:4px 2px;}
-.pd-gen-entry .pd-notes-inp{flex:1;min-height:52px;font-size:13px;}
-.pd-gen-entry .pd-site-del{margin-top:4px;flex-shrink:0;}
-
-/* ── Improved Live Preview ─────────────────────────────────── */
-.pd-preview-out{font-size:12.5px;line-height:1.75;color:var(--text);}
-.pd-prev-header{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 13px;margin-bottom:10px;font-family:var(--m);font-size:11.5px;color:var(--text2);line-height:1.9;}
-.pd-prev-header strong{color:var(--text);font-size:12px;}
-.pd-prev-headline{padding:7px 11px;border-radius:7px;margin-bottom:12px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;}
-.pd-prev-headline.all-clear{background:var(--gbg);color:var(--green);border:1px solid #a3d9bc;}
-.pd-prev-headline.has-issues{background:var(--rbg);color:var(--red);border:1px solid #f4bdb0;}
-.pd-prev-headline.monitoring{background:var(--abg);color:var(--amber);border:1px solid #f5d99a;}
-.pd-prev-section{margin-bottom:10px;}
-.pd-prev-sec-hdr{display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:6px;margin-bottom:6px;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;}
-.pd-prev-sec-hdr.bess{background:var(--bbg);color:var(--blue);border-left:3px solid var(--blue);}
-.pd-prev-sec-hdr.solar{background:var(--abg);color:var(--amber);border-left:3px solid var(--amber);}
-.pd-prev-sec-hdr.wind{background:var(--gbg);color:var(--green);border-left:3px solid var(--green);}
-.pd-prev-sec-hdr.general{background:var(--bg3);color:var(--text2);border-left:3px solid var(--border2);}
-.pd-prev-site{padding:5px 9px 5px 12px;border-radius:6px;background:var(--bg3);margin-bottom:4px;border:1px solid transparent;}
-.pd-prev-site.s-active{border-color:var(--red);background:var(--rbg);}
-.pd-prev-site.s-monitor{border-color:var(--amber);background:var(--abg);}
-.pd-prev-site.s-resolved{border-color:var(--green);background:var(--gbg);}
-.pd-prev-site-hdr{display:flex;align-items:center;gap:6px;}
-.pd-prev-site-name{font-family:var(--m);font-size:12px;font-weight:700;color:var(--text);}
-.pd-prev-status-badge{font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;}
-.pd-prev-status-badge.active{background:var(--red);color:#fff;}
-.pd-prev-status-badge.monitor{background:var(--amber);color:#fff;}
-.pd-prev-status-badge.resolved{background:var(--green);color:#fff;}
-.pd-prev-log-badge{font-family:var(--m);font-size:10px;color:var(--text3);background:var(--bg4);padding:1px 7px;border-radius:10px;}
-.pd-prev-site-notes{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.6;padding-left:2px;font-family:var(--f);}
-.pd-prev-gen-item{font-size:12.5px;color:var(--text);padding:5px 10px;border-radius:6px;background:var(--bg3);margin-bottom:4px;border-left:3px solid var(--border2);line-height:1.6;}
-.pd-prev-empty{font-size:12px;color:var(--text3);text-align:center;padding:28px 16px;font-style:italic;}
-
-/* ── Improved AI Summary ────────────────────────────────────── */
-.pd-ai-out{margin-top:12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:none;}
-.pd-ai-out.visible{display:block;}
-.pd-ai-out-header{background:linear-gradient(135deg,var(--bbg),var(--pbg));border-bottom:1px solid var(--border);padding:9px 14px;display:flex;align-items:center;gap:7px;}
-.pd-ai-out-header-icon{font-size:14px;}
-.pd-ai-out-header-title{font-size:11px;font-weight:700;color:var(--blue);letter-spacing:.06em;text-transform:uppercase;flex:1;}
-.pd-ai-out-header-badge{font-size:10px;font-weight:600;background:var(--bbg);color:var(--blue);border:1px solid var(--blue);padding:2px 8px;border-radius:10px;}
-.pd-ai-body{padding:12px 14px;font-size:12.5px;line-height:1.8;color:var(--text);font-family:var(--f);}
-.pd-ai-body p{margin-bottom:7px;}
-.pd-ai-body p:last-child{margin-bottom:0;}
-.pd-ai-section{margin-bottom:10px;}
-.pd-ai-section-hdr{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid var(--border);}
-.pd-ai-item{display:flex;gap:7px;padding:3px 0;font-size:12.5px;}
-.pd-ai-bullet{color:var(--blue);flex-shrink:0;font-weight:700;}
-.pd-ai-urgent{background:var(--rbg);border:1px solid #f4bdb0;border-radius:6px;padding:7px 10px;margin-bottom:8px;font-size:12.5px;color:var(--red);font-weight:500;}
 
 select,option{background:var(--bg3);}
 </style>
@@ -571,9 +507,9 @@ select,option{background:var(--bg3);}
   <button class="nav-tab" onclick="switchView('intel',this)">Weather</button>
   <button class="nav-tab" onclick="switchView('ops',this)">Tasks</button>
   <button class="nav-tab" onclick="switchView('swbuilder',this)">Log Builder</button>
+  <button class="nav-tab" id="nav-tab-chron" onclick="switchView('chron',this)">Chron Log</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('map',this)">Map</button>
   <button class="nav-tab" onclick="switchView('timezones',this)">Time Zones</button>
-  <button class="nav-tab" onclick="switchView('passdown',this)">Passdown</button>
   <button class="nav-tab" onclick="switchView('schedule',this)">Schedule</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('notes',this)">Notepad</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('log',this)">Log</button>
@@ -736,9 +672,51 @@ select,option{background:var(--bg3);}
       </div>
     </div>
   </div>
+
+  <!-- Fleet Snapshot -->
+  <div class="wx-fleet-section">
+    <div class="wx-fleet-hdr">
+      <div>
+        <div class="wx-fleet-title">🌐 Fleet Snapshot</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px;">Pin up to 12 sites · amber &gt;25mph · red &gt;40mph</div>
+      </div>
+      <button class="ibtn ibtn-p" onclick="wxFetchAll()">↻ Refresh All</button>
+    </div>
+    <div class="wx-pin-row">
+      <input id="wx-pin-inp" placeholder="Search site to pin…" oninput="wxPinFilter()" autocomplete="off">
+      <div class="wx-pin-matches" id="wx-pin-matches"></div>
+    </div>
+    <div class="wx-pins-list" id="wx-pins-list"></div>
+    <div class="wx-fleet-grid" id="wx-fleet-grid"></div>
+  </div>
 </div>
 
 <!-- MODALS -->
+<div class="overlay hidden" id="modal-sw-tpl">
+  <div class="modal" style="width:520px;">
+    <h3 id="sw-tpl-modal-title">New Template</h3>
+    <input type="hidden" id="sw-tpl-edit-id">
+    <label>Site / System name</label>
+    <input id="sw-tpl-site" placeholder="e.g. CNDR1, COSO, Bypass">
+    <label>Action label</label>
+    <input id="sw-tpl-action" placeholder="e.g. De-Energize, MVT Permit, Trip Reset">
+    <label>Color</label>
+    <select id="sw-tpl-cls">
+      <option value="de">Red — De-energize / Off</option>
+      <option value="re">Green — Re-energize / On</option>
+      <option value="other">Blue — Other</option>
+    </select>
+    <label>Number field label <span style="font-weight:400;color:var(--text3);">(what the operator fills in)</span></label>
+    <input id="sw-tpl-numlbl" placeholder="e.g. Feeder Breaker #, MVT #, Work Order #" value="Number">
+    <label>Template body — use <code style="background:var(--bg4);padding:1px 4px;border-radius:3px;">{{TECH}}</code> and <code style="background:var(--bg4);padding:1px 4px;border-radius:3px;">{{NUMBER}}</code></label>
+    <textarea id="sw-tpl-body" placeholder="Call received from field tech {{TECH}} requesting de-energization of Unit {{NUMBER}}:&#10;– Step one completed remotely&#10;– Step two completed locally" style="min-height:130px;font-family:var(--m);font-size:12px;line-height:1.7;"></textarea>
+    <div class="m-actions">
+      <button class="btn-c" onclick="closeModal('modal-sw-tpl')">Cancel</button>
+      <button class="btn-p" onclick="swSaveTpl()">Save template</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay hidden" id="modal-handoff">
   <div class="modal" style="width:520px;">
     <h3>↺ Shift handoff summary</h3>
@@ -899,33 +877,8 @@ select,option{background:var(--bg3);}
       <div class="sw-box">
         <div class="sw-box-title">Template</div>
 
-        <!-- ALL 6 HARDCODED — always visible, no JS needed to render -->
-        <div class="sw-tpls">
-          <button class="sw-tpl" id="swtpl-harq-de" onclick="swSelect('harq-de',this)">
-            <span class="sw-tpl-stripe de"></span>
-            <span class="sw-tpl-body"><span class="sw-tpl-site">HARQ · Feeder Breaker</span>De-Energize</span>
-          </button>
-          <button class="sw-tpl" id="swtpl-harq-re" onclick="swSelect('harq-re',this)">
-            <span class="sw-tpl-stripe re"></span>
-            <span class="sw-tpl-body"><span class="sw-tpl-site">HARQ · Feeder Breaker</span>Re-Energize</span>
-          </button>
-          <button class="sw-tpl" id="swtpl-prgrn-de" onclick="swSelect('prgrn-de',this)">
-            <span class="sw-tpl-stripe de"></span>
-            <span class="sw-tpl-body"><span class="sw-tpl-site">PRGRN · MVT</span>De-Energize</span>
-          </button>
-          <button class="sw-tpl" id="swtpl-prgrn-re" onclick="swSelect('prgrn-re',this)">
-            <span class="sw-tpl-stripe re"></span>
-            <span class="sw-tpl-body"><span class="sw-tpl-site">PRGRN · MVT</span>Re-Energize</span>
-          </button>
-          <button class="sw-tpl" id="swtpl-cndr-de" onclick="swSelect('cndr-de',this)">
-            <span class="sw-tpl-stripe de"></span>
-            <span class="sw-tpl-body"><span class="sw-tpl-site">Condor · MVT Local</span>De-Energize</span>
-          </button>
-          <button class="sw-tpl" id="swtpl-cndr-re" onclick="swSelect('cndr-re',this)">
-            <span class="sw-tpl-stripe re"></span>
-            <span class="sw-tpl-body"><span class="sw-tpl-site">Condor · MVT Local</span>Re-Energize</span>
-          </button>
-        </div>
+        <div id="sw-tpls-list"></div>
+        <button class="sw-new-tpl-btn" onclick="swOpenNewTpl()">＋ New template</button>
 
         <div class="sw-field">
           <label>Field Tech Name</label>
@@ -967,6 +920,39 @@ select,option{background:var(--bg3);}
   </div>
 </div>
 
+<!-- CHRON LOG ─────────────────────────────────────────────────────────────── -->
+<div class="view" id="view-chron">
+  <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:14px;">
+    <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">Chron Log</div>
+    <span style="font-size:12px;color:var(--text3);">Chronological shift event feed</span>
+  </div>
+  <div class="cl-input-bar">
+    <select id="cl-site" style="max-width:180px;"></select>
+    <input id="cl-text" placeholder="Log entry… press Enter to submit" onkeydown="if(event.key==='Enter')clAdd()">
+    <button class="cl-log-btn" onclick="clAdd()">Log It</button>
+  </div>
+  <div class="cl-header-row">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;">Shift Feed</span>
+      <span class="cl-starred-count" id="cl-starred-count" style="display:none;"></span>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <button class="tbtn" style="font-size:11px;" onclick="clCopyStarred()">Copy ★ for passdown</button>
+      <button class="tbtn" style="font-size:11px;color:var(--red);" onclick="clClear()">Clear shift</button>
+    </div>
+  </div>
+  <div class="cl-feed" id="cl-feed"><div class="empty">No entries yet — log the first event above</div></div>
+
+  <!-- Live Summary Preview -->
+  <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <span style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;">Live Summary Preview</span>
+      <span style="font-size:12px;color:var(--text3);">Grouped by site</span>
+    </div>
+    <div id="cl-preview" class="cl-preview"></div>
+  </div>
+</div>
+
 <!-- MAP VIEW ────────────────────────────────────────────────────────────────── -->
 <div class="view" id="view-map">
   <div class="map-toolbar">
@@ -1000,136 +986,6 @@ select,option{background:var(--bg3);}
     <div class="tz-footer">Last update: <span id="tz-lastUpdate"></span> (auto-refreshing)</div>
   </div>
 </div>
-
-<!-- PASSDOWN ─────────────────────────────────────────────────────────────────── -->
-<div class="view" id="view-passdown">
-<div class="pd-shell">
-
-  <!-- LEFT: EDITOR ──────────────────────────────────────────────── -->
-  <div class="pd-editor" id="pd-editor">
-
-    <!-- Header -->
-    <div class="pd-hdr-card">
-      <div class="pd-hdr-row">
-        <div class="pd-hdr-field">
-          <label>Date</label>
-          <input type="date" id="pd-date">
-        </div>
-        <div class="pd-hdr-field">
-          <label>Shift</label>
-          <select id="pd-shift">
-            <option value="Day">Day Shift</option>
-            <option value="Night">Night Shift</option>
-          </select>
-        </div>
-        <div class="pd-hdr-field" style="min-width:160px;">
-          <label>Author</label>
-          <input id="pd-author" list="pd-auth-list" placeholder="Your name">
-          <datalist id="pd-auth-list">
-            <option>Adam McCauley</option><option>Alexander Conway</option><option>Christopher Hill</option>
-            <option>Jesse Snygg-Carrasco</option><option>Jonathan Osborne</option><option>Mar'Cell Edwards</option>
-            <option>Morgan Shearer</option><option>Rob Seffern</option><option>Sergio Torres</option>
-          </datalist>
-        </div>
-        <div class="pd-hdr-field" style="min-width:160px;">
-          <label>Relieved by</label>
-          <input id="pd-relieved" list="pd-auth-list" placeholder="Incoming operator">
-        </div>
-      </div>
-    </div>
-
-    <!-- BESS section -->
-    <div class="pd-section" id="pds-bess">
-      <div class="pd-section-hdr" onclick="pdToggleSection('bess')">
-        <span class="pd-section-icon" style="background:#1a4d8a;"></span>
-        <span class="pd-section-label" style="color:var(--blue);">⚡ BESS Sites</span>
-        <span class="pd-section-count" id="pdc-bess">0 active</span>
-        <span class="pd-section-arrow open" id="pda-bess">▶</span>
-      </div>
-      <div class="pd-section-body" id="pdb-bess"></div>
-      <div class="pd-add-site-row">
-        <input class="pd-add-inp" id="pdadd-bess" placeholder="Site code, e.g. BYPS" onkeydown="if(event.key==='Enter')pdAddSite('bess')">
-        <button class="pd-add-btn" onclick="pdAddSite('bess')">+ Add</button>
-      </div>
-    </div>
-
-    <!-- Solar section -->
-    <div class="pd-section" id="pds-solar">
-      <div class="pd-section-hdr" onclick="pdToggleSection('solar')">
-        <span class="pd-section-icon" style="background:#b36b00;"></span>
-        <span class="pd-section-label" style="color:var(--amber);">☀ Solar (PV) Sites</span>
-        <span class="pd-section-count" id="pdc-solar">0 active</span>
-        <span class="pd-section-arrow open" id="pda-solar">▶</span>
-      </div>
-      <div class="pd-section-body" id="pdb-solar"></div>
-      <div class="pd-add-site-row">
-        <input class="pd-add-inp" id="pdadd-solar" placeholder="Site code, e.g. NSTR1" onkeydown="if(event.key==='Enter')pdAddSite('solar')">
-        <button class="pd-add-btn" onclick="pdAddSite('solar')">+ Add</button>
-      </div>
-    </div>
-
-    <!-- Wind section -->
-    <div class="pd-section" id="pds-wind">
-      <div class="pd-section-hdr" onclick="pdToggleSection('wind')">
-        <span class="pd-section-icon" style="background:#1a6e4a;"></span>
-        <span class="pd-section-label" style="color:var(--green);">💨 Wind Sites</span>
-        <span class="pd-section-count" id="pdc-wind">0 active</span>
-        <span class="pd-section-arrow open" id="pda-wind">▶</span>
-      </div>
-      <div class="pd-section-body" id="pdb-wind"></div>
-      <div class="pd-add-site-row">
-        <input class="pd-add-inp" id="pdadd-wind" placeholder="Site code, e.g. MCLM1" onkeydown="if(event.key==='Enter')pdAddSite('wind')">
-        <button class="pd-add-btn" onclick="pdAddSite('wind')">+ Add</button>
-      </div>
-    </div>
-
-    <!-- General section -->
-    <div class="pd-section" id="pds-general">
-      <div class="pd-section-hdr" onclick="pdToggleSection('general')">
-        <span class="pd-section-icon" style="background:var(--text3);"></span>
-        <span class="pd-section-label">📋 General / Action Items</span>
-        <span class="pd-section-count" id="pdc-general">0 items</span>
-        <span class="pd-section-arrow open" id="pda-general">▶</span>
-      </div>
-      <div class="pd-section-body" id="pdb-general" style="display:flex;min-height:30px;max-height:460px;overflow-y:auto;padding:8px 10px;">
-        <div style="font-size:12px;color:var(--text3);padding:6px 4px;">No general items — add one below.</div>
-      </div>
-      <div class="pd-add-site-row" style="border-top:1px solid var(--border);margin-top:4px;padding:8px 10px;display:flex;gap:6px;">
-        <button class="pd-add-btn" onclick="pdAddGeneralEntry()">+ Add General Item</button>
-      </div>
-    </div>
-
-    <!-- History -->
-    <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-        <span style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;">Saved Passdowns</span>
-        <button class="tbtn" style="font-size:11px;padding:2px 8px;" onclick="pdClearHistory()">Clear all</button>
-      </div>
-      <div id="pd-history" style="display:flex;flex-direction:column;gap:5px;"></div>
-    </div>
-
-  </div><!-- /pd-editor -->
-
-  <!-- RIGHT: LIVE PREVIEW ───────────────────────────────────────── -->
-  <div class="pd-preview-col">
-    <div class="pd-preview-toolbar">
-      <span class="pd-preview-title">Live Preview</span>
-      <button class="tbtn" style="font-size:11px;padding:4px 10px;" id="pd-copy-btn" onclick="pdCopy()">Copy</button>
-      <button class="btn-p" style="font-size:11px;padding:4px 12px;" onclick="pdSave()">Save</button>
-      <button class="tbtn" style="font-size:11px;padding:4px 10px;border-color:var(--blue);color:var(--blue);" onclick="pdSummarize()">✦ AI Summary</button>
-    </div>
-    <div class="pd-preview-body">
-      <div class="pd-ai-loading" id="pd-ai-loading">
-        <div class="pd-ai-spinner"></div>
-        <span>Generating summary…</span>
-      </div>
-      <div class="pd-ai-out" id="pd-ai-out"></div>
-      <div class="pd-preview-out" id="pd-preview-out"><div class="pd-prev-empty">Fill in site notes to see the passdown preview here.</div></div>
-    </div>
-  </div>
-
-</div>
-</div><!-- /view-passdown -->
 
 <!-- SCHEDULE (SharePoint) ──────────────────────────────────────────────────────────── -->
 <div class="view" id="view-schedule">
@@ -1337,14 +1193,15 @@ async function load() {
   restoreAdhocTimers();
   asInit();
   swInit();
-  pdInit();
+  clInit();
+  wxFleetInit();
   // Restore escalation contacts
   const rows = document.querySelectorAll('#esc-tbody tr');
   const tkeys = ['t1','t2','t3'];
   rows.forEach((row,i) => { const inp=row.querySelector('input'); if(inp) inp.value=S.escContacts[tkeys[i]]||''; });
 
   // Restore last active tab (default: scans)
-  const TAB_VIEWS = ['scans','asset','intel','ops','swbuilder','timezones','passdown'];
+  const TAB_VIEWS = ['scans','asset','intel','ops','swbuilder','chron','timezones','schedule'];
   let savedTab = 'scans';
   try { savedTab = localStorage.getItem('rnwbl_active_tab') || 'scans'; } catch(e) {}
   if (!TAB_VIEWS.includes(savedTab)) savedTab = 'scans';
@@ -1427,7 +1284,8 @@ function switchView(v, el) {
   if(v==='asset') { asRenderTabs(); asRenderForm(); }
   if(v==='map') mapActivate();
   if(v==='timezones') initTimeZones();
-  if(v==='passdown') pdActivate();
+  if(v==='chron') clRender();
+  if(v==='intel') wxFleetInit();
   try { localStorage.setItem('rnwbl_active_tab', v); } catch(e) {}
 }
 
@@ -1916,7 +1774,263 @@ function logWeather(){
   switchView('notes',document.querySelectorAll('.nav-tab')[0]); showToast('Weather logged');
 }
 
-// ─── CREW ─────────────────────────────────────────────────────────────────────
+// ─── CHRON LOG ────────────────────────────────────────────────────────────────
+const CL_KEY = 'rnwbl_chron_v1';
+let clEntries = [];
+
+function clInit() {
+  try { clEntries = JSON.parse(localStorage.getItem(CL_KEY) || '[]'); } catch(e) { clEntries = []; }
+  clPopulateSiteSelect();
+}
+
+function clPopulateSiteSelect() {
+  const sel = document.getElementById('cl-site');
+  if (!sel) return;
+  const allSites = [
+    {name:'(no site)'},
+    ...[...SITES, ...WX_LOCS].sort((a,b) => (a.name||'').localeCompare(b.name||''))
+  ];
+  sel.innerHTML = allSites.map(s => `<option value="${esc(s.name==='(no site)'?'':s.name)}">${esc(s.name)}</option>`).join('');
+}
+
+function clAdd() {
+  const text = document.getElementById('cl-text').value.trim();
+  if (!text) { showToast('Enter a log entry first'); return; }
+  const site = document.getElementById('cl-site').value;
+  const now  = new Date();
+  const entry = {
+    id: Date.now(),
+    ts: now.getTime(),
+    time: now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+    site,
+    text,
+    starred: false
+  };
+  clEntries.unshift(entry);
+  try { localStorage.setItem(CL_KEY, JSON.stringify(clEntries)); } catch(e) {}
+  document.getElementById('cl-text').value = '';
+  clRender();
+  showToast('Logged');
+}
+
+function clToggleStar(id) {
+  const e = clEntries.find(x => x.id === id); if (!e) return;
+  e.starred = !e.starred;
+  try { localStorage.setItem(CL_KEY, JSON.stringify(clEntries)); } catch(e) {}
+  clRender();
+}
+
+function clDelete(id) {
+  clEntries = clEntries.filter(x => x.id !== id);
+  try { localStorage.setItem(CL_KEY, JSON.stringify(clEntries)); } catch(e) {}
+  clRender();
+}
+
+function clClear() {
+  if (!clEntries.length) return;
+  if (!confirm('Clear all Chron Log entries for this shift?')) return;
+  clEntries = [];
+  try { localStorage.removeItem(CL_KEY); } catch(e) {}
+  clRender();
+}
+
+function clCopyStarred() {
+  const starred = clEntries.filter(x => x.starred);
+  if (!starred.length) { showToast('No starred entries'); return; }
+  const lines = starred.map(e =>
+    `[${e.time}]${e.site?' '+e.site:''} ${e.text}`
+  ).join('\n');
+  navigator.clipboard.writeText(lines)
+    .then(() => showToast('Starred entries copied'))
+    .catch(() => showToast('Clipboard blocked — try Ctrl+C'));
+}
+
+function clRender() {
+  const feed = document.getElementById('cl-feed'); if (!feed) return;
+  const starred = clEntries.filter(x => x.starred).length;
+  const sc = document.getElementById('cl-starred-count');
+  if (sc) { sc.style.display = starred ? 'inline' : 'none'; sc.textContent = starred + ' ★ for passdown'; }
+
+  if (!clEntries.length) {
+    feed.innerHTML = '<div class="empty">No entries yet — log the first event above</div>';
+  } else {
+    feed.innerHTML = clEntries.map(e => {
+      const siteTag = e.site ? `<span class="cl-site-tag">${esc(e.site)}</span>` : '';
+      return `<div class="cl-entry${e.starred?' starred':''}">
+        <span class="cl-time">${esc(e.time)}</span>
+        ${siteTag}
+        <span class="cl-body">${esc(e.text)}</span>
+        <button class="cl-star${e.starred?' on':''}" title="Star for passdown" onclick="clToggleStar(${e.id})">★</button>
+        <button class="cl-del" title="Delete entry" onclick="clDelete(${e.id})">✕</button>
+      </div>`;
+    }).join('');
+  }
+
+  clRenderPreview();
+}
+
+function clRenderPreview() {
+  const preview = document.getElementById('cl-preview'); if (!preview) return;
+
+  if (!clEntries.length) {
+    preview.innerHTML = '<div style="color:var(--text3);font-style:italic;">No entries to preview</div>';
+    return;
+  }
+
+  // Group entries by site
+  const grouped = {};
+  clEntries.forEach(e => {
+    const site = e.site || 'General';
+    if (!grouped[site]) grouped[site] = [];
+    grouped[site].push(e);
+  });
+
+  // Get site type for grouping
+  const getSiteType = (siteName) => {
+    if (siteName === 'General') return 'General';
+    const site = SITES.find(s => s.name === siteName) || WX_LOCS.find(w => w.name === siteName);
+    return site ? (site.type || 'General') : 'General';
+  };
+
+  // Group by type
+  const byType = {};
+  Object.keys(grouped).forEach(site => {
+    const type = getSiteType(site);
+    if (!byType[type]) byType[type] = {};
+    byType[type][site] = grouped[site];
+  });
+
+  // Render
+  let html = '';
+  const typeOrder = ['BESS', 'Solar', 'Wind', 'General'];
+  typeOrder.forEach(type => {
+    if (byType[type]) {
+      html += `<div class="cl-preview-section"><div class="cl-preview-section-title">${esc(type)}</div>`;
+      Object.keys(byType[type]).forEach(site => {
+        byType[type][site].forEach(e => {
+          html += `<div class="cl-preview-entry${e.starred?' starred':''}">[${esc(e.time)}] ${esc(e.text)}</div>`;
+        });
+      });
+      html += '</div>';
+    }
+  });
+
+  preview.innerHTML = html;
+}
+
+// ─── FLEET WEATHER ────────────────────────────────────────────────────────────
+const WX_PINS_KEY = 'rnwbl_wx_pins_v1';
+let wxPins = [];       // array of {name, location}
+let wxFleetData = {};  // name → fetched data or error
+let wxFleetInited = false;
+
+function wxFleetInit() {
+  if (!wxFleetInited) {
+    try { wxPins = JSON.parse(localStorage.getItem(WX_PINS_KEY) || '[]'); } catch(e) { wxPins = []; }
+    wxFleetInited = true;
+  }
+  wxRenderPins();
+  wxRenderFleetGrid();
+}
+
+function wxPinFilter() {
+  const q = document.getElementById('wx-pin-inp').value.toLowerCase().trim();
+  const box = document.getElementById('wx-pin-matches');
+  if (!q) { box.style.display = 'none'; return; }
+  const siteHits = SITES.filter(s => s.name.toLowerCase().includes(q) || (s.location||'').toLowerCase().includes(q));
+  const wxHits   = WX_LOCS.filter(s => s.name.toLowerCase().includes(q) || (s.location||'').toLowerCase().includes(q));
+  const all = [
+    ...siteHits.map(s => ({name:s.name, location:s.location||s.name})),
+    ...wxHits.map(s   => ({name:s.name, location:s.location||s.name}))
+  ].slice(0, 8);
+  // Remove already-pinned
+  const filtered = all.filter(s => !wxPins.some(p => p.name === s.name));
+  if (!filtered.length) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  box.innerHTML = filtered.map(s =>
+    `<div class="wx-pin-match-item" onclick="wxAddPin('${esc(s.name)}','${esc(s.location)}')">
+      <strong>${esc(s.name)}</strong> — <span style="color:var(--text3);font-size:11px;">${esc(s.location)}</span>
+    </div>`
+  ).join('');
+}
+
+function wxAddPin(name, location) {
+  if (wxPins.length >= 12) { showToast('Max 12 pinned sites'); return; }
+  if (wxPins.some(p => p.name === name)) return;
+  wxPins.push({name, location});
+  try { localStorage.setItem(WX_PINS_KEY, JSON.stringify(wxPins)); } catch(e) {}
+  document.getElementById('wx-pin-inp').value = '';
+  document.getElementById('wx-pin-matches').style.display = 'none';
+  wxRenderPins();
+  wxRenderFleetGrid();
+}
+
+function wxRemovePin(name) {
+  wxPins = wxPins.filter(p => p.name !== name);
+  delete wxFleetData[name];
+  try { localStorage.setItem(WX_PINS_KEY, JSON.stringify(wxPins)); } catch(e) {}
+  wxRenderPins();
+  wxRenderFleetGrid();
+}
+
+function wxRenderPins() {
+  const el = document.getElementById('wx-pins-list'); if (!el) return;
+  if (!wxPins.length) { el.innerHTML = '<span style="font-size:12px;color:var(--text3);">No sites pinned yet — search above to add up to 12</span>'; return; }
+  el.innerHTML = wxPins.map(p =>
+    `<div class="wx-pin-chip">${esc(p.name)}<button class="wx-pin-chip-del" onclick="wxRemovePin('${esc(p.name)}')">✕</button></div>`
+  ).join('');
+}
+
+function wxWeatherIcon(desc) {
+  const d = desc.toLowerCase();
+  return d.includes('thunder')?'⛈':d.includes('rain')||d.includes('drizzle')?'🌧':d.includes('snow')?'❄️':d.includes('overcast')?'🌥':d.includes('cloud')?'☁️':d.includes('fog')||d.includes('mist')?'🌫':d.includes('sunny')||d.includes('clear')?'☀️':'🌤';
+}
+
+async function wxFetchOne(pin) {
+  try {
+    const d = (await (await fetch(`https://wttr.in/${encodeURIComponent(pin.location)}?format=j1`)).json()).current_condition[0];
+    const mph = parseInt(d.windspeedMiles) || 0;
+    wxFleetData[pin.name] = { ok:true, temp:d.temp_F, desc:d.weatherDesc[0].value, wind:mph, windDir:d.winddir16Point, hum:d.humidity, ts:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) };
+  } catch(e) {
+    wxFleetData[pin.name] = { ok:false };
+  }
+}
+
+async function wxFetchAll() {
+  if (!wxPins.length) { showToast('Pin at least one site first'); return; }
+  // Show loading state
+  wxRenderFleetGrid(true);
+  await Promise.all(wxPins.map(p => wxFetchOne(p)));
+  wxRenderFleetGrid(false);
+}
+
+function wxRenderFleetGrid(loading) {
+  const grid = document.getElementById('wx-fleet-grid'); if (!grid) return;
+  if (!wxPins.length) { grid.innerHTML = ''; return; }
+  if (loading) {
+    grid.innerHTML = wxPins.map(p =>
+      `<div class="wx-fleet-card"><div class="wx-fc-site">${esc(p.name)}</div><div class="wx-fc-loc">${esc(p.location)}</div><div class="wx-fc-loading">Fetching…</div></div>`
+    ).join('');
+    return;
+  }
+  grid.innerHTML = wxPins.map(p => {
+    const d = wxFleetData[p.name];
+    if (!d) return `<div class="wx-fleet-card"><div class="wx-fc-site">${esc(p.name)}</div><div class="wx-fc-loc">${esc(p.location)}</div><div style="font-size:11px;color:var(--text3);padding-top:6px;">Not yet fetched</div></div>`;
+    if (!d.ok) return `<div class="wx-fleet-card"><div class="wx-fc-site">${esc(p.name)}</div><div class="wx-fc-loc">${esc(p.location)}</div><div class="wx-fc-err">Could not fetch</div></div>`;
+    const alertCls = d.wind >= 40 ? 'wind-alert' : d.wind >= 25 ? 'wind-warn' : '';
+    return `<div class="wx-fleet-card ${alertCls}">
+      <div class="wx-fc-site">${esc(p.name)}</div>
+      <div class="wx-fc-loc">${esc(p.location)}</div>
+      <div class="wx-fc-main">
+        <span class="wx-fc-icon">${wxWeatherIcon(d.desc)}</span>
+        <span class="wx-fc-temp">${esc(d.temp)}°F</span>
+      </div>
+      <div class="wx-fc-wind">💨 ${esc(String(d.wind))}mph ${esc(d.windDir)}</div>
+      <div class="wx-fc-hum">💧 Humidity ${esc(d.hum)}%</div>
+      <div class="wx-fc-ts">Updated ${esc(d.ts)}</div>
+    </div>`;
+  }).join('');
+}
 function addCrew(){ const n=document.getElementById('crew-inp').value.trim(); if(!n)return; S.crew.push({id:Date.now(),name:n,status:'In field'}); document.getElementById('crew-inp').value=''; save(); renderCrew(); }
 function cycleCrew(id){ const STATS=['In field','On break','Off site','Stand-by']; const m=S.crew.find(x=>x.id===id); if(!m)return; m.status=STATS[(STATS.indexOf(m.status)+1)%STATS.length]; save(); renderCrew(); }
 function removeCrew(id){ S.crew=S.crew.filter(x=>x.id!==id); save(); renderCrew(); }
@@ -3157,135 +3271,119 @@ function asExportCSV() {
 }
 
 // ─── Log BUILDER ──────────────────────────────────────────────────────────────
-// Templates hardcoded — identical to the 6 Excel formulas provided
-const SW_TPLS = {
-  'harq-de': {
-    cls: 'de',
-    hdr: 'Harq De Energize',
-    numLbl: 'Feeder Breaker #',
-    numPlaceholder: 'e.g. 24',
-    build: (t, n) =>
-      `Call received from field tech ${t} requesting de-energization of Feeder Breaker 52F${n}:\n` +
-      `– Associated Megapacks disabled remotely\n` +
-      `– MVT AC Level Breakers opened remotely\n` +
-      `– Feeder Breaker 52F${n} opened remotely`
-  },
-  'harq-re': {
-    cls: 're',
-    hdr: 'Harq Energize',
-    numLbl: 'Feeder Breaker #',
-    numPlaceholder: 'e.g. 15',
-    build: (t, n) =>
-      `Call received from field tech ${t} requesting energization of Feeder Breaker 52F${n}:\n` +
-      `– Feeder Breaker 52F${n} closed remotely\n` +
-      `– MVT AC Level Breakers closed remotely\n` +
-      `– Associated Megapacks enabled remotely`
-  },
-  'prgrn-de': {
-    cls: 'de',
-    hdr: 'PRGRN De Energize',
-    numLbl: 'MVT #',
-    numPlaceholder: 'e.g. 41',
-    build: (t, n) =>
-      `Call received from field tech ${t} requesting de-energization of MVT ${n}:\n` +
-      `– Associated Megapacks disabled remotely\n` +
-      `– MVT AC Level Breakers opened remotely\n` +
-      `– Oil switch opened locally`
-  },
-  'prgrn-re': {
-    cls: 're',
-    hdr: 'PRGRN RE Energize',
-    numLbl: 'MVT #',
-    numPlaceholder: 'e.g. 40',
-    build: (t, n) =>
-      `Call received from field tech ${t} requesting energization of MVT ${n}:\n` +
-      `– Oil switch closed locally\n` +
-      `– MVT AC Level Breakers closed remotely\n` +
-      `– Associated Megapacks enabled remotely`
-  },
-  'cndr-de': {
-    cls: 'de',
-    hdr: 'Condor De Energize',
-    numLbl: 'MVT #',
-    numPlaceholder: 'e.g. 8',
-    build: (t, n) =>
-      `Call received from field tech ${t} requesting permission to de-energize MVT ${n} Locally. ` +
-      `Permission was granted, and local switching was completed.`
-  },
-  'cndr-re': {
-    cls: 're',
-    hdr: 'Condor RE Energize',
-    numLbl: 'MVT #',
-    numPlaceholder: 'e.g. 8',
-    build: (t, n) =>
-      `Call received from field tech ${t} requesting permission to Energize MVT ${n} Locally. ` +
-      `Permission was granted, and local switching was completed.`
-  }
-};
+const SW_HARDCODED = [
+  { id:'harq-de',  site:'HARQ · Feeder Breaker', action:'De-Energize', cls:'de',
+    numLbl:'Feeder Breaker #', numPh:'e.g. 24',
+    body:'Call received from field tech {{TECH}} requesting de-energization of Feeder Breaker 52F{{NUMBER}}:\n– Associated Megapacks disabled remotely\n– MVT AC Level Breakers opened remotely\n– Feeder Breaker 52F{{NUMBER}} opened remotely' },
+  { id:'harq-re',  site:'HARQ · Feeder Breaker', action:'Re-Energize', cls:'re',
+    numLbl:'Feeder Breaker #', numPh:'e.g. 15',
+    body:'Call received from field tech {{TECH}} requesting energization of Feeder Breaker 52F{{NUMBER}}:\n– Feeder Breaker 52F{{NUMBER}} closed remotely\n– MVT AC Level Breakers closed remotely\n– Associated Megapacks enabled remotely' },
+  { id:'prgrn-de', site:'PRGRN · MVT', action:'De-Energize', cls:'de',
+    numLbl:'MVT #', numPh:'e.g. 41',
+    body:'Call received from field tech {{TECH}} requesting de-energization of MVT {{NUMBER}}:\n– Associated Megapacks disabled remotely\n– MVT AC Level Breakers opened remotely\n– Oil switch opened locally' },
+  { id:'prgrn-re', site:'PRGRN · MVT', action:'Re-Energize', cls:'re',
+    numLbl:'MVT #', numPh:'e.g. 40',
+    body:'Call received from field tech {{TECH}} requesting energization of MVT {{NUMBER}}:\n– Oil switch closed locally\n– MVT AC Level Breakers closed remotely\n– Associated Megapacks enabled remotely' },
+  { id:'cndr-de',  site:'Condor · MVT Local', action:'De-Energize', cls:'de',
+    numLbl:'MVT #', numPh:'e.g. 8',
+    body:'Call received from field tech {{TECH}} requesting permission to de-energize MVT {{NUMBER}} Locally. Permission was granted, and local switching was completed.' },
+  { id:'cndr-re',  site:'Condor · MVT Local', action:'Re-Energize', cls:'re',
+    numLbl:'MVT #', numPh:'e.g. 8',
+    body:'Call received from field tech {{TECH}} requesting permission to Energize MVT {{NUMBER}} Locally. Permission was granted, and local switching was completed.' }
+];
 
-let swActive = null;   // active template id string
-let swHist   = [];     // in-memory + localStorage
+const SW_CUSTOM_KEY = 'rnwbl_sw_custom_v1';
+let swCustomTpls = [];  // user-created templates
+let swActive = null;
+let swHist   = [];
+
+function swGetAllTpls() { return [...SW_HARDCODED, ...swCustomTpls]; }
+
+function swLoadCustom() {
+  try { swCustomTpls = JSON.parse(localStorage.getItem(SW_CUSTOM_KEY) || '[]'); } catch(e) { swCustomTpls = []; }
+}
+function swSaveCustom() {
+  try { localStorage.setItem(SW_CUSTOM_KEY, JSON.stringify(swCustomTpls)); } catch(e) {}
+}
+
+function swBuildText(tpl, tech, num) {
+  return tpl.body.replace(/\{\{TECH\}\}/g, tech || '[Tech Name]').replace(/\{\{NUMBER\}\}/g, num || '[Number]');
+}
 
 function swInit() {
+  swLoadCustom();
   try { swHist = JSON.parse(localStorage.getItem('sw_hist_v1') || '[]'); } catch(e) { swHist = []; }
+  swRenderTpls();
   swRenderHist();
+}
+
+function swRenderTpls() {
+  const all = swGetAllTpls();
+  const wrap = document.getElementById('sw-tpls-list');
+  if (!wrap) return;
+  wrap.innerHTML = all.map(tpl => {
+    const isHard = SW_HARDCODED.some(h => h.id === tpl.id);
+    const selCls = swActive === tpl.id ? 'sel-'+tpl.cls : '';
+    const actions = isHard
+      ? `<span class="sw-tpl-lock" title="Built-in">🔒</span>`
+      : `<span class="sw-tpl-actions">
+           <button class="sw-tpl-act-btn" title="Duplicate" onclick="event.stopPropagation();swDupeTpl('${tpl.id}')">⧉</button>
+           <button class="sw-tpl-act-btn" title="Edit" onclick="event.stopPropagation();swOpenEditTpl('${tpl.id}')">✎</button>
+           <button class="sw-tpl-act-btn" title="Delete" onclick="event.stopPropagation();swDelTpl('${tpl.id}')">✕</button>
+         </span>`;
+    return `<button class="sw-tpl ${selCls}" id="swtpl-${tpl.id}" onclick="swSelect('${tpl.id}',this)">
+      <span class="sw-tpl-stripe ${tpl.cls}"></span>
+      <span class="sw-tpl-body"><span class="sw-tpl-site">${esc(tpl.site)}</span>${esc(tpl.action)}</span>
+      ${actions}
+    </button>`;
+  }).join('');
 }
 
 function swSelect(id, el) {
   swActive = id;
-  // Clear all selection classes
-  document.querySelectorAll('.sw-tpl').forEach(b => { b.classList.remove('sel-de','sel-re'); });
-  const tpl = SW_TPLS[id]; if (!tpl) return;
+  const tpl = swGetAllTpls().find(t => t.id === id);
+  if (!tpl) return;
+  document.querySelectorAll('.sw-tpl').forEach(b => b.classList.remove('sel-de','sel-re','sel-other'));
   el.classList.add('sel-' + tpl.cls);
-  // Update number label + placeholder
-  document.getElementById('sw-num-lbl').textContent = tpl.numLbl;
-  document.getElementById('sw-num').placeholder = tpl.numPlaceholder;
+  document.getElementById('sw-num-lbl').textContent = tpl.numLbl || 'Number';
+  document.getElementById('sw-num').placeholder = tpl.numPh || '';
   swBuild();
 }
 
 function swBuild() {
-  const tpl = SW_TPLS[swActive];
+  const tpl = swGetAllTpls().find(t => t.id === swActive);
   if (!tpl) return;
-  const tech = document.getElementById('sw-tech').value.trim() || '[Tech Name]';
-  const num  = document.getElementById('sw-num').value.trim()  || '[Number]';
-  const text = tpl.build(tech, num);
+  const tech = document.getElementById('sw-tech').value.trim();
+  const num  = document.getElementById('sw-num').value.trim();
+  const text = swBuildText(tpl, tech, num);
   document.getElementById('sw-out-hdr-badge').innerHTML =
-    `<div class="sw-result-hdr ${tpl.cls}">${tpl.hdr}</div>`;
+    `<div class="sw-result-hdr ${tpl.cls}">${esc(tpl.site)} · ${esc(tpl.action)}</div>`;
   document.getElementById('sw-out-body').textContent = text;
 }
 
 function swGetText() {
-  const tpl = SW_TPLS[swActive]; if (!tpl) return '';
-  const tech = document.getElementById('sw-tech').value.trim() || '[Tech Name]';
-  const num  = document.getElementById('sw-num').value.trim()  || '[Number]';
-  return tpl.build(tech, num);
+  const tpl = swGetAllTpls().find(t => t.id === swActive); if (!tpl) return '';
+  return swBuildText(tpl, document.getElementById('sw-tech').value.trim(), document.getElementById('sw-num').value.trim());
 }
 
 function swCopy() {
   const text = swGetText();
   if (!text) { showToast('Select a template first'); return; }
-  try {
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = document.getElementById('sw-copy-btn');
-      btn.textContent = 'Copied ✓'; btn.classList.add('ok');
-      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1800);
-    });
-  } catch(e) { showToast('Use Ctrl+C — clipboard blocked'); }
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('sw-copy-btn');
+    btn.textContent = 'Copied ✓'; btn.classList.add('ok');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1800);
+  }).catch(() => showToast('Use Ctrl+C — clipboard blocked'));
 }
 
 function swSaveHistory() {
-  const tpl = SW_TPLS[swActive];
+  const tpl = swGetAllTpls().find(t => t.id === swActive);
   if (!tpl) { showToast('Select a template first'); return; }
   const tech = document.getElementById('sw-tech').value.trim();
   const num  = document.getElementById('sw-num').value.trim();
   if (!tech) { showToast('Enter a tech name first'); return; }
   if (!num)  { showToast('Enter a number first'); return; }
-  const entry = {
-    id: Date.now(), tplId: swActive, cls: tpl.cls,
-    hdr: tpl.hdr, tech, num,
-    text: tpl.build(tech, num),
-    ts: Date.now()
-  };
+  const entry = { id:Date.now(), tplId:swActive, cls:tpl.cls, hdr:tpl.site+' · '+tpl.action, tech, num, text:swBuildText(tpl,tech,num), ts:Date.now() };
   swHist.unshift(entry);
   if (swHist.length > 30) swHist.length = 30;
   try { localStorage.setItem('sw_hist_v1', JSON.stringify(swHist)); } catch(e) {}
@@ -3295,9 +3393,11 @@ function swSaveHistory() {
 
 function swLoadHist(id) {
   const h = swHist.find(x => x.id === id); if (!h) return;
-  // Reselect template button
-  const btn = document.getElementById('swtpl-' + h.tplId);
-  if (btn) swSelect(h.tplId, btn);
+  const tpl = swGetAllTpls().find(t => t.id === h.tplId);
+  if (tpl) {
+    const btn = document.getElementById('swtpl-' + h.tplId);
+    if (btn) swSelect(h.tplId, btn);
+  }
   document.getElementById('sw-tech').value = h.tech;
   document.getElementById('sw-num').value  = h.num;
   swBuild();
@@ -3316,13 +3416,76 @@ function swRenderHist() {
   if (!swHist.length) { wrap.innerHTML = '<div class="sw-empty">No history yet</div>'; return; }
   const rows = swHist.map(h => {
     const t = new Date(h.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    const col = h.cls === 're' ? 'var(--green)' : 'var(--red)';
+    const col = h.cls==='re' ? 'var(--green)' : h.cls==='de' ? 'var(--red)' : 'var(--blue)';
     return `<div class="sw-hist-row" onclick="swLoadHist(${h.id})">
       <div class="sw-hist-meta">${t} · <span style="color:${col};font-weight:600;">${esc(h.hdr)}</span></div>
       <div class="sw-hist-snip">${esc(h.tech)} · #${esc(h.num)}</div>
     </div>`;
   }).join('');
   wrap.innerHTML = '<div class="sw-hist-list">' + rows + '</div>';
+}
+
+// ── Custom template CRUD ───────────────────────────────────────────────────────
+function swOpenNewTpl() {
+  document.getElementById('sw-tpl-modal-title').textContent = 'New Template';
+  document.getElementById('sw-tpl-edit-id').value = '';
+  document.getElementById('sw-tpl-site').value = '';
+  document.getElementById('sw-tpl-action').value = '';
+  document.getElementById('sw-tpl-cls').value = 'de';
+  document.getElementById('sw-tpl-numlbl').value = 'Number';
+  document.getElementById('sw-tpl-body').value = '';
+  openModal('modal-sw-tpl');
+}
+
+function swOpenEditTpl(id) {
+  const tpl = swCustomTpls.find(t => t.id === id); if (!tpl) return;
+  document.getElementById('sw-tpl-modal-title').textContent = 'Edit Template';
+  document.getElementById('sw-tpl-edit-id').value = id;
+  document.getElementById('sw-tpl-site').value = tpl.site;
+  document.getElementById('sw-tpl-action').value = tpl.action;
+  document.getElementById('sw-tpl-cls').value = tpl.cls;
+  document.getElementById('sw-tpl-numlbl').value = tpl.numLbl || 'Number';
+  document.getElementById('sw-tpl-body').value = tpl.body;
+  openModal('modal-sw-tpl');
+}
+
+function swSaveTpl() {
+  const site   = document.getElementById('sw-tpl-site').value.trim();
+  const action = document.getElementById('sw-tpl-action').value.trim();
+  const cls    = document.getElementById('sw-tpl-cls').value;
+  const numLbl = document.getElementById('sw-tpl-numlbl').value.trim() || 'Number';
+  const body   = document.getElementById('sw-tpl-body').value.trim();
+  if (!site || !action) { showToast('Site name and action label required'); return; }
+  if (!body) { showToast('Template body required'); return; }
+  const editId = document.getElementById('sw-tpl-edit-id').value;
+  if (editId) {
+    const idx = swCustomTpls.findIndex(t => t.id === editId);
+    if (idx > -1) swCustomTpls[idx] = { id:editId, site, action, cls, numLbl, numPh:'', body };
+  } else {
+    swCustomTpls.push({ id:'custom-'+Date.now(), site, action, cls, numLbl, numPh:'', body });
+  }
+  swSaveCustom();
+  swRenderTpls();
+  closeModal('modal-sw-tpl');
+  showToast('Template saved');
+}
+
+function swDelTpl(id) {
+  if (!confirm('Delete this template?')) return;
+  if (swActive === id) { swActive = null; document.getElementById('sw-out-body').innerHTML = '<div class="sw-empty">Select a template to begin</div>'; document.getElementById('sw-out-hdr-badge').innerHTML = ''; }
+  swCustomTpls = swCustomTpls.filter(t => t.id !== id);
+  swSaveCustom();
+  swRenderTpls();
+  showToast('Template deleted');
+}
+
+function swDupeTpl(id) {
+  const tpl = swGetAllTpls().find(t => t.id === id); if (!tpl) return;
+  const dupe = { ...tpl, id:'custom-'+Date.now(), site: tpl.site+' (copy)', action: tpl.action };
+  swCustomTpls.push(dupe);
+  swSaveCustom();
+  swRenderTpls();
+  showToast('Template duplicated');
 }
 
 // ─── MAP ─────────────────────────────────────────────────────────────────────
