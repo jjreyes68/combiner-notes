@@ -1942,6 +1942,10 @@ function wxFleetInit() {
   }
   wxRenderPins();
   wxRenderFleetGrid();
+  // Auto-fetch weather for pinned sites
+  if (wxPins.length) {
+    wxFetchAll();
+  }
 }
 
 function wxPinFilter() {
