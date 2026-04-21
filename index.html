@@ -1927,6 +1927,17 @@ let wxFleetInited = false;
 function wxFleetInit() {
   if (!wxFleetInited) {
     try { wxPins = JSON.parse(localStorage.getItem(WX_PINS_KEY) || '[]'); } catch(e) { wxPins = []; }
+    // Pre-populate top 5 sites if no pins exist
+    if (!wxPins.length) {
+      wxPins = [
+        {name:'ROCC1', location:'Tempe, AZ'},
+        {name:'BYPS1', location:'Richmond, TX'},
+        {name:'RKRG1', location:'Hobart, OK'},
+        {name:'PRSE1', location:'Hardwick, MN'},
+        {name:'ANGF1', location:'Angel Fire, NM'}
+      ];
+      try { localStorage.setItem(WX_PINS_KEY, JSON.stringify(wxPins)); } catch(e) {}
+    }
     wxFleetInited = true;
   }
   wxRenderPins();
@@ -2336,7 +2347,6 @@ const AS_SITES = [
       ]},
       { title:'2-OUTPUT: PV1 & BESS1', fields:[
         {n:'PV1 MW',   t:'text', unit:'MW'},
-        {n:'PV1 MWh',  t:'text', unit:'MWh'},
         {n:'PV1 kV',   t:'text', unit:'kV'},
         {n:'PV1 MVAR', t:'text', unit:'MVAR'},
         {n:'BESS1 MW',            t:'text',   unit:'MW'},
@@ -2347,7 +2357,6 @@ const AS_SITES = [
       ]},
       { title:'2-OUTPUT: PV2 & BESS2', fields:[
         {n:'PV2 MW',   t:'text', unit:'MW'},
-        {n:'PV2 MWh',  t:'text', unit:'MWh'},
         {n:'PV2 kV',   t:'text', unit:'kV'},
         {n:'PV2 MVAR', t:'text', unit:'MVAR'},
         {n:'BESS2 MW',            t:'text',   unit:'MW'},
@@ -2358,7 +2367,6 @@ const AS_SITES = [
       ]},
       { title:'2-OUTPUT: PV3 & BESS3', fields:[
         {n:'PV3 MW',   t:'text', unit:'MW'},
-        {n:'PV3 MWh',  t:'text', unit:'MWh'},
         {n:'PV3 kV',   t:'text', unit:'kV'},
         {n:'PV3 MVAR', t:'text', unit:'MVAR'},
         {n:'BESS3 MW',            t:'text',   unit:'MW'},
@@ -2556,7 +2564,6 @@ const AS_SITES = [
       ]},
       { title:'2-OUTPUT: PV LS', fields:[
         {n:'PV LS MW',   t:'text', unit:'MW'},
-        {n:'PV LS MWh',  t:'text', unit:'MWh'},
         {n:'PV LS kV',   t:'text', unit:'kV'},
         {n:'PV LS MVAR', t:'text', unit:'MVAR'},
       ]},
