@@ -486,7 +486,7 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 .schedule-view.kiosk-mode .schedule-iframe-container{max-width:none;height:100%;margin:0;padding:16px;}
 .schedule-view.kiosk-mode .schedule-iframe-container iframe{height:100%;border:none;}
 .schedule-view.kiosk-mode .schedule-srd-combo{height:100%;}
-/* SRD combo view - side by side */
+/* Combined View - side by side */
 .schedule-srd-combo{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:800px;}
 @media(max-width:900px){.schedule-srd-combo{grid-template-columns:1fr;height:600px;}}
 @media(max-width:600px){.schedule-srd-combo{grid-template-columns:1fr;height:500px;}}
@@ -996,22 +996,22 @@ select,option{background:var(--bg3);}
         <span style="font-size:12px;color:var(--text3);">SharePoint schedule view</span>
       </div>
       <div class="schedule-controls">
-        <button class="schedule-view-btn active" id="btn-view-embed1" onclick="setScheduleView('embed1')">Outages Schedule</button>
+        <button class="schedule-view-btn" id="btn-view-embed1" onclick="setScheduleView('embed1')">Outages Schedule</button>
         <button class="schedule-view-btn" id="btn-view-embed2" onclick="setScheduleView('embed2')">Upcoming Outages</button>
-        <button class="schedule-view-btn" id="btn-view-srd" onclick="setScheduleView('srd')">SRD Combo</button>
+        <button class="schedule-view-btn active" id="btn-view-srd" onclick="setScheduleView('srd')">Combined View</button>
         <div style="flex:1;"></div>
         <button class="schedule-kiosk-btn" id="btn-refresh" onclick="refreshSchedule()">↻ Refresh</button>
         <button class="schedule-kiosk-btn" id="btn-kiosk" onclick="toggleKioskMode()">⛶ Kiosk Mode</button>
       </div>
     </div>
     <div style="padding:0 16px 16px;">
-      <div class="schedule-iframe-container" id="schedule-embed1">
+      <div class="schedule-iframe-container" id="schedule-embed1" style="display:none;">
         <iframe frameborder="0" scrolling="no" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A2%3AI35&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
       </div>
       <div class="schedule-iframe-container" id="schedule-embed2" style="display:none;">
         <iframe frameborder="0" scrolling="no" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM30&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
       </div>
-      <div class="schedule-srd-combo" id="schedule-srd" style="display:none;">
+      <div class="schedule-srd-combo" id="schedule-srd">
         <iframe frameborder="0" scrolling="no" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A2%3AI35&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
         <iframe frameborder="0" scrolling="no" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM30&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
       </div>
@@ -4234,7 +4234,7 @@ function pdNew() {
 }
 
 // ── Schedule View Controls ─────────────────────────────────────────────────────
-let scheduleCurrentView = 'embed1';
+let scheduleCurrentView = 'srd';
 let scheduleKioskMode = false;
 
 function setScheduleView(view) {
