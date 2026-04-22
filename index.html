@@ -23,6 +23,61 @@
   --sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.06);
   --shs:0 1px 3px rgba(0,0,0,.08);
 }
+/* ── DARK MODE ────────────────────────────────────────────────────────────────── */
+body.dark{
+  --bg:#0f1117;--bg2:#181c25;--bg3:#1e2230;--bg4:#252a38;
+  --border:#2a2f3e;--border2:#353c50;
+  --text:#e8eaf0;--text2:#9aa0b4;--text3:#5a6278;
+  --green:#2bbd7a;--gbg:#0d2b1e;--gmid:#2bbd7a;
+  --amber:#f5a623;--abg:#251a06;
+  --red:#e05540;--rbg:#2b1008;
+  --blue:#4a8fe8;--bbg:#0d1e38;
+  --purple:#9b72e8;--pbg:#1a1030;
+  --accent:#e05540;
+  --sh:0 1px 4px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.3);
+  --shs:0 1px 3px rgba(0,0,0,.4);
+}
+body.dark ::-webkit-scrollbar-thumb{background:var(--border2);}
+/* Smooth variable transitions */
+body{transition:background .25s,color .25s;}
+.nav,.card,.modal,.sw-box,.intel-card,.cl-entry,.wx-fleet-card,.cl-handoff-preview,
+.site-card,.as-body,.as-banner,.pd-editor,.pd-live-preview,.tz-card,
+.overlay,.sw-hist-row,.note-card,.note-entry,.pd-hist-item{
+  transition:background .25s,border-color .25s,color .25s,box-shadow .25s;
+}
+/* ── DARK MODE TOGGLE BUTTON ─────────────────────────────────────────────────── */
+.dm-toggle{
+  position:relative;width:42px;height:24px;border-radius:12px;
+  background:var(--bg4);border:1.5px solid var(--border2);
+  cursor:pointer;flex-shrink:0;margin-left:8px;
+  transition:background .3s,border-color .3s;outline:none;
+  display:flex;align-items:center;padding:0 3px;
+}
+.dm-toggle:focus-visible{box-shadow:0 0 0 2px var(--blue);}
+body.dark .dm-toggle{background:#1e2a44;border-color:#4a5568;}
+.dm-thumb{
+  width:16px;height:16px;border-radius:50%;
+  background:var(--text3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;line-height:1;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),background .3s;
+  transform:translateX(0);
+  user-select:none;
+}
+body.dark .dm-thumb{
+  transform:translateX(18px);
+  background:#f5c842;
+}
+/* ── FLASH OVERLAY ───────────────────────────────────────────────────────────── */
+#dm-flash{
+  position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse at center,rgba(255,255,255,.95) 0%,rgba(255,255,255,0) 70%);
+}
+body.dark #dm-flash{
+  background:radial-gradient(ellipse at center,rgba(15,17,23,.95) 0%,rgba(15,17,23,0) 70%);
+}
+@keyframes dmFlash{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
+#dm-flash.flash{animation:dmFlash .5s ease-out forwards;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;min-height:100vh;}
 ::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
@@ -534,7 +589,7 @@ select,option{background:var(--bg3);}
   <button class="nav-tab active" id="nav-tab-scans" onclick="switchView('scans',this)">Scans</button>
   <button class="nav-tab" onclick="switchView('asset',this)">Asset Scan</button>
   <button class="nav-tab" onclick="switchView('intel',this)">Weather</button>
-  <button class="nav-tab" onclick="switchView('ops',this)">Shift Tasks</button>
+  <button class="nav-tab" onclick="switchView('ops',this)">Tasks</button>
   <button class="nav-tab" onclick="switchView('swbuilder',this)">Log Builder</button>
   <button class="nav-tab" id="nav-tab-chron" onclick="switchView('chron',this)">Operator Log</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('map',this)">Map</button>
@@ -544,7 +599,11 @@ select,option{background:var(--bg3);}
   <button class="nav-tab" style="display:none;" onclick="switchView('log',this)">Log</button>
   <div class="nav-spacer"></div>
   <div id="nav-tz-bar" class="nav-tz-bar"></div>
+  <button class="dm-toggle" id="dm-toggle" onclick="dmToggle()" title="Toggle dark mode" aria-label="Toggle dark mode">
+    <span class="dm-thumb" id="dm-thumb">☀️</span>
+  </button>
 </div>
+<div id="dm-flash"></div>
 
 <!-- NOTEPAD -->
 <div class="view" id="view-notes" style="display:none!important">
@@ -1237,6 +1296,7 @@ async function load() {
   swInit();
   clInit();
   wxFleetInit();
+  dmInit();
   // Restore escalation contacts
   const rows = document.querySelectorAll('#esc-tbody tr');
   const tkeys = ['t1','t2','t3'];
@@ -1918,61 +1978,25 @@ function clCopyHandoff() {
 
   const grouped = clGroupByAsset(notable);
   const ASSET_ORDER = ['BESS','Solar','Wind','General'];
-  const ASSET_LABELS = {BESS:'-- BESS --', Solar:'-- SOLAR --', Wind:'-- WIND --', General:'-- GENERAL --'};
+  const SEP = '─'.repeat(32);
 
-  // ── Plain text (fallback for plain-text paste targets) ──────────────────────
-  let plainLines = [];
+  let lines = [];
   ASSET_ORDER.forEach(type => {
-    const section = grouped[type];
-    if (!section || !Object.keys(section).length) return;
-    plainLines.push(ASSET_LABELS[type]);
-    plainLines.push('');
-    Object.keys(section).forEach(site => {
-      plainLines.push(site + ':');
-      section[site].forEach(e => {
-        const catTag = (e.cat && e.cat !== 'Normal') ? ' (' + e.cat + ')' : '';
-        plainLines.push('- ' + e.text + catTag);
+    if (!grouped[type] || !Object.keys(grouped[type]).length) return;
+    lines.push(`\n──${type.toUpperCase()}──${SEP.slice(type.length + 4)}`);
+    Object.keys(grouped[type]).forEach(site => {
+      lines.push(site + ':');
+      grouped[type][site].forEach(e => {
+        const catTag = e.cat && e.cat !== 'Normal' ? ` (${e.cat})` : '';
+        lines.push(`– ${e.text}${catTag}`);
       });
-      plainLines.push('');
     });
   });
-  const plainText = plainLines.join('\n').trim();
 
-  // ── Rich HTML (Teams, Word, Outlook prefer this) ────────────────────────────
-  let html = '<div style="font-family:sans-serif;font-size:14px;line-height:1.6;">';
-  ASSET_ORDER.forEach(type => {
-    const section = grouped[type];
-    if (!section || !Object.keys(section).length) return;
-    html += `<p style="font-weight:bold;margin:14px 0 6px 0;border-bottom:1px solid #ccc;padding-bottom:3px;">${ASSET_LABELS[type]}</p>`;
-    Object.keys(section).forEach(site => {
-      html += `<p style="font-weight:bold;margin:10px 0 2px 0;">${site}:</p><ul style="margin:0 0 8px 0;padding-left:20px;">`;
-      section[site].forEach(e => {
-        const catTag = (e.cat && e.cat !== 'Normal') ? ` <span style="font-size:11px;color:#888;">(${e.cat})</span>` : '';
-        html += `<li style="margin-bottom:3px;">${e.text}${catTag}</li>`;
-      });
-      html += '</ul>';
-    });
-  });
-  html += '</div>';
-
-  // Write both formats — rich apps use HTML, plain apps use text
-  try {
-    const htmlBlob = new Blob([html], {type: 'text/html'});
-    const textBlob = new Blob([plainText], {type: 'text/plain'});
-    navigator.clipboard.write([
-      new ClipboardItem({'text/html': htmlBlob, 'text/plain': textBlob})
-    ]).then(() => showToast('Handoff copied — paste into Teams or email'))
-      .catch(() => {
-        // Fallback: plain text only
-        navigator.clipboard.writeText(plainText)
-          .then(() => showToast('Copied as plain text'))
-          .catch(() => showToast('Clipboard blocked — try Ctrl+C'));
-      });
-  } catch(e) {
-    navigator.clipboard.writeText(plainText)
-      .then(() => showToast('Copied as plain text'))
-      .catch(() => showToast('Clipboard blocked — try Ctrl+C'));
-  }
+  const text = lines.join('\n').trim();
+  navigator.clipboard.writeText(text)
+    .then(() => showToast('Handoff copied'))
+    .catch(() => showToast('Clipboard blocked — try Ctrl+C'));
 }
 
 // Classify a site name → 'BESS' | 'Solar' | 'Wind' | 'General'
@@ -4477,6 +4501,36 @@ function refreshSchedule() {
     iframe.src = src;
   });
   showToast('Schedule refreshed');
+}
+
+// ─── DARK MODE ────────────────────────────────────────────────────────────────
+function dmInit() {
+  const saved = localStorage.getItem('rnwbl_darkmode');
+  // Default to dark in control room environment if no preference saved
+  const isDark = saved !== null ? saved === '1' : false;
+  if (isDark) {
+    document.body.classList.add('dark');
+    const thumb = document.getElementById('dm-thumb');
+    if (thumb) thumb.textContent = '🌙';
+  }
+}
+
+function dmToggle() {
+  const body = document.body;
+  const isDark = body.classList.contains('dark');
+  const flash = document.getElementById('dm-flash');
+  const thumb = document.getElementById('dm-thumb');
+
+  // Trigger flash
+  if (flash) {
+    flash.classList.remove('flash');
+    void flash.offsetWidth; // reflow to restart animation
+    flash.classList.add('flash');
+  }
+
+  body.classList.toggle('dark', !isDark);
+  if (thumb) thumb.textContent = isDark ? '☀️' : '🌙';
+  try { localStorage.setItem('rnwbl_darkmode', isDark ? '0' : '1'); } catch(e) {}
 }
 
 load();
