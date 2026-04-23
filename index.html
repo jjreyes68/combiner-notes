@@ -120,6 +120,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px;box-shadow:var(--shs);}
 .card-title{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;}
 
+/* OPS TOOLBOX WIDGETS */
+.standing-check-item{padding:8px 0;border-bottom:1px solid var(--border3);}
+.standing-check-item:last-child{border-bottom:none;}
+.check-item{display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:13px;color:var(--text2);line-height:1.4;}
+.check-item input[type="checkbox"]{margin-top:2px;cursor:pointer;}
+.check-item:hover{color:var(--text);}
+.verifier-section{padding-bottom:12px;border-bottom:1px solid var(--border3);}
+.verifier-section:last-child{border-bottom:none;padding-bottom:0;}
+.scratchpad-item{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;color:var(--text2);}
+.scratchpad-item button{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px;border-radius:4px;}
+.scratchpad-item button:hover{background:var(--rbg);color:var(--red);}
+
 /* BUTTONS */
 .tbtn{padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:12px;cursor:pointer;font-family:var(--f);font-weight:500;transition:all .15s;box-shadow:var(--shs);}
 .tbtn:hover{border-color:var(--green);color:var(--green);background:var(--gbg);}
@@ -576,34 +588,6 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 @media(max-width:600px){.schedule-srd-combo{grid-template-columns:1fr;height:500px;}}
 .schedule-srd-combo iframe{width:100%;height:100%;border:none;}
 
-/* ── DASHBOARD ────────────────────────────────────────────────────────────────── */
-.dash-metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
-@media(max-width:600px){.dash-metrics-grid{grid-template-columns:1fr;}}
-.dash-metric-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;position:relative;box-shadow:var(--shs);}
-.dash-metric-label{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;}
-.dash-metric-value{font-size:32px;font-weight:700;color:var(--text);font-family:var(--m);line-height:1;}
-.dash-metric-detail{font-size:12px;color:var(--text2);margin-top:6px;max-height:40px;overflow:hidden;text-overflow:ellipsis;}
-.dash-edit-btn{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:4px;border-radius:4px;transition:all .15s;}
-.dash-edit-btn:hover{background:var(--bg3);color:var(--text);}
-.dash-metric-red{border-left:4px solid var(--red);}
-.dash-metric-amber{border-left:4px solid var(--amber);}
-.dash-metric-blue{border-left:4px solid var(--blue);}
-.dash-metric-purple{border-left:4px solid var(--purple);}
-.dash-metric-green{border-left:4px solid var(--green);}
-.dash-metric-gray{border-left:4px solid var(--border2);}
-.dash-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:20px;box-shadow:var(--shs);}
-.dash-section-title{font-size:13px;font-weight:600;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px;}
-.dash-activity-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
-.dash-activity-item:last-child{border-bottom:none;}
-.dash-activity-time{font-family:var(--m);font-size:11px;color:var(--text3);min-width:60px;}
-.dash-activity-content{flex:1;font-size:13px;color:var(--text);}
-.dash-activity-type{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;text-transform:uppercase;}
-.dash-activity-type.incident{background:var(--rbg);color:var(--red);}
-.dash-activity-type.response{background:var(--bbg);color:var(--blue);}
-.dash-actions{display:flex;gap:10px;flex-wrap:wrap;}
-.dash-action-btn{padding:10px 20px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;}
-.dash-action-btn:hover{border-color:var(--green);color:var(--green);background:var(--gbg);}
-
 select,option{background:var(--bg3);}
 </style>
 </head>
@@ -614,11 +598,10 @@ select,option{background:var(--bg3);}
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h8l-1 8 9-12h-8l1-8z" fill="var(--accent)" stroke="var(--accent)" stroke-width="1" stroke-linejoin="round"/></svg>
     <span class="nav-brand-text">RNWBL OPS</span>
   </div>
-  <button class="nav-tab active" id="nav-tab-dashboard" onclick="switchView('dashboard',this)">Dashboard</button>
-  <button class="nav-tab" id="nav-tab-scans" onclick="switchView('scans',this)">Scans</button>
+  <button class="nav-tab active" id="nav-tab-scans" onclick="switchView('scans',this)">Scans</button>
   <button class="nav-tab" onclick="switchView('asset',this)">Asset Scan</button>
   <button class="nav-tab" onclick="switchView('intel',this)">Weather</button>
-  <button class="nav-tab" onclick="switchView('ops',this)">Tasks</button>
+  <button class="nav-tab" onclick="switchView('ops',this)">Ops Toolbox</button>
   <button class="nav-tab" onclick="switchView('swbuilder',this)">Log Builder</button>
   <button class="nav-tab" id="nav-tab-chron" onclick="switchView('chron',this)">Operator Log</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('map',this)">Map</button>
@@ -662,65 +645,8 @@ select,option{background:var(--bg3);}
   </div>
 </div>
 
-<!-- DASHBOARD -->
-<div class="view active" id="view-dashboard">
-  <div style="padding:16px;">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-      <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">Dashboard</div>
-      <span style="font-size:12px;color:var(--text3);">Operational overview</span>
-    </div>
-
-    <!-- Top Row - Key Metrics -->
-    <div class="dash-metrics-grid">
-      <div class="dash-metric-card dash-metric-red">
-        <div class="dash-metric-label">Overdue Scans</div>
-        <div class="dash-metric-value" id="dash-overdue-count">0</div>
-        <div class="dash-metric-detail" id="dash-overdue-sites"></div>
-      </div>
-      <div class="dash-metric-card dash-metric-amber">
-        <div class="dash-metric-label">Due Soon</div>
-        <div class="dash-metric-value" id="dash-due-count">0</div>
-        <div class="dash-metric-detail" id="dash-due-sites"></div>
-      </div>
-      <div class="dash-metric-card dash-metric-blue">
-        <div class="dash-metric-label">Weather Alerts</div>
-        <div class="dash-metric-value" id="dash-weather-count">0</div>
-        <div class="dash-metric-detail" id="dash-weather-sites"></div>
-      </div>
-      <div class="dash-metric-card dash-metric-purple">
-        <div class="dash-metric-label">Active Outages</div>
-        <div class="dash-metric-value" id="dash-active-outages">0</div>
-        <button class="dash-edit-btn" onclick="openScheduleMetricsModal()">✎</button>
-      </div>
-      <div class="dash-metric-card dash-metric-green">
-        <div class="dash-metric-label">Upcoming This Shift</div>
-        <div class="dash-metric-value" id="dash-upcoming-outages">0</div>
-        <button class="dash-edit-btn" onclick="openScheduleMetricsModal()">✎</button>
-      </div>
-      <div class="dash-metric-card dash-metric-gray">
-        <div class="dash-metric-label">Shift Status</div>
-        <div class="dash-metric-value" id="dash-timer-status">Stopped</div>
-        <div class="dash-metric-detail" id="dash-timer-detail">0 cycles</div>
-      </div>
-    </div>
-
-    <!-- Middle Row - Recent Activity -->
-    <div class="dash-section">
-      <div class="dash-section-title">Recent Activity</div>
-      <div id="dash-recent-activity"></div>
-    </div>
-
-    <!-- Bottom Row - Quick Actions -->
-    <div class="dash-actions">
-      <button class="dash-action-btn" onclick="openModal('modal-incident')">Log Incident</button>
-      <button class="dash-action-btn" onclick="toggleTimer()">Toggle Timer</button>
-      <button class="dash-action-btn" onclick="refreshScanStatuses();wxFetchAll();renderDashboard();">Refresh All</button>
-    </div>
-  </div>
-</div>
-
 <!-- SCANS -->
-<div class="view" id="view-scans">
+<div class="view active" id="view-scans">
   <div class="timer-strip">
     <div class="timer-big" id="timer-disp">30:00</div>
     <div class="timer-bar-wrap"><div class="timer-bar-fill" id="timer-fill" style="width:100%"></div></div>
@@ -744,45 +670,118 @@ select,option{background:var(--bg3);}
   <div class="sites-grid" id="sites-grid"></div>
 </div>
 
-<!-- TASKS -->
+<!-- OPS TOOLBOX -->
 <div class="view" id="view-ops">
-  <div class="cols3">
-    <div class="card">
-      <div class="card-title">Recurring tasks</div>
-      <div id="rec-list"></div>
-      <div class="add-row">
-        <input id="rec-inp" placeholder="Add recurring task..." onkeydown="if(event.key==='Enter')addRec()">
-        <button onclick="addRec()">+</button>
-      </div>
+  <div style="padding:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">Ops Toolbox</div>
+      <span style="font-size:12px;color:var(--text3);">Quick tools for the moment</span>
     </div>
-    <div class="card">
-      <div class="card-title">Ad hoc tasks</div>
-      <div id="adhoc-list" style="max-height:260px;overflow-y:auto;"></div>
-      <div class="adhoc-row">
-        <input id="adhoc-inp" placeholder="Task description..." onkeydown="if(event.key==='Enter')addAdhoc()">
-        <input id="adhoc-t" class="t-inp" type="number" min="0" placeholder="min">
-        <span class="min-lbl">min</span>
-        <button class="add-btn" onclick="addAdhoc()">+ Add</button>
+
+    <div class="cols3">
+      <!-- COLUMN 1: Scratchpad & Timers -->
+      <div class="card">
+        <div class="card-title">Scratchpad & Timers</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">Quick jot-downs and countdowns. Clears on shift end.</div>
+        
+        <!-- Scratchpad items -->
+        <div id="scratchpad-list" style="max-height:200px;overflow-y:auto;margin-bottom:12px;"></div>
+        <div class="add-row">
+          <input id="scratchpad-inp" placeholder="Quick note..." onkeydown="if(event.key==='Enter')addScratchpadItem()">
+          <button onclick="addScratchpadItem()">+</button>
+        </div>
+        
+        <!-- Quick timer -->
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
+          <div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:8px;">Quick Timer</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input id="quick-timer-min" type="number" min="1" max="60" placeholder="min" style="width:60px;">
+            <button class="btn-p" onclick="startQuickTimer()" style="flex:1;">Start</button>
+          </div>
+          <div id="quick-timer-display" style="font-family:var(--m);font-size:24px;font-weight:700;color:var(--text);text-align:center;padding:12px 0;display:none;"></div>
+        </div>
+
+        <!-- Phonetic converter -->
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
+          <div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:8px;">Phonetic Converter</div>
+          <input id="phonetic-inp" placeholder="e.g. 589IR54pp" oninput="convertPhonetic()" style="width:100%;margin-bottom:8px;">
+          <div id="phonetic-output" style="font-family:var(--m);font-size:13px;color:var(--text2);min-height:20px;"></div>
+        </div>
+
+        <button class="btn-c" onclick="clearScratchpad()" style="width:100%;margin-top:12px;font-size:12px;">Clear All</button>
       </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Checklists</div>
-      <div class="cl-add-row">
-        <input id="cl-list-inp" placeholder="New checklist name..." onkeydown="if(event.key==='Enter')addClList()">
-        <button onclick="addClList()">+ New list</button>
+
+      <!-- COLUMN 2: Standing Checks -->
+      <div class="card">
+        <div class="card-title">Standing Checks</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">Reference reminders. No overdue state.</div>
+        
+        <div id="standing-checks-list">
+          <!-- Pre-populated standing checks -->
+          <div class="standing-check-item">
+            <label class="check-item">
+              <input type="checkbox" class="standing-check">
+              <span>Confirm ADS visibility after vendor work</span>
+            </label>
+          </div>
+          <div class="standing-check-item">
+            <label class="check-item">
+              <input type="checkbox" class="standing-check">
+              <span>Verify TO notices reviewed</span>
+            </label>
+          </div>
+          <div class="standing-check-item">
+            <label class="check-item">
+              <input type="checkbox" class="standing-check">
+              <span>Check field tech callback status</span>
+            </label>
+          </div>
+          <div class="standing-check-item">
+            <label class="check-item">
+              <input type="checkbox" class="standing-check">
+              <span>Review shift handoff notes</span>
+            </label>
+          </div>
+          <div class="standing-check-item">
+            <label class="check-item">
+              <input type="checkbox" class="standing-check">
+              <span>Verify communication channels active</span>
+            </label>
+          </div>
+        </div>
+        
+        <button class="btn-c" onclick="resetStandingChecks()" style="width:100%;margin-top:12px;font-size:12px;">Reset Checks</button>
       </div>
-      <div class="cl-hdr" id="cl-hdr" style="display:none;">
-        <select class="cl-sel" id="cl-sel" onchange="switchClFromSelect()"></select>
-        <button class="cl-del" onclick="delActiveClList()">🗑 Delete</button>
-      </div>
-      <div class="prog-row" id="cl-prog-row" style="display:none;">
-        <div class="prog-bar"><div class="prog-fill" id="cl-prog-fill" style="width:0%"></div></div>
-        <div class="prog-txt" id="cl-prog-txt">0/0</div>
-      </div>
-      <div id="cl-items" style="max-height:180px;overflow-y:auto;"></div>
-      <div class="cl-item-row" id="cl-item-row" style="display:none;">
-        <input id="cl-item-inp" placeholder="Add item..." onkeydown="if(event.key==='Enter')addClItem()">
-        <button onclick="addClItem()">+ Item</button>
+
+      <!-- COLUMN 3: Quick Verifiers -->
+      <div class="card">
+        <div class="card-title">Quick Verifiers</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">One-click confirmation gates.</div>
+        
+        <!-- Safety Checklist -->
+        <div class="verifier-section">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:13px;font-weight:500;">Safety Check</span>
+            <button class="btn-p" onclick="logSafetyVerification()" style="font-size:11px;padding:4px 8px;">Log ✓</button>
+          </div>
+          <div id="toolbox-safety-checks" style="font-size:12px;"></div>
+        </div>
+        
+        <!-- NERC Checklist -->
+        <div class="verifier-section" style="margin-top:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:13px;font-weight:500;">NERC Check</span>
+            <button class="btn-p" onclick="logNercVerification()" style="font-size:11px;padding:4px 8px;">Log ✓</button>
+          </div>
+          <div id="toolbox-nerc-checks" style="font-size:12px;"></div>
+        </div>
+        
+        <!-- Quick Log -->
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
+          <div style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:8px;">Quick Log Entry</div>
+          <input id="quick-log-inp" placeholder="Log to Operator Log..." onkeydown="if(event.key==='Enter')quickLogEntry()">
+          <button class="btn-p" onclick="quickLogEntry()" style="width:100%;margin-top:8px;">Log Entry</button>
+        </div>
       </div>
     </div>
   </div>
@@ -898,20 +897,6 @@ select,option{background:var(--bg3);}
     <div class="m-actions">
       <button class="tbtn" onclick="copyHandoff()">Copy text</button>
       <button class="btn-c" onclick="closeModal('modal-handoff')">Close</button>
-    </div>
-  </div>
-</div>
-
-<div class="overlay hidden" id="modal-schedule-metrics">
-  <div class="modal" style="width:400px;">
-    <h3>Schedule Metrics</h3>
-    <label>Active Outages</label>
-    <input type="number" id="sch-active-outages" min="0" placeholder="0">
-    <label>Upcoming This Shift</label>
-    <input type="number" id="sch-upcoming-outages" min="0" placeholder="0">
-    <div class="m-actions">
-      <button class="btn-c" onclick="closeModal('modal-schedule-metrics')">Cancel</button>
-      <button class="btn-p" onclick="saveScheduleMetrics()">Save</button>
     </div>
   </div>
 </div>
@@ -1351,8 +1336,7 @@ let S = {
   siteFilter:'all',
   timerRunning:false, timerElapsed:0, timerCycles:0,
   shiftStart:Date.now(),
-  crew:[], equipment:[], escContacts:{t1:'',t2:'',t3:''},
-  activeOutages:0, upcomingOutages:0
+  crew:[], equipment:[], escContacts:{t1:'',t2:'',t3:''}
 };
 let SITES = []; // loaded separately
 
@@ -1378,8 +1362,6 @@ async function load() {
       if(!S.escContacts) S.escContacts={t1:'',t2:'',t3:''};
       if(!S.timerCycles) S.timerCycles=0;
       if(!S.shiftStart) S.shiftStart=Date.now();
-      if(!S.activeOutages) S.activeOutages=0;
-      if(!S.upcomingOutages) S.upcomingOutages=0;
     } catch(e) {}
   }
 
@@ -1395,23 +1377,22 @@ async function load() {
   renderCrew();
   renderEquip();
   restoreAdhocTimers();
-  renderDashboard();
-  setInterval(renderDashboard, 30000);
   asInit();
   swInit();
   clInit();
   wxFleetInit();
   dmInit();
+  initToolbox();
   // Restore escalation contacts
   const rows = document.querySelectorAll('#esc-tbody tr');
   const tkeys = ['t1','t2','t3'];
   rows.forEach((row,i) => { const inp=row.querySelector('input'); if(inp) inp.value=S.escContacts[tkeys[i]]||''; });
 
-  // Restore last active tab (default: dashboard)
-  const TAB_VIEWS = ['dashboard','scans','asset','intel','ops','swbuilder','chron','timezones','schedule'];
-  let savedTab = 'dashboard';
-  try { savedTab = localStorage.getItem('rnwbl_active_tab') || 'dashboard'; } catch(e) {}
-  if (!TAB_VIEWS.includes(savedTab)) savedTab = 'dashboard';
+  // Restore last active tab (default: scans)
+  const TAB_VIEWS = ['scans','asset','intel','ops','swbuilder','chron','timezones','schedule'];
+  let savedTab = 'scans';
+  try { savedTab = localStorage.getItem('rnwbl_active_tab') || 'scans'; } catch(e) {}
+  if (!TAB_VIEWS.includes(savedTab)) savedTab = 'scans';
   const tabEl = [...document.querySelectorAll('.nav-tab')].find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+savedTab+"'"));
   switchView(savedTab, tabEl || null);
 }
@@ -1911,70 +1892,173 @@ function clearLog(){ if(confirm('Clear all log entries?')){ S.logEntries=[]; sav
 function openModal(id){ document.getElementById(id).classList.remove('hidden'); }
 function closeModal(id){ document.getElementById(id).classList.add('hidden'); }
 
-// ─── SCHEDULE METRICS MODAL ────────────────────────────────────────────────────
-function openScheduleMetricsModal(){
-  document.getElementById('sch-active-outages').value = S.activeOutages || 0;
-  document.getElementById('sch-upcoming-outages').value = S.upcomingOutages || 0;
-  openModal('modal-schedule-metrics');
+// ─── OPS TOOLBOX ────────────────────────────────────────────────────────────────
+// Scratchpad state
+let scratchpadItems = [];
+
+function addScratchpadItem(){
+  const inp = document.getElementById('scratchpad-inp');
+  const val = inp.value.trim();
+  if(!val) return;
+  scratchpadItems.push({id:Date.now(), text:val});
+  inp.value = '';
+  renderScratchpad();
+  saveScratchpad();
 }
-function saveScheduleMetrics(){
-  S.activeOutages = parseInt(document.getElementById('sch-active-outages').value) || 0;
-  S.upcomingOutages = parseInt(document.getElementById('sch-upcoming-outages').value) || 0;
-  save();
-  renderDashboard();
-  closeModal('modal-schedule-metrics');
-  showToast('Schedule metrics updated');
+
+function removeScratchpadItem(id){
+  scratchpadItems = scratchpadItems.filter(i => i.id !== id);
+  renderScratchpad();
+  saveScratchpad();
 }
 
-// ─── DASHBOARD ──────────────────────────────────────────────────────────────────
-function renderDashboard(){
-  // Overdue scans
-  const overdue = SITES.filter(s => siteStatus(s) === 'overdue');
-  document.getElementById('dash-overdue-count').textContent = overdue.length;
-  document.getElementById('dash-overdue-sites').textContent = overdue.length ? overdue.map(s => s.name).join(', ') : 'None';
-
-  // Due soon scans
-  const due = SITES.filter(s => siteStatus(s) === 'due');
-  document.getElementById('dash-due-count').textContent = due.length;
-  document.getElementById('dash-due-sites').textContent = due.length ? due.map(s => s.name).join(', ') : 'None';
-
-  // Weather alerts
-  let weatherAlerts = 0;
-  let weatherSites = [];
-  Object.keys(wxFleetData).forEach(name => {
-    const d = wxFleetData[name];
-    if (d && d.ok && d.wind >= 25) {
-      weatherAlerts++;
-      weatherSites.push(name + (d.wind >= 40 ? ' (!)' : ''));
-    }
-  });
-  document.getElementById('dash-weather-count').textContent = weatherAlerts;
-  document.getElementById('dash-weather-sites').textContent = weatherSites.length ? weatherSites.join(', ') : 'None';
-
-  // Schedule metrics
-  document.getElementById('dash-active-outages').textContent = S.activeOutages || 0;
-  document.getElementById('dash-upcoming-outages').textContent = S.upcomingOutages || 0;
-
-  // Shift timer
-  document.getElementById('dash-timer-status').textContent = S.timerRunning ? 'Running' : 'Stopped';
-  document.getElementById('dash-timer-detail').textContent = S.timerCycles + ' cycle' + (S.timerCycles !== 1 ? 's' : '');
-
-  // Recent activity
-  const recent = S.logEntries.slice(0, 5);
-  const activityEl = document.getElementById('dash-recent-activity');
-  if (!recent.length) {
-    activityEl.innerHTML = '<div style="font-size:13px;color:var(--text3);">No recent activity</div>';
-  } else {
-    activityEl.innerHTML = recent.map(e => {
-      const time = new Date(e.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-      const type = e.type === 'incident' ? 'incident' : e.type === 'response' ? 'response' : 'note';
-      return `<div class="dash-activity-item">
-        <span class="dash-activity-time">${time}</span>
-        <span class="dash-activity-content">${esc(e.title)}</span>
-        <span class="dash-activity-type ${type}">${type}</span>
-      </div>`;
-    }).join('');
+function clearScratchpad(){
+  if(confirm('Clear all scratchpad items?')){
+    scratchpadItems = [];
+    renderScratchpad();
+    saveScratchpad();
   }
+}
+
+function renderScratchpad(){
+  const el = document.getElementById('scratchpad-list');
+  if(!scratchpadItems.length){
+    el.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:8px 0;">No items</div>';
+    return;
+  }
+  el.innerHTML = scratchpadItems.map(i => `
+    <div class="scratchpad-item">
+      <span style="flex:1;">${esc(i.text)}</span>
+      <button onclick="removeScratchpadItem(${i.id})">✕</button>
+    </div>
+  `).join('');
+}
+
+function saveScratchpad(){
+  try{ localStorage.setItem('rnwbl_scratchpad', JSON.stringify(scratchpadItems)); }catch(e){}
+}
+
+function loadScratchpad(){
+  try{ scratchpadItems = JSON.parse(localStorage.getItem('rnwbl_scratchpad') || '[]'); }catch(e){ scratchpadItems = []; }
+  renderScratchpad();
+}
+
+// Quick Timer
+let quickTimerInterval = null;
+let quickTimerSeconds = 0;
+
+function startQuickTimer(){
+  const min = parseInt(document.getElementById('quick-timer-min').value);
+  if(!min || min < 1) return;
+  quickTimerSeconds = min * 60;
+  document.getElementById('quick-timer-min').value = '';
+  document.getElementById('quick-timer-display').style.display = 'block';
+  updateQuickTimerDisplay();
+  if(quickTimerInterval) clearInterval(quickTimerInterval);
+  quickTimerInterval = setInterval(() => {
+    quickTimerSeconds--;
+    updateQuickTimerDisplay();
+    if(quickTimerSeconds <= 0){
+      clearInterval(quickTimerInterval);
+      quickTimerInterval = null;
+      showToast('Timer complete!');
+    }
+  }, 1000);
+}
+
+function updateQuickTimerDisplay(){
+  const m = Math.floor(quickTimerSeconds / 60);
+  const s = quickTimerSeconds % 60;
+  document.getElementById('quick-timer-display').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+// Standing Checks
+function resetStandingChecks(){
+  document.querySelectorAll('.standing-check').forEach(cb => cb.checked = false);
+  showToast('Checks reset');
+}
+
+// Quick Verifiers - Safety
+function renderToolboxSafety(){
+  const el = document.getElementById('toolbox-safety-checks');
+  if(!el) return;
+  el.innerHTML = SAFETY.map(i => `
+    <label class="check-item" style="font-size:12px;">
+      <input type="checkbox" class="toolbox-safety-cb" data-item="${esc(i)}">
+      <span>${i}</span>
+    </label>
+  `).join('');
+}
+
+function logSafetyVerification(){
+  const cbs = document.querySelectorAll('.toolbox-safety-cb');
+  const checked = Array.from(cbs).filter(cb => cb.checked).length;
+  const total = cbs.length;
+  const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  addLog({type:'task', title:`Safety verification — ${checked}/${total}`, detail:checked===total?'All verified':'Partial verification'});
+  showToast(`Safety logged: ${checked}/${total}`);
+}
+
+// Quick Verifiers - NERC
+function renderToolboxNerc(){
+  const el = document.getElementById('toolbox-nerc-checks');
+  if(!el) return;
+  el.innerHTML = NERC_ITEMS.map(i => `
+    <label class="check-item" style="font-size:12px;">
+      <input type="checkbox" class="toolbox-nerc-cb" data-item="${esc(i)}">
+      <span>${i}</span>
+    </label>
+  `).join('');
+}
+
+function logNercVerification(){
+  const cbs = document.querySelectorAll('.toolbox-nerc-cb');
+  const checked = Array.from(cbs).filter(cb => cb.checked).length;
+  const total = cbs.length;
+  const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  addLog({type:'task', title:`NERC verification — ${checked}/${total}`, detail:checked===total?'All verified':'Partial verification'});
+  showToast(`NERC logged: ${checked}/${total}`);
+}
+
+// Quick Log Entry
+function quickLogEntry(){
+  const inp = document.getElementById('quick-log-inp');
+  const val = inp.value.trim();
+  if(!val) return;
+  addLog({type:'note', title:val});
+  inp.value = '';
+  showToast('Logged to Operator Log');
+}
+
+// Initialize toolbox on page load
+function initToolbox(){
+  loadScratchpad();
+  renderToolboxSafety();
+  renderToolboxNerc();
+}
+
+// Phonetic Converter
+const PHONETIC_MAP = {
+  '0': 'Zero', '1': 'One', '2': 'Two', '3': 'Three', '4': 'Four',
+  '5': 'Five', '6': 'Six', '7': 'Seven', '8': 'Eight', '9': 'Nine',
+  'a': 'Alpha', 'b': 'Bravo', 'c': 'Charlie', 'd': 'Delta', 'e': 'Echo',
+  'f': 'Foxtrot', 'g': 'Golf', 'h': 'Hotel', 'i': 'India', 'j': 'Juliet',
+  'k': 'Kilo', 'l': 'Lima', 'm': 'Mike', 'n': 'November', 'o': 'Oscar',
+  'p': 'Papa', 'q': 'Quebec', 'r': 'Romeo', 's': 'Sierra', 't': 'Tango',
+  'u': 'Uniform', 'v': 'Victor', 'w': 'Whiskey', 'x': 'X-ray', 'y': 'Yankee', 'z': 'Zulu'
+};
+
+function convertPhonetic(){
+  const inp = document.getElementById('phonetic-inp').value;
+  const output = document.getElementById('phonetic-output');
+  if(!inp){
+    output.textContent = '';
+    return;
+  }
+  const result = inp.toLowerCase().split('').map(char => {
+    return PHONETIC_MAP[char] || char;
+  }).join('-');
+  output.textContent = result;
 }
 
 // ─── WEATHER ──────────────────────────────────────────────────────────────────
