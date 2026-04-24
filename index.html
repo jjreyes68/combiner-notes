@@ -68,16 +68,21 @@ body.dark .dm-thumb{
   transform:translateX(18px);
   background:#f5c842;
 }
-/* ── FLASH OVERLAY ───────────────────────────────────────────────────────────── */
+/* ── LIGHTNING TRANSITION ─────────────────────────────────────────────────── */
 #dm-flash{
   position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:0;
-  background:radial-gradient(ellipse at center,rgba(255,255,255,.95) 0%,rgba(255,255,255,0) 70%);
+  background:radial-gradient(ellipse at center,rgba(255,255,255,.92) 0%,rgba(255,255,255,0) 65%);
 }
 body.dark #dm-flash{
-  background:radial-gradient(ellipse at center,rgba(15,17,23,.95) 0%,rgba(15,17,23,0) 70%);
+  background:radial-gradient(ellipse at center,rgba(15,17,23,.92) 0%,rgba(15,17,23,0) 65%);
 }
-@keyframes dmFlash{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
-#dm-flash.flash{animation:dmFlash .5s ease-out forwards;}
+@keyframes dmFlash{0%{opacity:0}8%{opacity:1}60%{opacity:.6}100%{opacity:0}}
+#dm-flash.flash{animation:dmFlash .55s ease-out forwards;}
+#dm-lightning-canvas{
+  position:fixed;inset:0;z-index:10000;pointer-events:none;
+}
+@keyframes ltBoltIn{0%{opacity:0}5%{opacity:1}70%{opacity:.85}100%{opacity:0}}
+@keyframes ltGlow{0%{box-shadow:none}20%{box-shadow:0 0 80px 40px rgba(180,160,255,.18)}100%{box-shadow:none}}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;min-height:100vh;}
 ::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
@@ -258,6 +263,57 @@ body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;
 .stat-chip{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;box-shadow:var(--shs);}
 .s-val{font-family:var(--m);font-size:18px;font-weight:600;display:block;}
 .s-lbl{font-size:11px;color:var(--text3);}
+/* ── SCAN TABLE ──────────────────────────────────────────────────────────── */
+.scan-table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;box-shadow:var(--shs);}
+.scan-tbl-hdr{display:grid;grid-template-columns:3px 130px 56px 110px 92px 88px 1fr;align-items:center;padding:0 6px 0 0;height:30px;background:var(--bg3);border-bottom:2px solid var(--border2);}
+.scan-tbl-hdr-cell{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;padding:0 8px;}
+.st-row-wrap{border-bottom:1px solid var(--border);}
+.st-row-wrap:last-child{border-bottom:none;}
+.st-row{display:grid;grid-template-columns:3px 130px 56px 110px 92px 88px 1fr;align-items:center;min-height:38px;cursor:default;transition:background .1s;}
+.st-row:hover{background:var(--bg3);}
+.st-status-bar{align-self:stretch;width:3px;transition:background .2s;}
+.st-row-wrap.overdue .st-status-bar{background:var(--red);}
+.st-row-wrap.due .st-status-bar{background:var(--amber);}
+.st-row-wrap.ok .st-status-bar{background:var(--green);}
+.st-row-wrap.never .st-status-bar{background:var(--text3);}
+.st-cell{padding:6px 8px;font-size:12.5px;line-height:1.2;}
+.st-name-cell{display:flex;align-items:center;gap:5px;font-weight:600;font-size:13px;cursor:pointer;user-select:none;}
+.st-expand{color:var(--text3);font-size:9px;flex-shrink:0;transition:transform .18s;margin-right:1px;}
+.st-row-wrap.expanded .st-expand{transform:rotate(90deg);}
+.st-hist{display:none;background:var(--bg3);border-top:1px solid var(--border);padding:8px 14px 10px 24px;}
+.st-hist.open{display:block;}
+.st-hist-title{font-size:9.5px;font-weight:600;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px;}
+.st-hist-entry{display:flex;gap:10px;align-items:baseline;padding:3px 0;border-bottom:1px solid var(--border);font-size:11.5px;}
+.st-hist-entry:last-child{border-bottom:none;}
+.st-hist-ts{font-family:var(--m);font-size:10.5px;color:var(--text3);min-width:90px;flex-shrink:0;}
+.st-hist-note{flex:1;color:var(--text2);}
+.st-hist-ok{color:var(--green);font-weight:500;}
+.st-ref-panel{padding:6px 14px 8px 24px;background:var(--bg3);border-top:1px solid var(--border);display:none;}
+.st-ref-panel.show{display:block;}
+.st-ref-text{font-family:var(--m);font-size:10.5px;color:var(--text3);line-height:1.7;white-space:pre-wrap;}
+.st-actions{display:flex;gap:4px;align-items:center;padding:0 6px;}
+.log-ok-btn{padding:3px 10px;border-radius:5px;border:1px solid var(--green);background:var(--gbg);color:var(--green);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.log-ok-btn:hover{background:var(--green);color:#fff;}
+.log-notes-btn{padding:3px 8px;border-radius:5px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.log-notes-btn:hover{border-color:var(--amber);color:var(--amber);background:var(--abg);}
+.edit-sm-btn{padding:3px 7px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text3);font-size:11px;cursor:pointer;transition:all .15s;}
+.edit-sm-btn:hover{color:var(--text);border-color:var(--text2);}
+.del-sm-btn{padding:3px 6px;border-radius:5px;border:none;background:transparent;color:var(--text3);font-size:10px;cursor:pointer;opacity:.5;transition:all .15s;}
+.del-sm-btn:hover{color:var(--red);opacity:1;background:var(--rbg);}
+.scan-section-sep{display:flex;align-items:center;gap:8px;padding:10px 10px 4px;grid-column:1/-1;}
+.scan-section-line{flex:1;height:1px;background:var(--border);}
+.scan-section-lbl{font-size:9.5px;font-weight:700;color:var(--text3);letter-spacing:.09em;text-transform:uppercase;white-space:nowrap;}
+.ref-toggle-btn{padding:5px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;}
+.ref-toggle-btn.active-btn{border-color:var(--blue);color:var(--blue);background:var(--bbg);}
+@media(max-width:900px){
+  .scan-tbl-hdr,.st-row{grid-template-columns:3px 120px 56px 100px 80px 1fr;}
+  .st-cell.col-next{display:none;}.scan-tbl-hdr-cell.col-next{display:none;}
+}
+@media(max-width:600px){
+  .scan-tbl-hdr,.st-row{grid-template-columns:3px 1fr 80px 130px;}
+  .st-cell.col-nerc,.st-cell.col-status,.st-cell.col-last,.scan-tbl-hdr-cell.col-nerc,.scan-tbl-hdr-cell.col-status,.scan-tbl-hdr-cell.col-last{display:none;}
+}
+
 
 /* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:14px;backdrop-filter:blur(3px);}
@@ -604,6 +660,7 @@ select,option{background:var(--bg3);}
   </button>
 </div>
 <div id="dm-flash"></div>
+<canvas id="dm-lightning-canvas"></canvas>
 
 <!-- NOTEPAD -->
 <div class="view" id="view-notes" style="display:none!important">
@@ -643,9 +700,11 @@ select,option{background:var(--bg3);}
     <button class="tbtn" onclick="resetTimer()">Reset</button>
     <span id="scan-next-due" style="font-family:var(--m);font-size:11px;color:var(--text3);margin-left:4px;"></span>
   </div>
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
     <button class="btn-p" onclick="openModal('modal-add-site')">+ Add site</button>
-    <button class="tbtn" onclick="scanAll()">Scan all NERC</button>
+    <button class="tbtn" onclick="scanAll()">✓ Scan all NERC</button>
+    <div style="flex:1;"></div>
+    <button class="ref-toggle-btn" id="ref-toggle-btn" onclick="toggleRefData(this)">Show ref data</button>
   </div>
   <div class="stat-row" id="scan-stats"></div>
   <div class="filter-row">
@@ -655,7 +714,7 @@ select,option{background:var(--bg3);}
     <button class="filter-btn" onclick="setSiteFilter('ok',this)">OK</button>
     <button class="filter-btn" onclick="setSiteFilter('nerc',this)">NERC only</button>
   </div>
-  <div class="sites-grid" id="sites-grid"></div>
+  <div id="sites-table-wrap"></div>
 </div>
 
 <!-- TOOLBOX -->
@@ -1437,12 +1496,14 @@ function toggleTimer(){ S.timerRunning ? stopTimer() : (S.timerRunning=true, sav
 function startTimerInterval(){
   const btn=document.getElementById('timer-btn');
   btn.textContent='Stop'; btn.classList.add('active-btn');
+  let alertFired=false;
   timerInt=setInterval(()=>{
     S.timerElapsed++;
-    if(S.timerElapsed>=TOTAL){
-      S.timerElapsed=0; S.timerCycles++;
-      addLog({type:'task',title:'30-min cycle #'+S.timerCycles+' completed',detail:''});
-      fireAlert('Cycle #'+S.timerCycles+' — time to scan!');
+    // Fire alert and log once when we first hit zero (overdue threshold)
+    if(S.timerElapsed===TOTAL){
+      S.timerCycles++;
+      addLog({type:'task',title:'30-min cycle #'+S.timerCycles+' — scan now!',detail:'Timer reached zero'});
+      fireAlert('Cycle #'+S.timerCycles+' — SCAN NOW!');
     }
     save(); updateTimerUI();
   },1000);
@@ -1451,14 +1512,30 @@ function stopTimer(){
   S.timerRunning=false; clearInterval(timerInt); timerInt=null;
   const btn=document.getElementById('timer-btn'); btn.textContent='Start'; btn.classList.remove('active-btn'); save();
 }
-function resetTimer(){ stopTimer(); S.timerElapsed=0; save(); updateTimerUI(); }
+function resetTimer(){ stopTimer(); S.timerElapsed=0; save(); updateTimerUI(); 
+  const badge=document.getElementById('cycles-badge');
+  badge.style.color=''; badge.style.background='';
+}
 function updateTimerUI(){
-  const rem=TOTAL-S.timerElapsed, urgent=rem<=120;
-  document.getElementById('timer-disp').textContent=String(Math.floor(rem/60)).padStart(2,'0')+':'+String(rem%60).padStart(2,'0');
-  document.getElementById('timer-disp').classList.toggle('urgent',urgent);
-  document.getElementById('timer-fill').style.width=((rem/TOTAL)*100).toFixed(1)+'%';
-  document.getElementById('timer-fill').classList.toggle('urgent',urgent);
-  document.getElementById('cycles-badge').textContent=S.timerCycles+' cycle'+(S.timerCycles!==1?'s':'');
+  const rem=TOTAL-S.timerElapsed;
+  const isOverdue=rem<0;
+  const urgent=rem<=120;
+  const absRem=Math.abs(rem);
+  const mm=String(Math.floor(absRem/60)).padStart(2,'0');
+  const ss=String(absRem%60).padStart(2,'0');
+  const disp=document.getElementById('timer-disp');
+  disp.textContent=(isOverdue?'−':'')+mm+':'+ss;
+  disp.classList.toggle('urgent',urgent||isOverdue);
+  // bar: empty when overdue, fill with red pulse
+  const pct=isOverdue?0:Math.max(0,(rem/TOTAL)*100);
+  document.getElementById('timer-fill').style.width=pct.toFixed(1)+'%';
+  document.getElementById('timer-fill').classList.toggle('urgent',urgent||isOverdue);
+  // show overdue label next to cycles badge
+  const badge=document.getElementById('cycles-badge');
+  const cycleLabel=S.timerCycles+' cycle'+(S.timerCycles!==1?'s':'');
+  badge.textContent=isOverdue?cycleLabel+' · OVERDUE':cycleLabel;
+  badge.style.color=isOverdue?'var(--red)':'';
+  badge.style.background=isOverdue?'var(--rbg)':'';
 }
 
 // ─── RECURRING TASKS ──────────────────────────────────────────────────────────
@@ -1556,6 +1633,8 @@ function renderCl(){
 }
 
 // ─── SITES / SCANS ────────────────────────────────────────────────────────────
+let showRefData = false;
+
 function siteStatus(s){
   if(!s.lastScan) return 'never';
   const e=(Date.now()-s.lastScan)/60000, i=s.interval||30, th=s.threshold||5;
@@ -1563,8 +1642,10 @@ function siteStatus(s){
   if(e>i-th) return 'due';
   return 'ok';
 }
-const STATUS_LABEL={ok:'OK',due:'Due soon',overdue:'OVERDUE',never:'Never scanned'};
+const STATUS_LABEL={ok:'OK',due:'Due soon',overdue:'OVERDUE',never:'Never'};
 const STATUS_BADGE={ok:'b-ok',due:'b-due',overdue:'b-overdue',never:'b-never'};
+const STATUS_COLOR={ok:'var(--green)',due:'var(--amber)',overdue:'var(--red)',never:'var(--text3)'};
+
 function setSiteFilter(f,el){ S.siteFilter=f; document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); renderSites(); }
 function refreshScanStatuses(){ renderSites(); renderScanStats(); updateScansTabAlert(); }
 function updateScansTabAlert() {
@@ -1572,7 +1653,6 @@ function updateScansTabAlert() {
   if (!tab) return;
   const hasOverdue = SITES.some(s => siteStatus(s) === 'overdue');
   tab.classList.toggle('tab-alert', hasOverdue);
-  // Update label with count badge when overdue
   const count = SITES.filter(s => siteStatus(s) === 'overdue').length;
   tab.textContent = hasOverdue ? `Scans (${count})` : 'Scans';
 }
@@ -1588,24 +1668,94 @@ function renderScanStats(){
   const next=SITES.filter(s=>s.lastScan&&siteStatus(s)==='ok').sort((a,b)=>((a.interval||30)-((Date.now()-a.lastScan)/60000))-((b.interval||30)-((Date.now()-b.lastScan)/60000)))[0];
   document.getElementById('scan-next-due').textContent=next?'Next: '+esc(next.name)+' ~'+Math.ceil(Math.max(0,(next.interval||30)-((Date.now()-next.lastScan)/60000)))+'min':'';
 }
-function siteCard(site){
-  const st=siteStatus(site), last=site.lastScan?timeSince(site.lastScan):'—';
-  const tip=site.notes?`<div class="site-tip"><span class="site-tip-title">${esc(site.name)}</span>${esc(site.notes)}</div>`:'';
-  return `<div class="site-card ${st}">
-    ${tip}
-    <div class="site-hdr">
-      <span class="site-name">${esc(site.name)}</span>
-      ${site.nerc?'<span class="badge b-nerc">NERC</span>':''}
-      <span class="badge ${STATUS_BADGE[st]}">${STATUS_LABEL[st]}</span>
+
+function toggleRefData(btn){
+  showRefData=!showRefData;
+  btn.classList.toggle('active-btn',showRefData);
+  btn.textContent=showRefData?'Hide ref data':'Show ref data';
+  document.querySelectorAll('.st-ref-panel').forEach(p=>p.classList.toggle('show',showRefData));
+}
+
+function getSiteHistory(siteName){
+  return (S.logEntries||[])
+    .filter(e=>e.type==='scan'&&(e.title||'').includes(siteName))
+    .slice(0,8);
+}
+
+function toggleSiteRow(id){
+  const wrap=document.querySelector(`.st-row-wrap[data-id="${id}"]`);
+  if(!wrap)return;
+  const isOpen=wrap.classList.contains('expanded');
+  // close all first
+  document.querySelectorAll('.st-row-wrap.expanded').forEach(w=>{
+    w.classList.remove('expanded');
+    const h=w.querySelector('.st-hist'); if(h)h.classList.remove('open');
+  });
+  if(!isOpen){
+    wrap.classList.add('expanded');
+    const hist=wrap.querySelector('.st-hist');
+    if(hist){
+      const site=SITES.find(x=>x.id===id);
+      const entries=getSiteHistory(site?site.name:'');
+      if(!entries.length){
+        hist.innerHTML='<div class="st-hist-title">Scan History</div><div class="st-hist-empty">No history yet for this site.</div>';
+      } else {
+        hist.innerHTML='<div class="st-hist-title">Recent Scans</div>'+entries.map(e=>{
+          const d=new Date(e.ts);
+          const dateStr=d.toLocaleDateString([],{month:'short',day:'numeric'});
+          const timeStr=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+          const note=e.detail&&e.detail!=='All clear'?`<span class="st-hist-note">${esc(e.detail)}</span>`:`<span class="st-hist-note st-hist-ok">✓ All clear</span>`;
+          return `<div class="st-hist-entry"><span class="st-hist-ts">${dateStr} ${timeStr}</span>${note}</div>`;
+        }).join('');
+      }
+      hist.classList.add('open');
+    }
+  }
+}
+
+function logOKDirect(id, e){
+  e.stopPropagation();
+  const site=SITES.find(x=>x.id===id); if(!site)return;
+  site.lastScan=Date.now();
+  addLog({type:'scan',title:'Scan: '+site.name,detail:'All clear'});
+  saveSites(SITES); renderSites(); showToast('✓ '+site.name+' scanned OK');
+}
+
+function siteRow(site){
+  const st=siteStatus(site);
+  const last=site.lastScan?timeSince(site.lastScan):'—';
+  const nextMin=site.lastScan?Math.ceil(Math.max(0,(site.interval||30)-((Date.now()-site.lastScan)/60000))):null;
+  const nextStr=nextMin!==null?(nextMin<=0?'<span style="color:var(--red);font-weight:600;">now</span>':nextMin+'min'):'—';
+  const statusColor=STATUS_COLOR[st];
+  const histLen=getSiteHistory(site.name).length;
+  const refPanel=site.notes?`<div class="st-ref-panel${showRefData?' show':''}"><span class="st-ref-text">${esc(site.notes)}</span></div>`:'';
+  return `<div class="st-row-wrap ${st}" data-id="${site.id}">
+    <div class="st-row" onclick="toggleSiteRow(${site.id})">
+      <div class="st-status-bar"></div>
+      <div class="st-cell">
+        <div class="st-name-cell">
+          <span class="st-expand">▶</span>
+          <span>${esc(site.name)}</span>
+          ${histLen?`<span style="font-size:9.5px;color:var(--text3);font-family:var(--m);font-weight:400;">${histLen}</span>`:''}
+        </div>
+        <div style="font-size:10.5px;color:var(--text3);padding-left:14px;line-height:1.5;">${esc(site.location||'')}${site.notes?`<span style="margin-left:6px;font-family:var(--m);font-size:10px;color:var(--text3);opacity:.75;">${esc(site.notes.split('\n')[0])}</span>`:''}</div>
+      </div>
+      <div class="st-cell col-nerc">${site.nerc?'<span class="badge b-nerc">NERC</span>':''}</div>
+      <div class="st-cell col-status"><span style="font-size:11.5px;font-weight:600;color:${statusColor};">${STATUS_LABEL[st]}</span></div>
+      <div class="st-cell col-last" style="font-family:var(--m);font-size:11.5px;color:var(--text2);">${last}</div>
+      <div class="st-cell col-next" style="font-family:var(--m);font-size:11.5px;color:var(--text2);">${nextStr}</div>
+      <div class="st-actions" onclick="event.stopPropagation()">
+        <button class="log-ok-btn" onclick="logOKDirect(${site.id},event)" title="Log OK — all clear">✓ OK</button>
+        <button class="log-notes-btn" onclick="openScanNote(${site.id})" title="Log with notes">+ Notes</button>
+        <button class="edit-sm-btn" onclick="editSite(${site.id})">Edit</button>
+        <button class="del-sm-btn" onclick="deleteSite(${site.id})" title="Delete site">✕</button>
+      </div>
     </div>
-    <div class="site-meta">Last: ${last} · ${site.interval||30}min</div>
-    <div class="site-acts">
-      <button class="scan-btn" onclick="openScanNote(${site.id})">Log scan</button>
-      <button class="tbtn" style="font-size:11px;padding:3px 9px;" onclick="editSite(${site.id})">Edit</button>
-      <button class="tbtn" style="font-size:11px;padding:3px 9px;color:var(--red);border-color:var(--red);" onclick="deleteSite(${site.id})">Del</button>
-    </div>
+    <div class="st-hist"></div>
+    ${refPanel}
   </div>`;
 }
+
 function renderSites(){
   renderScanStats();
   const f=S.siteFilter||'all';
@@ -1614,16 +1764,28 @@ function renderSites(){
   if(f==='nerc') sites=sites.filter(s=>s.nerc);
   else if(f!=='all') sites=sites.filter(s=>siteStatus(s)===f);
   sites.sort((a,b)=>(order[siteStatus(a)]||0)-(order[siteStatus(b)]||0));
-  const el=document.getElementById('sites-grid');
-  if(!sites.length){ el.innerHTML='<div class="empty" style="grid-column:1/-1;">No sites'+(f!=='all'?' matching filter':' added yet')+'</div>'; return; }
+  const el=document.getElementById('sites-table-wrap');
+  if(!sites.length){ el.innerHTML='<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px;">No sites'+(f!=='all'?' matching filter':' added yet')+'</div>'; return; }
+
+  const hdr=`<div class="scan-tbl-hdr">
+    <div></div>
+    <div class="scan-tbl-hdr-cell">Site</div>
+    <div class="scan-tbl-hdr-cell col-nerc">Type</div>
+    <div class="scan-tbl-hdr-cell col-status">Status</div>
+    <div class="scan-tbl-hdr-cell col-last">Last scan</div>
+    <div class="scan-tbl-hdr-cell col-next">Next due</div>
+    <div class="scan-tbl-hdr-cell">Actions</div>
+  </div>`;
+
+  let body='';
   if(f==='all'){
     const nerc=sites.filter(s=>s.nerc), non=sites.filter(s=>!s.nerc);
-    el.innerHTML=
-      (nerc.length?`<div class="nerc-sep"><div class="nerc-sep-line"></div><span class="nerc-sep-lbl">NERC Sites</span><div class="nerc-sep-line"></div></div>${nerc.map(siteCard).join('')}`:'') +
-      (non.length?`<div class="nerc-sep"><div class="nerc-sep-line"></div><span class="nerc-sep-lbl">Non-NERC Sites</span><div class="nerc-sep-line"></div></div>${non.map(siteCard).join('')}`:'');
+    if(nerc.length) body+=`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px 2px;background:var(--bg3);border-bottom:1px solid var(--border);"><div style="flex:1;height:1px;background:var(--border2);"></div><span style="font-size:9.5px;font-weight:700;color:var(--text3);letter-spacing:.09em;text-transform:uppercase;white-space:nowrap;">NERC Sites — ${nerc.length}</span><div style="flex:1;height:1px;background:var(--border2);"></div></div>`+nerc.map(siteRow).join('');
+    if(non.length) body+=`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px 2px;background:var(--bg3);border-bottom:1px solid var(--border);"><div style="flex:1;height:1px;background:var(--border2);"></div><span style="font-size:9.5px;font-weight:700;color:var(--text3);letter-spacing:.09em;text-transform:uppercase;white-space:nowrap;">Non-NERC Sites — ${non.length}</span><div style="flex:1;height:1px;background:var(--border2);"></div></div>`+non.map(siteRow).join('');
   } else {
-    el.innerHTML=sites.map(siteCard).join('');
+    body=sites.map(siteRow).join('');
   }
+  el.innerHTML=`<div class="scan-table-wrap">${hdr}${body}</div>`;
 }
 function timeSince(ts){ const m=Math.floor((Date.now()-ts)/60000); return m<1?'just now':m<60?m+'min ago':Math.floor(m/60)+'h '+m%60+'m ago'; }
 function openScanNote(id){ const s=SITES.find(x=>x.id===id); if(!s)return; document.getElementById('scan-note-title').textContent='Log scan — '+s.name; document.getElementById('scan-note-site-id').value=id; document.getElementById('scan-note-body').value=''; openModal('modal-scan-note'); }
@@ -1634,8 +1796,12 @@ function confirmScan(){
 }
 function scanAll(){
   const nerc=SITES.filter(s=>s.nerc); if(!nerc.length){showToast('No NERC sites');return;}
-  nerc.forEach(s=>s.lastScan=Date.now()); addLog({type:'scan',title:'Scan all NERC ('+nerc.length+')',detail:nerc.map(s=>s.name).join(', ')});
-  saveSites(SITES); renderSites(); showToast('All NERC sites scanned');
+  const now=Date.now();
+  nerc.forEach(s=>{
+    s.lastScan=now;
+    addLog({type:'scan',title:'Scan: '+s.name,detail:'All clear — batch scan'});
+  });
+  saveSites(SITES); renderSites(); showToast('✓ All '+nerc.length+' NERC sites scanned');
 }
 function saveSite(){
   const name=document.getElementById('site-name').value.trim(); if(!name)return;
@@ -4547,16 +4713,128 @@ function dmToggle() {
   const flash = document.getElementById('dm-flash');
   const thumb = document.getElementById('dm-thumb');
 
-  // Trigger flash
+  // Fire lightning BEFORE switching theme
+  dmLightning(isDark);
+
+  // Slight delay so lightning appears first, then theme snaps in
+  setTimeout(() => {
+    body.classList.toggle('dark', !isDark);
+    if (thumb) thumb.textContent = isDark ? '☀️' : '🌙';
+  }, 80);
+
   if (flash) {
     flash.classList.remove('flash');
-    void flash.offsetWidth; // reflow to restart animation
+    void flash.offsetWidth;
     flash.classList.add('flash');
   }
 
-  body.classList.toggle('dark', !isDark);
-  if (thumb) thumb.textContent = isDark ? '☀️' : '🌙';
   try { localStorage.setItem('rnwbl_darkmode', isDark ? '0' : '1'); } catch(e) {}
+}
+
+function dmLightning(toLight) {
+  const canvas = document.getElementById('dm-lightning-canvas');
+  if (!canvas) return;
+  const W = canvas.width  = window.innerWidth;
+  const H = canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  // Color palette: going-to-light = yellow/white bolts, going-to-dark = blue/purple
+  const boltColor = toLight
+    ? ['rgba(255,240,80,', 'rgba(255,255,255,']
+    : ['rgba(160,120,255,', 'rgba(100,180,255,'];
+
+  // Generate a jagged lightning path from top to bottom
+  function makeBolt(startX) {
+    const pts = [{x: startX, y: 0}];
+    let x = startX, y = 0;
+    const steps = 10 + Math.floor(Math.random() * 8);
+    for (let i = 1; i <= steps; i++) {
+      y = (H / steps) * i;
+      x += (Math.random() - 0.48) * 140;
+      x = Math.max(40, Math.min(W - 40, x));
+      pts.push({x, y});
+    }
+    return pts;
+  }
+
+  // Draw one bolt with glow layers
+  function drawBolt(pts, alpha, color, width) {
+    // Outer glow
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.strokeStyle = color + alpha * 0.25 + ')';
+    ctx.lineWidth = width * 6;
+    ctx.shadowColor = color + '0.9)';
+    ctx.shadowBlur = 28;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+    // Core
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.strokeStyle = color + alpha + ')';
+    ctx.lineWidth = width;
+    ctx.shadowBlur = 12;
+    ctx.stroke();
+  }
+
+  // Draw branches off main bolt
+  function drawBranch(fromPt, alpha, color) {
+    const pts = [fromPt];
+    let x = fromPt.x, y = fromPt.y;
+    const steps = 3 + Math.floor(Math.random() * 4);
+    for (let i = 0; i < steps; i++) {
+      y += (40 + Math.random() * 50);
+      x += (Math.random() - 0.5) * 100;
+      pts.push({x, y});
+    }
+    drawBolt(pts, alpha * 0.6, color, 1.5);
+  }
+
+  // --- ANIMATION LOOP ---
+  const numBolts = 1 + Math.floor(Math.random() * 2); // 1-2 main bolts
+  const bolts = [];
+  for (let b = 0; b < numBolts; b++) {
+    const startX = W * (0.25 + Math.random() * 0.5);
+    bolts.push({pts: makeBolt(startX), color: boltColor[b % 2]});
+  }
+
+  let frame = 0;
+  const totalFrames = 28;
+
+  // Flash schedule: flicker on frames 0,2,4 then fade
+  const schedule = [1, 0.3, 0.95, 0.2, 0.85, 0.15, 0.7, 0.1, 0.55, 0.08, 0.4, 0.05, 0.25, 0.03];
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    const alpha = schedule[frame] !== undefined ? schedule[frame] : Math.max(0, 0.25 - (frame - schedule.length) * 0.04);
+    if (alpha > 0) {
+      bolts.forEach(b => {
+        drawBolt(b.pts, alpha, b.color, 2.5);
+        // Add branches on bright frames
+        if (alpha > 0.5 && b.pts.length > 3) {
+          const branchPt = b.pts[2 + Math.floor(Math.random() * (b.pts.length - 3))];
+          drawBranch(branchPt, alpha, b.color);
+          if (alpha > 0.8) {
+            const branchPt2 = b.pts[1 + Math.floor(Math.random() * 2)];
+            drawBranch(branchPt2, alpha * 0.7, b.color);
+          }
+        }
+      });
+    }
+    frame++;
+    if (frame < totalFrames) {
+      requestAnimationFrame(animate);
+    } else {
+      ctx.clearRect(0, 0, W, H);
+    }
+  }
+
+  ctx.shadowColor = 'transparent';
+  requestAnimationFrame(animate);
 }
 
 /* ── PHONETIC CONVERTER ─────────────────────────────────────────────────────── */
@@ -4598,4 +4876,3 @@ load();
 </script>
 </body>
 </html>
-
