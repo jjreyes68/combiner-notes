@@ -656,11 +656,40 @@ body.dark .cl-time{color:var(--text2);}
 #view-timezones.tz-kiosk .tz-card-content{padding:12px 14px;}
 
 /* ── SCHEDULE (SharePoint iframe) ────────────────────────────────────────────── */
-.schedule-iframe-container{width:100%;max-width:1400px;margin:0 auto;background:var(--bg2);border-radius:var(--rl);overflow:hidden;}
-.schedule-iframe-container iframe{width:100%;height:800px;border:none;}
-@media(max-width:900px){.schedule-iframe-container iframe{height:700px;}}
-@media(max-width:600px){.schedule-iframe-container iframe{height:600px;}}
-@media(max-width:450px){.schedule-iframe-container iframe{height:500px;}}
+/* ── SCHEDULE (SharePoint iframe) ────────────────────────────────────────────── */
+.schedule-iframe-container{
+  width:100%;max-width:1400px;margin:0 auto;
+  background:#0f1117;  /* matches --bg dark; sheets load dark, container matches */
+  border-radius:var(--rl);overflow:hidden;position:relative;
+}
+.schedule-iframe-container iframe{
+  width:100%;height:647px;border:none;display:block;
+  background:transparent;
+}
+/* Upcoming Outages sheet is slightly shorter */
+#schedule-embed2 iframe,
+#schedule-srd .schedule-iframe-container:last-child iframe{height:634px;}
+/* Dark-loading overlay — covers the white flash while iframe initialises, then fades */
+.schedule-iframe-container .iframe-veil{
+  position:absolute;inset:0;
+  background:#0f1117;
+  pointer-events:none;
+  opacity:1;
+  transition:opacity .6s ease .4s;
+  z-index:2;border-radius:var(--rl);
+}
+.schedule-iframe-container .iframe-veil.loaded{opacity:0;}
+/* Bottom chrome bar crop — hides the Excel toolbar strip */
+.schedule-iframe-container .iframe-crop{
+  position:absolute;bottom:0;left:0;right:0;
+  height:42px;background:#0f1117;z-index:3;
+}
+body:not(.dark) .schedule-iframe-container{background:#1a1a2e;}
+body:not(.dark) .schedule-iframe-container .iframe-veil{background:#1a1a2e;}
+body:not(.dark) .schedule-iframe-container .iframe-crop{background:#1a1a2e;}
+@media(max-width:900px){.schedule-iframe-container iframe{height:480px !important;}}
+@media(max-width:600px){.schedule-iframe-container iframe{height:400px !important;}}
+@media(max-width:450px){.schedule-iframe-container iframe{height:340px !important;}}
 .schedule-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
 .schedule-view-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;}
 .schedule-view-btn:hover{border-color:var(--text2);color:var(--text);}
@@ -673,14 +702,66 @@ body.dark .cl-time{color:var(--text2);}
 .schedule-view.kiosk-mode > div:last-child{flex:1;overflow:hidden;padding:0;}
 .schedule-view.kiosk-mode .schedule-iframe-container{max-width:none;height:100%;margin:0;padding:0;border-radius:0;}
 .schedule-view.kiosk-mode .schedule-iframe-container iframe{height:100%;border:none;}
+.schedule-view.kiosk-mode .schedule-iframe-container .iframe-crop{background:inherit;}
 .schedule-view.kiosk-mode .schedule-srd-combo{height:100%;}
 /* Combined View - side by side */
-.schedule-srd-combo{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:800px;}
+.schedule-srd-combo{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:647px;}
 @media(max-width:900px){.schedule-srd-combo{grid-template-columns:1fr;height:600px;}}
 @media(max-width:600px){.schedule-srd-combo{grid-template-columns:1fr;height:500px;}}
-.schedule-srd-combo iframe{width:100%;height:100%;border:none;}
+.schedule-srd-combo .schedule-iframe-container{max-width:none;margin:0;height:100%;}
+.schedule-srd-combo .schedule-iframe-container iframe{width:100%;height:100%;border:none;display:block;}
 
 select,option{background:var(--bg3);}
+
+/* ── AS PROGRESS METER ───────────────────────────────────────────────────────── */
+.as-prog-wrap{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 14px;margin-bottom:10px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r);box-shadow:var(--shs);
+  transition:border-color .4s;
+}
+.as-prog-wrap.all-done{border-color:var(--green);}
+.as-prog-bolt{
+  font-size:17px;flex-shrink:0;line-height:1;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1), filter .4s;
+  display:inline-block;
+}
+.as-prog-track{
+  flex:1;height:5px;background:var(--bg4);
+  border-radius:3px;overflow:hidden;min-width:60px;
+}
+.as-prog-fill{
+  height:100%;width:0%;border-radius:3px;
+  background:var(--border2);
+  transition:width .45s cubic-bezier(.4,0,.2,1), background .4s;
+}
+.as-prog-label{font-size:11px;color:var(--text3);font-family:var(--m);white-space:nowrap;}
+body.dark .as-prog-label{color:var(--text2);}
+.as-prog-pct{
+  font-family:var(--m);font-size:12px;font-weight:600;
+  color:var(--text2);min-width:32px;text-align:right;
+  white-space:nowrap;transition:color .4s;
+}
+.as-prog-done-badge{
+  font-size:11px;font-weight:600;
+  color:var(--green);background:var(--gbg);
+  padding:2px 9px;border-radius:10px;
+  white-space:nowrap;border:1px solid var(--gmid);
+  opacity:0;transform:scale(.85);
+  transition:opacity .35s ease, transform .35s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;
+}
+.as-prog-done-badge.visible{opacity:1;transform:scale(1);}
+@keyframes as-shimmer{
+  0%  {background-position:-200% center;}
+  100%{background-position: 200% center;}
+}
+.as-prog-fill.shimmer{
+  background:linear-gradient(90deg, var(--green) 0%, #6ee7b7 48%, var(--green) 100%);
+  background-size:200% 100%;
+  animation:as-shimmer 1.2s ease forwards;
+}
 </style>
 </head>
 <body>
@@ -1042,6 +1123,14 @@ select,option{background:var(--bg3);}
       <button class="btn-p" onclick="asExportCSV()">Export CSV</button>
     </div>
   </div>
+  <!-- overall progress meter -->
+  <div class="as-prog-wrap" id="as-prog-wrap">
+    <span class="as-prog-bolt" id="as-prog-bolt">⚡</span>
+    <div class="as-prog-track"><div class="as-prog-fill" id="as-prog-fill"></div></div>
+    <span class="as-prog-label" id="as-prog-label">0 / 0 sites</span>
+    <span class="as-prog-pct" id="as-prog-pct">0%</span>
+    <span class="as-prog-done-badge" id="as-prog-done-badge">✓ All sites complete</span>
+  </div>
   <div class="as-site-tabs" id="as-tabs"></div>
   <div id="as-form-wrap"></div>
 </div>
@@ -1226,14 +1315,26 @@ select,option{background:var(--bg3);}
     </div>
     <div style="padding:0 16px 16px;">
       <div class="schedule-iframe-container" id="schedule-embed1" style="display:none;">
-        <iframe frameborder="0" scrolling="no" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A2%3AI35&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        <div class="iframe-veil" id="veil-embed1"></div>
+        <div class="iframe-crop"></div>
+        <iframe id="fr-embed1" frameborder="0" scrolling="no" onload="document.getElementById('veil-embed1').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AI37&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
       </div>
       <div class="schedule-iframe-container" id="schedule-embed2" style="display:none;">
-        <iframe frameborder="0" scrolling="no" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM30&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        <div class="iframe-veil" id="veil-embed2"></div>
+        <div class="iframe-crop"></div>
+        <iframe id="fr-embed2" frameborder="0" scrolling="no" onload="document.getElementById('veil-embed2').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM28&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
       </div>
       <div class="schedule-srd-combo" id="schedule-srd">
-        <iframe frameborder="0" scrolling="no" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A2%3AI35&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
-        <iframe frameborder="0" scrolling="no" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM30&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        <div class="schedule-iframe-container">
+          <div class="iframe-veil" id="veil-srd1"></div>
+          <div class="iframe-crop"></div>
+          <iframe id="fr-srd1" frameborder="0" scrolling="no" onload="document.getElementById('veil-srd1').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AI37&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        </div>
+        <div class="schedule-iframe-container">
+          <div class="iframe-veil" id="veil-srd2"></div>
+          <div class="iframe-crop"></div>
+          <iframe id="fr-srd2" frameborder="0" scrolling="no" onload="document.getElementById('veil-srd2').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM28&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        </div>
       </div>
     </div>
   </div>
@@ -2940,12 +3041,12 @@ const AS_SITES = [
     sections:[
       { title:'STATUS', fields:[
         {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:'Yes'},
-        {n:'Bluence Accessible / RDP Open', t:'select', opts:['','Yes','No'], alert:'Yes'},
-        {n:'Bluence Receiving Setpoint', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Bluence Accessible / RDP Open', t:'select', opts:['','Yes','No'], alert:'No'},
+        {n:'Bluence Receiving Setpoint', t:'select', opts:['','Yes','No'], alert:'No'},
         {n:'Notes', t:'textarea'},
       ]},
       { title:'OUTPUT', fields:[
-        {n:'Site Following Setpoint', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Site Following Setpoint', t:'select', opts:['','Yes','No'], alert:'No'},
         {n:'MW',   t:'text', unit:'MW'},
         {n:'kV',   t:'text', unit:'kV', kvMin:109.25, kvMax:120.75},
         {n:'MVAR', t:'text', unit:'MVAR', hint:'WindCONTROL - WCS-001- Power Control'},
@@ -3122,12 +3223,12 @@ const AS_SITES = [
     sections:[
       { title:'STATUS', fields:[
         {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:'Yes'},
-        {n:'Bluence Accessible / RDP Open', t:'select', opts:['','Yes','No'], alert:'Yes'},
-        {n:'Bluence Receiving Setpoint', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Bluence Accessible / RDP Open', t:'select', opts:['','Yes','No'], alert:'No'},
+        {n:'Bluence Receiving Setpoint', t:'select', opts:['','Yes','No'], alert:'No'},
         {n:'Notes', t:'textarea'},
       ]},
       { title:'OUTPUT', fields:[
-        {n:'Site Following Setpoint', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Site Following Setpoint', t:'select', opts:['','Yes','No'], alert:'No'},
         {n:'MW',   t:'text', unit:'MW'},
         {n:'kV',   t:'text', unit:'kV', kvMin:109, kvMax:121},
         {n:'MVAR', t:'text', unit:'MVAR'},
@@ -3396,12 +3497,12 @@ const AS_SITES = [
     sections:[
       { title:'STATUS', fields:[
         {n:'Abnormal Operating Conditions', t:'select', opts:['','Yes','No'], alert:'Yes'},
-        {n:'Bluence Open & RDP Open', t:'select', opts:['','Yes','No'], alert:'Yes'},
-        {n:'Bluence Receiving Setpoint', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Bluence Open & RDP Open', t:'select', opts:['','Yes','No'], alert:'No'},
+        {n:'Bluence Receiving Setpoint', t:'select', opts:['','Yes','No'], alert:'No'},
         {n:'Notes', t:'textarea'},
       ]},
       { title:'OUTPUT', fields:[
-        {n:'Site Following Setpoint', t:'select', opts:['','Yes','No'], alert:'Yes'},
+        {n:'Site Following Setpoint', t:'select', opts:['','Yes','No'], alert:'No'},
         {n:'MW',   t:'text', unit:'MW'},
         {n:'kV',   t:'text', unit:'kV', kvMin:139.2, kvMax:143.4},
         {n:'MVAR', t:'text', unit:'MVAR'},
@@ -3606,6 +3707,70 @@ function asInit() {
   asRenderForm();
 }
 
+function asUpdateProgress() {
+  const sites = asSites();
+  const total = sites.length;
+  const done  = sites.filter(s => asSiteComplete(s.id)).length;
+  const pct   = total === 0 ? 0 : Math.round(done / total * 100);
+
+  const fill    = document.getElementById('as-prog-fill');
+  const label   = document.getElementById('as-prog-label');
+  const pctEl   = document.getElementById('as-prog-pct');
+  const bolt    = document.getElementById('as-prog-bolt');
+  const badge   = document.getElementById('as-prog-done-badge');
+  const wrap    = document.getElementById('as-prog-wrap');
+  if (!fill) return;
+
+  // Remove shimmer before potentially re-adding it
+  fill.classList.remove('shimmer');
+
+  const allDone = done === total && total > 0;
+
+  // Track bar fill + colour
+  fill.style.width = pct + '%';
+  if (allDone) {
+    // Trigger shimmer on next frame so transition re-fires
+    requestAnimationFrame(() => fill.classList.add('shimmer'));
+    fill.style.background = '';
+  } else if (pct >= 75) {
+    fill.style.background = 'var(--green)';
+  } else if (pct >= 40) {
+    fill.style.background = 'var(--amber)';
+  } else if (pct > 0) {
+    fill.style.background = 'var(--blue)';
+  } else {
+    fill.style.background = 'var(--border2)';
+  }
+
+  // Labels
+  label.textContent  = done + ' / ' + total + ' sites';
+  pctEl.textContent  = pct + '%';
+  pctEl.style.color  = allDone ? 'var(--green)' : pct >= 75 ? 'var(--green)' : pct >= 40 ? 'var(--amber)' : 'var(--text2)';
+
+  // Bolt — grows and glows as you progress; party mode at 100
+  if (allDone) {
+    bolt.textContent = '🏁';
+    bolt.style.transform  = 'scale(1.25) rotate(-5deg)';
+    bolt.style.filter     = 'drop-shadow(0 0 6px var(--green))';
+  } else if (pct >= 75) {
+    bolt.textContent = '⚡';
+    bolt.style.transform  = 'scale(1.2) rotate(-8deg)';
+    bolt.style.filter     = 'drop-shadow(0 0 5px var(--green))';
+  } else if (pct >= 40) {
+    bolt.textContent = '⚡';
+    bolt.style.transform  = 'scale(1.1) rotate(-5deg)';
+    bolt.style.filter     = 'drop-shadow(0 0 4px var(--amber))';
+  } else {
+    bolt.textContent = '⚡';
+    bolt.style.transform  = 'scale(1)';
+    bolt.style.filter     = 'none';
+  }
+
+  // Completion badge
+  badge.classList.toggle('visible', allDone);
+  wrap.classList.toggle('all-done', allDone);
+}
+
 function asRenderTabs() {
   document.getElementById('as-tabs').innerHTML = asSites().map(s=>{
     const done=asSiteComplete(s.id), pct=asSiteFilledPct(s.id);
@@ -3615,6 +3780,7 @@ function asRenderTabs() {
     const isActive=s.id===asActiveSite;
     return `<button class="as-tab${isActive?' active':''}" style="${isActive?'':style}" onclick="asSwitch('${esc(s.id)}')">${esc(s.id)}${icon}</button>`;
   }).join('');
+  asUpdateProgress();
 }
 
 function asSwitch(id) { asActiveSite=id; try{localStorage.setItem('rnwbl_asactive',id);}catch(e){} asRenderTabs(); asRenderForm(); }
@@ -4785,6 +4951,11 @@ function toggleKioskMode() {
 }
 
 function refreshSchedule() {
+  // Reset all veils so the dark cover shows again while iframes reload
+  ['veil-embed1','veil-embed2','veil-srd1','veil-srd2'].forEach(id => {
+    const v = document.getElementById(id);
+    if (v) v.classList.remove('loaded');
+  });
   const iframes = document.querySelectorAll('#schedule-view iframe');
   iframes.forEach(iframe => {
     const src = iframe.src;
