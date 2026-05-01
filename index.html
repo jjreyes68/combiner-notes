@@ -656,8 +656,34 @@ body.dark .cl-time{color:var(--text2);}
 #view-timezones.tz-kiosk .tz-card-content{padding:12px 14px;}
 
 /* ── SCHEDULE (SharePoint iframe) ────────────────────────────────────────────── */
-.schedule-iframe-container{width:100%;max-width:1400px;margin:0 auto;background:var(--bg2);border-radius:var(--rl);overflow:hidden;}
-.schedule-iframe-container iframe{width:100%;height:800px;border:none;}
+/* ── SCHEDULE (SharePoint iframe) ────────────────────────────────────────────── */
+.schedule-iframe-container{
+  width:100%;max-width:1400px;margin:0 auto;
+  background:#0f1117;  /* matches --bg dark; sheets load dark, container matches */
+  border-radius:var(--rl);overflow:hidden;position:relative;
+}
+.schedule-iframe-container iframe{
+  width:100%;height:800px;border:none;display:block;
+  background:transparent;
+}
+/* Dark-loading overlay — covers the white flash while iframe initialises, then fades */
+.schedule-iframe-container .iframe-veil{
+  position:absolute;inset:0;
+  background:#0f1117;
+  pointer-events:none;
+  opacity:1;
+  transition:opacity .6s ease .4s; /* short delay then fade */
+  z-index:2;border-radius:var(--rl);
+}
+.schedule-iframe-container .iframe-veil.loaded{opacity:0;}
+/* Bottom chrome bar crop — hides the Excel toolbar strip */
+.schedule-iframe-container .iframe-crop{
+  position:absolute;bottom:0;left:0;right:0;
+  height:42px;background:#0f1117;z-index:3;
+}
+body:not(.dark) .schedule-iframe-container{background:#1a1a2e;}
+body:not(.dark) .schedule-iframe-container .iframe-veil{background:#1a1a2e;}
+body:not(.dark) .schedule-iframe-container .iframe-crop{background:#1a1a2e;}
 @media(max-width:900px){.schedule-iframe-container iframe{height:700px;}}
 @media(max-width:600px){.schedule-iframe-container iframe{height:600px;}}
 @media(max-width:450px){.schedule-iframe-container iframe{height:500px;}}
@@ -673,12 +699,14 @@ body.dark .cl-time{color:var(--text2);}
 .schedule-view.kiosk-mode > div:last-child{flex:1;overflow:hidden;padding:0;}
 .schedule-view.kiosk-mode .schedule-iframe-container{max-width:none;height:100%;margin:0;padding:0;border-radius:0;}
 .schedule-view.kiosk-mode .schedule-iframe-container iframe{height:100%;border:none;}
+.schedule-view.kiosk-mode .schedule-iframe-container .iframe-crop{background:inherit;}
 .schedule-view.kiosk-mode .schedule-srd-combo{height:100%;}
 /* Combined View - side by side */
 .schedule-srd-combo{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:800px;}
 @media(max-width:900px){.schedule-srd-combo{grid-template-columns:1fr;height:600px;}}
 @media(max-width:600px){.schedule-srd-combo{grid-template-columns:1fr;height:500px;}}
-.schedule-srd-combo iframe{width:100%;height:100%;border:none;}
+.schedule-srd-combo .schedule-iframe-container{max-width:none;margin:0;height:100%;}
+.schedule-srd-combo .schedule-iframe-container iframe{width:100%;height:100%;border:none;display:block;}
 
 select,option{background:var(--bg3);}
 
@@ -1284,14 +1312,26 @@ body.dark .as-prog-label{color:var(--text2);}
     </div>
     <div style="padding:0 16px 16px;">
       <div class="schedule-iframe-container" id="schedule-embed1" style="display:none;">
-        <iframe frameborder="0" scrolling="no" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A2%3AI35&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        <div class="iframe-veil" id="veil-embed1"></div>
+        <div class="iframe-crop"></div>
+        <iframe id="fr-embed1" frameborder="0" scrolling="no" onload="document.getElementById('veil-embed1').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A2%3AI35&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
       </div>
       <div class="schedule-iframe-container" id="schedule-embed2" style="display:none;">
-        <iframe frameborder="0" scrolling="no" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM30&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        <div class="iframe-veil" id="veil-embed2"></div>
+        <div class="iframe-crop"></div>
+        <iframe id="fr-embed2" frameborder="0" scrolling="no" onload="document.getElementById('veil-embed2').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM30&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
       </div>
       <div class="schedule-srd-combo" id="schedule-srd">
-        <iframe frameborder="0" scrolling="no" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A2%3AI35&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
-        <iframe frameborder="0" scrolling="no" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM30&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        <div class="schedule-iframe-container">
+          <div class="iframe-veil" id="veil-srd1"></div>
+          <div class="iframe-crop"></div>
+          <iframe id="fr-srd1" frameborder="0" scrolling="no" onload="document.getElementById('veil-srd1').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A2%3AI35&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        </div>
+        <div class="schedule-iframe-container">
+          <div class="iframe-veil" id="veil-srd2"></div>
+          <div class="iframe-crop"></div>
+          <iframe id="fr-srd2" frameborder="0" scrolling="no" onload="document.getElementById('veil-srd2').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM30&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        </div>
       </div>
     </div>
   </div>
@@ -4908,6 +4948,11 @@ function toggleKioskMode() {
 }
 
 function refreshSchedule() {
+  // Reset all veils so the dark cover shows again while iframes reload
+  ['veil-embed1','veil-embed2','veil-srd1','veil-srd2'].forEach(id => {
+    const v = document.getElementById(id);
+    if (v) v.classList.remove('loaded');
+  });
   const iframes = document.querySelectorAll('#schedule-view iframe');
   iframes.forEach(iframe => {
     const src = iframe.src;
