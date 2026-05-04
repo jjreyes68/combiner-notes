@@ -1523,7 +1523,6 @@ body.dark .as-prog-label{color:var(--text2);}
         </div>
         <div class="outage-actions">
           <button class="outage-btn-refresh" onclick="refreshOutages()">↻ Refresh</button>
-          <button class="outage-btn-add" onclick="openOutageModal()">+ Add Outage</button>
         </div>
       </div>
     </div>
@@ -1546,11 +1545,10 @@ body.dark .as-prog-label{color:var(--text2);}
                 <th>OMS</th>
                 <th>LOG ID</th>
                 <th>Comments</th>
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="tbody-upcoming">
-              <tr class="outage-empty"><td colspan="8">Loading outages...</td></tr>
+              <tr class="outage-empty"><td colspan="7">Loading outages...</td></tr>
             </tbody>
           </table>
         </div>
@@ -1573,11 +1571,10 @@ body.dark .as-prog-label{color:var(--text2);}
                 <th>OMS</th>
                 <th>LOG ID</th>
                 <th>Comments</th>
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="tbody-live">
-              <tr class="outage-empty"><td colspan="8">No live outages</td></tr>
+              <tr class="outage-empty"><td colspan="7">No live outages</td></tr>
             </tbody>
           </table>
         </div>
@@ -5686,15 +5683,15 @@ function renderOutages() {
   if (countEl) countEl.textContent = sorted.length;
   
   // Render to table
-  renderOutageSection('tbody-upcoming', sorted, true);
+  renderOutageSection('tbody-upcoming', sorted);
 }
 
-function renderOutageSection(tbodyId, outages, showActions) {
+function renderOutageSection(tbodyId, outages) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
   
   if (outages.length === 0) {
-    tbody.innerHTML = `<tr class="outage-empty"><td colspan="8">No outages</td></tr>`;
+    tbody.innerHTML = `<tr class="outage-empty"><td colspan="7">No outages</td></tr>`;
     return;
   }
   
@@ -5711,9 +5708,6 @@ function renderOutageSection(tbodyId, outages, showActions) {
         <td>${outage.OMS || '—'}</td>
         <td>${outage.LOG_x0020_ID || outage.LOGID || '—'}</td>
         <td class="outage-notes" title="${esc(outage.Comments || '')}">${outage.Comments ? outage.Comments.substring(0, 50) + (outage.Comments.length > 50 ? '...' : '') : '—'}</td>
-        <td class="outage-actions-cell">
-          <button class="outage-action-btn" onclick="editOutage(${outage.Id})">Edit</button>
-        </td>
       </tr>
     `;
   }).join('');
@@ -5799,23 +5793,7 @@ function openOutageModal() {
   openModal('modal-outage');
 }
 
-function editOutage(id) {
-  const outage = outagesCache.find(o => o.Id === id);
-  if (!outage) return;
-  
-  document.getElementById('outage-id').value = id;
-  document.getElementById('outage-modal-title').textContent = 'Edit Outage';
-  document.getElementById('outage-site').value = outage.Site || '';
-  document.getElementById('outage-start').value = formatDateTimeLocal(outage.Start_x0020_Time || outage.StartTime);
-  document.getElementById('outage-end').value = formatDateTimeLocal(outage.End_x0020_Time || outage.EndTime);
-  document.getElementById('outage-site-values').value = outage.Site_x0020_Values || '';
-  document.getElementById('outage-oms').value = outage.OMS || '';
-  document.getElementById('outage-log-id').value = outage.LOG_x0020_ID || outage.LOGID || '';
-  document.getElementById('outage-comments').value = outage.Comments || '';
-  document.getElementById('outage-delete-btn').style.display = 'inline-block';
-  
-  openModal('modal-outage');
-}
+// Edit function removed - no actions column for editing
 
 function formatDateTimeLocal(isoString) {
   if (!isoString) return '';
@@ -6009,3 +5987,4 @@ load();
 </script>
 </body>
 </html>
+
