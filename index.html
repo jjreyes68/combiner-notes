@@ -749,6 +749,87 @@ body:not(.dark) .schedule-iframe-container .iframe-crop{background:#1a1a2e;}
 
 select,option{background:var(--bg3);}
 
+/* ── OUTAGE MANAGEMENT ────────────────────────────────────────────────────────── */
+.outage-container{max-width:1400px;margin:0 auto;}
+.outage-header{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:12px;box-shadow:var(--shs);}
+.outage-title-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.outage-title{font-size:17px;font-weight:600;letter-spacing:-.02em;}
+.outage-subtitle{font-size:12px;color:var(--text3);}
+.outage-sync-status{display:flex;align-items:center;gap:6px;margin-left:auto;padding:4px 10px;background:var(--gbg);border:1px solid var(--green);border-radius:20px;}
+.outage-sync-status.syncing{background:var(--abg);border-color:var(--amber);}
+.outage-sync-status.error{background:var(--rbg);border-color:var(--red);}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+.outage-sync-status.syncing .sync-dot{background:var(--amber);animation:none;}
+.outage-sync-status.error .sync-dot{background:var(--red);animation:none;}
+.sync-text{font-size:11px;font-weight:600;color:var(--green);}
+.outage-sync-status.syncing .sync-text{color:var(--amber);}
+.outage-sync-status.error .sync-text{color:var(--red);}
+.outage-controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.outage-filters{display:flex;gap:6px;flex-wrap:wrap;}
+.outage-filter-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;}
+.outage-filter-btn:hover{border-color:var(--text2);color:var(--text);}
+.outage-filter-btn.active{border-color:var(--green);color:var(--green);background:var(--gbg);}
+.outage-actions{display:flex;gap:6px;margin-left:auto;}
+.outage-btn-refresh,.outage-btn-add{padding:7px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;border:1px solid;}
+.outage-btn-refresh{background:var(--bg3);border-color:var(--border);color:var(--text2);}
+.outage-btn-refresh:hover{border-color:var(--text2);color:var(--text);}
+.outage-btn-add{background:var(--green);border-color:var(--green);color:#fff;}
+.outage-btn-add:hover{background:var(--gmid);}
+
+.outage-content{display:flex;flex-direction:column;gap:12px;}
+.outage-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;box-shadow:var(--shs);}
+.outage-section.collapsed .outage-section-header{cursor:pointer;}
+.outage-section-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg3);border-bottom:1px solid var(--border);}
+.section-toggle{font-size:10px;color:var(--text3);transition:transform .2s;}
+.outage-section:not(.collapsed) .section-toggle{transform:rotate(90deg);}
+.section-badge{font-size:10px;font-weight:700;padding:4px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em;}
+.section-badge.upcoming{background:var(--abg);color:var(--amber);}
+.section-badge.live{background:var(--rbg);color:var(--red);animation:pulse 2s infinite;}
+.section-badge.completed{background:var(--bg4);color:var(--text3);}
+.section-count{font-size:12px;font-weight:600;color:var(--text3);margin-left:auto;min-width:20px;text-align:center;}
+.outage-table-container{overflow-x:auto;}
+.outage-table{width:100%;border-collapse:collapse;font-size:13px;}
+.outage-table th{padding:10px 12px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;background:var(--bg3);border-bottom:2px solid var(--border);white-space:nowrap;}
+.outage-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+.outage-table tr:last-child td{border-bottom:none;}
+.outage-table tr:hover td{background:var(--bg3);}
+.outage-empty td{text-align:center;color:var(--text3);padding:30px;}
+.outage-type-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.outage-type-bess{background:var(--pbg);color:var(--purple);}
+.outage-type-solar{background:var(--abg);color:var(--amber);}
+.outage-type-wind{background:var(--bbg);color:var(--blue);}
+.outage-type-telemetry{background:var(--gbg);color:var(--green);}
+.outage-site{font-weight:600;}
+.outage-time{font-family:var(--m);font-size:12px;color:var(--text2);white-space:nowrap;}
+.outage-impact{font-size:11px;}
+.outage-impact-full{color:var(--red);font-weight:600;}
+.outage-impact-partial{color:var(--amber);}
+.outage-impact-maintenance{color:var(--text2);}
+.outage-notes{max-width:200px;font-size:11px;color:var(--text2);line-height:1.4;}
+.outage-actions-cell{display:flex;gap:4px;}
+.outage-action-btn{padding:4px 8px;border-radius:4px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);font-size:11px;cursor:pointer;transition:all .15s;}
+.outage-action-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bbg);}
+.outage-action-btn.go{border-color:var(--green);color:var(--green);background:var(--gbg);}
+.outage-action-btn.go:hover{background:var(--green);color:#fff;}
+.outage-action-btn.complete{border-color:var(--text3);color:var(--text3);}
+.outage-action-btn.complete:hover{border-color:var(--green);color:var(--green);background:var(--gbg);}
+
+/* Modal form styles */
+.outage-form-row{margin-bottom:14px;}
+.outage-form-row label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;}
+.outage-form-row input,.outage-form-row select,.outage-form-row textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--text);font-family:var(--f);font-size:13px;}
+.outage-form-row input:focus,.outage-form-row select:focus,.outage-form-row textarea:focus{outline:none;border-color:var(--blue);background:var(--bg2);}
+.outage-form-row.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.outage-form-row.two-col label{margin-bottom:2px;}
+
+@media(max-width:900px){
+  .outage-controls{flex-direction:column;align-items:stretch;}
+  .outage-filters{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;}
+  .outage-actions{margin-left:0;}
+  .outage-table th,.outage-table td{padding:8px;font-size:12px;}
+  .outage-notes{max-width:120px;}
+}
+
 /* ── AS PROGRESS METER ───────────────────────────────────────────────────────── */
 .as-prog-wrap{
   display:flex;align-items:center;gap:10px;
@@ -1424,46 +1505,206 @@ body.dark .as-prog-label{color:var(--text2);}
   </div>
 </div>
 
-<!-- SCHEDULE (SharePoint) ──────────────────────────────────────────────────────────── -->
+<!-- SCHEDULE (SharePoint Lists) ──────────────────────────────────────────────────────── -->
 <div class="view" id="view-schedule">
-  <div class="schedule-view" id="schedule-view">
-    <div class="schedule-header" style="padding:16px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-        <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">Schedule</div>
-        <span style="font-size:12px;color:var(--text3);">SharePoint schedule view</span>
+  <div class="outage-container" id="outage-container">
+    <div class="outage-header">
+      <div class="outage-title-row">
+        <div class="outage-title">Outage Schedule</div>
+        <span class="outage-subtitle">Live outages from SharePoint</span>
+        <div class="outage-sync-status" id="outage-sync-status">
+          <span class="sync-dot"></span>
+          <span class="sync-text">Live</span>
+        </div>
       </div>
-      <div class="schedule-controls">
-        <button class="schedule-view-btn" id="btn-view-embed1" onclick="setScheduleView('embed1')">Outages Schedule</button>
-        <button class="schedule-view-btn" id="btn-view-embed2" onclick="setScheduleView('embed2')">Upcoming Outages</button>
-        <button class="schedule-view-btn active" id="btn-view-srd" onclick="setScheduleView('srd')">Combined View</button>
-        <div style="flex:1;"></div>
-        <button class="schedule-kiosk-btn" id="btn-refresh" onclick="refreshSchedule()">↻ Refresh</button>
-        <button class="schedule-kiosk-btn" id="btn-kiosk" onclick="toggleKioskMode()">⛶ Kiosk Mode</button>
+      <div class="outage-controls">
+        <div class="outage-filters" id="outage-filters">
+          <button class="outage-filter-btn active" data-filter="all" onclick="setOutageFilter('all')">All</button>
+          <button class="outage-filter-btn" data-filter="upcoming" onclick="setOutageFilter('upcoming')">Upcoming</button>
+          <button class="outage-filter-btn" data-filter="live" onclick="setOutageFilter('live')">Live</button>
+          <button class="outage-filter-btn" data-filter="bess" onclick="setOutageFilter('bess')">BESS</button>
+          <button class="outage-filter-btn" data-filter="solar" onclick="setOutageFilter('solar')">Solar</button>
+          <button class="outage-filter-btn" data-filter="wind" onclick="setOutageFilter('wind')">Wind</button>
+          <button class="outage-filter-btn" data-filter="telemetry" onclick="setOutageFilter('telemetry')">Telemetry</button>
+        </div>
+        <div class="outage-actions">
+          <button class="outage-btn-refresh" onclick="refreshOutages()">↻ Refresh</button>
+          <button class="outage-btn-add" onclick="openOutageModal()">+ Add Outage</button>
+        </div>
       </div>
     </div>
-    <div style="padding:0 16px 16px;">
-      <div class="schedule-iframe-container" id="schedule-embed1" style="display:none;">
-        <div class="iframe-veil" id="veil-embed1"></div>
-        <div class="iframe-crop"></div>
-        <iframe id="fr-embed1" frameborder="0" scrolling="no" onload="document.getElementById('veil-embed1').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AI37&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
-      </div>
-      <div class="schedule-iframe-container" id="schedule-embed2" style="display:none;">
-        <div class="iframe-veil" id="veil-embed2"></div>
-        <div class="iframe-crop"></div>
-        <iframe id="fr-embed2" frameborder="0" scrolling="no" onload="document.getElementById('veil-embed2').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM28&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
-      </div>
-      <div class="schedule-srd-combo" id="schedule-srd">
-        <div class="schedule-iframe-container">
-          <div class="iframe-veil" id="veil-srd1"></div>
-          <div class="iframe-crop"></div>
-          <iframe id="fr-srd1" frameborder="0" scrolling="no" onload="document.getElementById('veil-srd1').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AI37&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+    
+    <div class="outage-content">
+      <!-- Upcoming Outages Section -->
+      <div class="outage-section" id="section-upcoming">
+        <div class="outage-section-header">
+          <span class="section-badge upcoming">UPCOMING</span>
+          <span class="section-count" id="count-upcoming">0</span>
         </div>
-        <div class="schedule-iframe-container">
-          <div class="iframe-veil" id="veil-srd2"></div>
-          <div class="iframe-crop"></div>
-          <iframe id="fr-srd2" frameborder="0" scrolling="no" onload="document.getElementById('veil-srd2').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM28&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        <div class="outage-table-container">
+          <table class="outage-table" id="table-upcoming">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Site</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Impact</th>
+                <th>Notes</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-upcoming">
+              <tr class="outage-empty"><td colspan="7">Loading outages...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
+      
+      <!-- Live Outages Section -->
+      <div class="outage-section" id="section-live">
+        <div class="outage-section-header">
+          <span class="section-badge live">LIVE</span>
+          <span class="section-count" id="count-live">0</span>
+        </div>
+        <div class="outage-table-container">
+          <table class="outage-table" id="table-live">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Site</th>
+                <th>Started</th>
+                <th>Est. End</th>
+                <th>Impact</th>
+                <th>Notes</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-live">
+              <tr class="outage-empty"><td colspan="7">No live outages</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Completed Section (collapsed by default) -->
+      <div class="outage-section collapsed" id="section-completed">
+        <div class="outage-section-header" onclick="toggleSection('completed')">
+          <span class="section-toggle">▶</span>
+          <span class="section-badge completed">COMPLETED</span>
+          <span class="section-count" id="count-completed">0</span>
+        </div>
+        <div class="outage-table-container" id="container-completed" style="display:none;">
+          <table class="outage-table" id="table-completed">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Site</th>
+                <th>Duration</th>
+                <th>Impact</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-completed">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Outage Modal -->
+<div class="overlay hidden" id="modal-outage">
+  <div class="modal" style="width:480px;">
+    <h3 id="outage-modal-title">Add Outage</h3>
+    <input type="hidden" id="outage-id">
+    
+    <div class="outage-form-row">
+      <label>Outage Name</label>
+      <input type="text" id="outage-title-input" placeholder="e.g., CNDR1 Planned Maintenance">
+    </div>
+    
+    <div class="outage-form-row">
+      <label>Asset Type</label>
+      <select id="outage-type">
+        <option value="">Select type...</option>
+        <option value="BESS">BESS</option>
+        <option value="Solar">Solar</option>
+        <option value="Wind">Wind</option>
+        <option value="Telemetry">Telemetry</option>
+      </select>
+    </div>
+    
+    <div class="outage-form-row">
+      <label>Site</label>
+      <input type="text" id="outage-site" list="site-list" placeholder="e.g., CNDR1">
+      <datalist id="site-list">
+        <option>CNDR1</option>
+        <option>PRGN1</option>
+        <option>HARQ2</option>
+        <option>KUNA1</option>
+        <option>BLKW1</option>
+        <option>GLTA1</option>
+        <option>COSO1</option>
+        <option>HARQ1</option>
+        <option>AVLN1</option>
+        <option>NCLS1</option>
+        <option>AVLN2</option>
+        <option>LSTH2</option>
+        <option>NSTR1</option>
+        <option>DFRN1</option>
+        <option>MCLM1</option>
+        <option>GDWL1</option>
+        <option>LNDL1</option>
+        <option>ORGN1</option>
+        <option>RKRD1</option>
+        <option>PRRS1</option>
+        <option>DBLO1</option>
+      </datalist>
+    </div>
+    
+    <div class="outage-form-row">
+      <label>Status</label>
+      <select id="outage-status">
+        <option value="Upcoming">Upcoming</option>
+        <option value="Live">Live</option>
+        <option value="Completed">Completed</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+    
+    <div class="outage-form-row two-col">
+      <div>
+        <label>Start Time</label>
+        <input type="datetime-local" id="outage-start">
+      </div>
+      <div>
+        <label>End Time</label>
+        <input type="datetime-local" id="outage-end">
+      </div>
+    </div>
+    
+    <div class="outage-form-row">
+      <label>Impact</label>
+      <select id="outage-impact">
+        <option value="">Select impact...</option>
+        <option value="Full Outage">Full Outage</option>
+        <option value="Partial">Partial</option>
+        <option value="Maintenance">Maintenance</option>
+      </select>
+    </div>
+    
+    <div class="outage-form-row">
+      <label>Notes</label>
+      <textarea id="outage-notes" rows="3" placeholder="Additional details..."></textarea>
+    </div>
+    
+    <div class="m-actions">
+      <button class="btn-d" id="outage-delete-btn" style="display:none;" onclick="deleteOutage()">Delete</button>
+      <div style="flex:1;"></div>
+      <button class="btn-c" onclick="closeOutageModal()">Cancel</button>
+      <button class="btn-p" onclick="saveOutage()">Save Outage</button>
     </div>
   </div>
 </div>
@@ -1736,6 +1977,7 @@ function switchView(v, el) {
   if(v==='timezones') initTimeZones();
   if(v==='chron') clRender();
   if(v==='intel') wxFleetInit();
+  if(v==='schedule') initOutageSystem();
   try { localStorage.setItem('rnwbl_active_tab', v); } catch(e) {}
 }
 
@@ -5242,65 +5484,506 @@ function pdNew() {
   pdInit();
 }
 
-// ── Schedule View Controls ─────────────────────────────────────────────────────
-let scheduleCurrentView = 'srd';
-let scheduleKioskMode = false;
+// ── Outage Management System ──────────────────────────────────────────────────
+// SharePoint Lists backend for outage scheduling
 
-function setScheduleView(view) {
-  scheduleCurrentView = view;
-  // Hide all views
-  document.getElementById('schedule-embed1').style.display = 'none';
-  document.getElementById('schedule-embed2').style.display = 'none';
-  document.getElementById('schedule-srd').style.display = 'none';
-  // Remove active class from all buttons
-  document.getElementById('btn-view-embed1').classList.remove('active');
-  document.getElementById('btn-view-embed2').classList.remove('active');
-  document.getElementById('btn-view-srd').classList.remove('active');
-  // Show selected view and activate button
-  if (view === 'embed1') {
-    document.getElementById('schedule-embed1').style.display = 'block';
-    document.getElementById('btn-view-embed1').classList.add('active');
-  } else if (view === 'embed2') {
-    document.getElementById('schedule-embed2').style.display = 'block';
-    document.getElementById('btn-view-embed2').classList.add('active');
-  } else if (view === 'srd') {
-    document.getElementById('schedule-srd').style.display = 'grid';
-    document.getElementById('btn-view-srd').classList.add('active');
+let outagesCache = [];
+let outageFilter = 'all';
+let outageSyncInterval = null;
+let outageAutoTransferInterval = null;
+
+// SharePoint configuration - UPDATE THESE VALUES after creating your list
+const SP_SITE_URL = 'https://dsptch-my.sharepoint.com/personal/j_reyes_rnwbl_com';
+const SP_LIST_NAME = 'RNWBL Outages';
+let SP_LIST_ID = null; // Will be discovered on first fetch
+
+// Initialize outage system when view is shown
+function initOutageSystem() {
+  if (!outageSyncInterval) {
+    fetchOutages();
+    outageSyncInterval = setInterval(fetchOutages, 30000); // Poll every 30 seconds
+    outageAutoTransferInterval = setInterval(autoTransferOutages, 60000); // Check for transfers every 60 seconds
   }
 }
 
-function toggleKioskMode() {
-  scheduleKioskMode = !scheduleKioskMode;
-  const view = document.getElementById('schedule-view');
-  const btn = document.getElementById('btn-kiosk');
-  if (scheduleKioskMode) {
-    view.classList.add('kiosk-mode');
-    btn.textContent = '✕ Exit Kiosk';
-    btn.style.background = 'var(--red)';
-    btn.style.borderColor = 'var(--red)';
-    btn.style.color = '#fff';
-  } else {
-    view.classList.remove('kiosk-mode');
-    btn.textContent = '⛶ Kiosk Mode';
-    btn.style.background = 'var(--bbg)';
-    btn.style.borderColor = 'var(--blue)';
-    btn.style.color = 'var(--blue)';
+// Stop polling when leaving view (optional cleanup)
+function stopOutageSystem() {
+  if (outageSyncInterval) {
+    clearInterval(outageSyncInterval);
+    outageSyncInterval = null;
+  }
+  if (outageAutoTransferInterval) {
+    clearInterval(outageAutoTransferInterval);
+    outageAutoTransferInterval = null;
   }
 }
 
-function refreshSchedule() {
-  // Reset all veils so the dark cover shows again while iframes reload
-  ['veil-embed1','veil-embed2','veil-srd1','veil-srd2'].forEach(id => {
-    const v = document.getElementById(id);
-    if (v) v.classList.remove('loaded');
+// Fetch outages from SharePoint List using REST API
+async function fetchOutages() {
+  updateSyncStatus('syncing');
+  
+  try {
+    // Use SharePoint REST API
+    // For personal sites, we use the simpler endpoint format
+    const url = `${SP_SITE_URL}/_api/web/lists/getbytitle('${SP_LIST_NAME}')/items?$select=Id,Title,AssetType,Site,Status,StartTime,EndTime,Impact,Notes,Created,Modified&$orderby=StartTime asc`;
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json;odata=nometadata',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include' // Send cookies for authentication
+    });
+    
+    if (!response.ok) {
+      // If we get 401 or 403, the user isn't authenticated to SharePoint
+      if (response.status === 401 || response.status === 403) {
+        throw new Error('Not authenticated to SharePoint. Please sign in first.');
+      }
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    outagesCache = data.value || [];
+    renderOutages();
+    updateSyncStatus('live');
+  } catch (error) {
+    console.error('Failed to fetch outages:', error);
+    updateSyncStatus('error');
+    
+    // If fetch fails, try to load from localStorage as fallback
+    const cached = localStorage.getItem('rnwbl_outages_cache');
+    if (cached) {
+      outagesCache = JSON.parse(cached);
+      renderOutages();
+      showToast('Using cached data - could not connect to SharePoint', 'warn');
+    } else {
+      showToast('Error: ' + error.message, 'err');
+    }
+  }
+}
+
+// Save outage to SharePoint
+async function saveOutage() {
+  const id = document.getElementById('outage-id').value;
+  const title = document.getElementById('outage-title-input').value.trim();
+  const assetType = document.getElementById('outage-type').value;
+  const site = document.getElementById('outage-site').value.trim();
+  const status = document.getElementById('outage-status').value;
+  const startTime = document.getElementById('outage-start').value;
+  const endTime = document.getElementById('outage-end').value;
+  const impact = document.getElementById('outage-impact').value;
+  const notes = document.getElementById('outage-notes').value.trim();
+  
+  // Validation
+  if (!title || !assetType || !site || !startTime) {
+    showToast('Please fill in required fields: Name, Type, Site, Start Time', 'err');
+    return;
+  }
+  
+  const outageData = {
+    Title: title,
+    AssetType: assetType,
+    Site: site,
+    Status: status,
+    StartTime: new Date(startTime).toISOString(),
+    EndTime: endTime ? new Date(endTime).toISOString() : null,
+    Impact: impact,
+    Notes: notes
+  };
+  
+  try {
+    let url, method;
+    if (id) {
+      // Update existing
+      url = `${SP_SITE_URL}/_api/web/lists/getbytitle('${SP_LIST_NAME}')/items(${id})`;
+      method = 'MERGE';
+    } else {
+      // Create new
+      url = `${SP_SITE_URL}/_api/web/lists/getbytitle('${SP_LIST_NAME}')/items`;
+      method = 'POST';
+    }
+    
+    const response = await fetch(url, {
+      method: method,
+      headers: {
+        'Accept': 'application/json;odata=nometadata',
+        'Content-Type': 'application/json',
+        'X-RequestDigest': await getRequestDigest(),
+        'IF-MATCH': id ? '*' : undefined,
+        'X-HTTP-Method': id ? 'MERGE' : undefined
+      },
+      credentials: 'include',
+      body: JSON.stringify(outageData)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    closeOutageModal();
+    showToast(id ? 'Outage updated' : 'Outage added successfully');
+    await fetchOutages(); // Refresh the list
+  } catch (error) {
+    console.error('Failed to save outage:', error);
+    
+    // Fallback: Save to localStorage if SharePoint is unavailable
+    if (id) {
+      const idx = outagesCache.findIndex(o => o.Id === parseInt(id));
+      if (idx >= 0) outagesCache[idx] = { ...outagesCache[idx], ...outageData, Id: parseInt(id) };
+    } else {
+      outageData.Id = Date.now(); // Use timestamp as temp ID
+      outageData.Created = new Date().toISOString();
+      outageData.Modified = new Date().toISOString();
+      outagesCache.push(outageData);
+    }
+    
+    localStorage.setItem('rnwbl_outages_cache', JSON.stringify(outagesCache));
+    renderOutages();
+    closeOutageModal();
+    showToast('Saved locally - SharePoint unavailable', 'warn');
+  }
+}
+
+// Delete outage from SharePoint
+async function deleteOutage() {
+  const id = document.getElementById('outage-id').value;
+  if (!id) return;
+  
+  if (!confirm('Delete this outage?')) return;
+  
+  try {
+    const url = `${SP_SITE_URL}/_api/web/lists/getbytitle('${SP_LIST_NAME}')/items(${id})`;
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json;odata=nometadata',
+        'Content-Type': 'application/json',
+        'X-RequestDigest': await getRequestDigest(),
+        'IF-MATCH': '*',
+        'X-HTTP-Method': 'DELETE'
+      },
+      credentials: 'include'
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    
+    closeOutageModal();
+    showToast('Outage deleted');
+    await fetchOutages();
+  } catch (error) {
+    console.error('Failed to delete outage:', error);
+    // Local fallback
+    outagesCache = outagesCache.filter(o => o.Id !== parseInt(id));
+    localStorage.setItem('rnwbl_outages_cache', JSON.stringify(outagesCache));
+    renderOutages();
+    closeOutageModal();
+    showToast('Deleted locally - SharePoint unavailable', 'warn');
+  }
+}
+
+// Get SharePoint request digest for write operations
+async function getRequestDigest() {
+  try {
+    const response = await fetch(`${SP_SITE_URL}/_api/contextinfo`, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json;odata=nometadata' },
+      credentials: 'include'
+    });
+    const data = await response.json();
+    return data.FormDigestValue;
+  } catch (e) {
+    return '';
+  }
+}
+
+// Quick action: Mark outage as Live
+async function setOutageLive(id) {
+  const outage = outagesCache.find(o => o.Id === id);
+  if (!outage) return;
+  
+  try {
+    const url = `${SP_SITE_URL}/_api/web/lists/getbytitle('${SP_LIST_NAME}')/items(${id})`;
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json;odata=nometadata',
+        'Content-Type': 'application/json',
+        'X-RequestDigest': await getRequestDigest(),
+        'IF-MATCH': '*',
+        'X-HTTP-Method': 'MERGE'
+      },
+      credentials: 'include',
+      body: JSON.stringify({ Status: 'Live' })
+    });
+    
+    if (response.ok) {
+      showToast(`${outage.Site} outage is now LIVE`);
+      await fetchOutages();
+    }
+  } catch (error) {
+    // Local fallback
+    outage.Status = 'Live';
+    localStorage.setItem('rnwbl_outages_cache', JSON.stringify(outagesCache));
+    renderOutages();
+    showToast(`${outage.Site} marked as LIVE (local only)`, 'warn');
+  }
+}
+
+// Quick action: Mark outage as Completed
+async function setOutageCompleted(id) {
+  const outage = outagesCache.find(o => o.Id === id);
+  if (!outage) return;
+  
+  try {
+    const url = `${SP_SITE_URL}/_api/web/lists/getbytitle('${SP_LIST_NAME}')/items(${id})`;
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json;odata=nometadata',
+        'Content-Type': 'application/json',
+        'X-RequestDigest': await getRequestDigest(),
+        'IF-MATCH': '*',
+        'X-HTTP-Method': 'MERGE'
+      },
+      credentials: 'include',
+      body: JSON.stringify({ Status: 'Completed' })
+    });
+    
+    if (response.ok) {
+      showToast(`${outage.Site} outage completed`);
+      await fetchOutages();
+    }
+  } catch (error) {
+    // Local fallback
+    outage.Status = 'Completed';
+    localStorage.setItem('rnwbl_outages_cache', JSON.stringify(outagesCache));
+    renderOutages();
+    showToast(`${outage.Site} marked completed (local only)`, 'warn');
+  }
+}
+
+// Auto-transfer: Move Upcoming → Live when start time reached
+async function autoTransferOutages() {
+  const now = new Date();
+  const upcomingToTransfer = outagesCache.filter(o => 
+    o.Status === 'Upcoming' && new Date(o.StartTime) <= now
+  );
+  
+  for (const outage of upcomingToTransfer) {
+    try {
+      const url = `${SP_SITE_URL}/_api/web/lists/getbytitle('${SP_LIST_NAME}')/items(${outage.Id})`;
+      
+      await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json;odata=nometadata',
+          'Content-Type': 'application/json',
+          'X-RequestDigest': await getRequestDigest(),
+          'IF-MATCH': '*',
+          'X-HTTP-Method': 'MERGE'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ Status: 'Live' })
+      });
+      
+      showToast(`🔴 ${outage.Site} outage is now LIVE`, 'warn');
+    } catch (e) {
+      // Update locally if SharePoint fails
+      outage.Status = 'Live';
+    }
+  }
+  
+  if (upcomingToTransfer.length > 0) {
+    localStorage.setItem('rnwbl_outages_cache', JSON.stringify(outagesCache));
+    renderOutages();
+  }
+}
+
+// Render outages to the table
+function renderOutages() {
+  // Filter outages based on current filter
+  let filtered = outagesCache;
+  if (outageFilter !== 'all') {
+    if (['upcoming', 'live'].includes(outageFilter)) {
+      filtered = outagesCache.filter(o => o.Status.toLowerCase() === outageFilter);
+    } else {
+      filtered = outagesCache.filter(o => o.AssetType.toLowerCase() === outageFilter);
+    }
+  }
+  
+  // Separate by status
+  const upcoming = filtered.filter(o => o.Status === 'Upcoming').sort((a,b) => new Date(a.StartTime) - new Date(b.StartTime));
+  const live = filtered.filter(o => o.Status === 'Live').sort((a,b) => new Date(a.StartTime) - new Date(b.StartTime));
+  const completed = filtered.filter(o => o.Status === 'Completed' || o.Status === 'Cancelled').sort((a,b) => new Date(b.Modified) - new Date(a.Modified));
+  
+  // Update counts
+  document.getElementById('count-upcoming').textContent = upcoming.length;
+  document.getElementById('count-live').textContent = live.length;
+  document.getElementById('count-completed').textContent = completed.length;
+  
+  // Render sections
+  renderOutageSection('tbody-upcoming', upcoming, true);
+  renderOutageSection('tbody-live', live, true);
+  renderOutageSection('tbody-completed', completed, false);
+}
+
+function renderOutageSection(tbodyId, outages, showActions) {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
+  
+  if (outages.length === 0) {
+    tbody.innerHTML = `<tr class="outage-empty"><td colspan="${showActions ? 7 : 5}">No outages</td></tr>`;
+    return;
+  }
+  
+  tbody.innerHTML = outages.map(outage => {
+    const typeClass = `outage-type-${outage.AssetType.toLowerCase()}`;
+    const impactClass = `outage-impact-${outage.Impact ? outage.Impact.toLowerCase().replace(' ', '-') : ''}`;
+    const startTime = formatDateTime(outage.StartTime);
+    const endTime = outage.EndTime ? formatDateTime(outage.EndTime) : '—';
+    const duration = calculateDuration(outage.StartTime, outage.EndTime || new Date().toISOString());
+    
+    const actions = showActions ? `
+      <td class="outage-actions-cell">
+        ${outage.Status === 'Upcoming' ? `<button class="outage-action-btn go" onclick="setOutageLive(${outage.Id})">Go Live</button>` : ''}
+        ${outage.Status === 'Live' ? `<button class="outage-action-btn complete" onclick="setOutageCompleted(${outage.Id})">Complete</button>` : ''}
+        <button class="outage-action-btn" onclick="editOutage(${outage.Id})">Edit</button>
+      </td>
+    ` : '';
+    
+    const timeDisplay = showActions 
+      ? `<td class="outage-time">${startTime}</td><td class="outage-time">${endTime}</td>`
+      : `<td class="outage-time">${duration}</td>`;
+    
+    return `
+      <tr>
+        <td><span class="outage-type-badge ${typeClass}">${outage.AssetType}</span></td>
+        <td class="outage-site">${outage.Site}</td>
+        ${timeDisplay}
+        <td class="outage-impact ${impactClass}">${outage.Impact || '—'}</td>
+        <td class="outage-notes" title="${esc(outage.Notes || '')}">${outage.Notes ? outage.Notes.substring(0, 50) + (outage.Notes.length > 50 ? '...' : '') : '—'}</td>
+        ${actions}
+      </tr>
+    `;
+  }).join('');
+}
+
+function formatDateTime(isoString) {
+  if (!isoString) return '—';
+  const date = new Date(isoString);
+  return date.toLocaleString('en-US', { 
+    month: 'short', day: 'numeric', 
+    hour: 'numeric', minute: '2-digit',
+    hour12: true 
   });
-  const iframes = document.querySelectorAll('#schedule-view iframe');
-  iframes.forEach(iframe => {
-    const src = iframe.src;
-    iframe.src = '';
-    iframe.src = src;
+}
+
+function calculateDuration(start, end) {
+  const startDate = new Date(start);
+  const endDate = end ? new Date(end) : new Date();
+  const diff = Math.floor((endDate - startDate) / 60000); // minutes
+  
+  if (diff < 60) return `${diff}m`;
+  const hours = Math.floor(diff / 60);
+  const mins = diff % 60;
+  return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+}
+
+// Filter controls
+function setOutageFilter(filter) {
+  outageFilter = filter;
+  
+  // Update button states
+  document.querySelectorAll('.outage-filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.filter === filter);
   });
-  showToast('Schedule refreshed');
+  
+  renderOutages();
+}
+
+function refreshOutages() {
+  fetchOutages();
+  showToast('Refreshing outages...');
+}
+
+function toggleSection(section) {
+  const container = document.getElementById(`container-${section}`);
+  const sectionEl = document.getElementById(`section-${section}`);
+  if (container && sectionEl) {
+    const isHidden = container.style.display === 'none';
+    container.style.display = isHidden ? 'block' : 'none';
+    sectionEl.classList.toggle('collapsed', !isHidden);
+  }
+}
+
+function updateSyncStatus(status) {
+  const el = document.getElementById('outage-sync-status');
+  if (!el) return;
+  
+  el.className = 'outage-sync-status' + (status !== 'live' ? ` ${status}` : '');
+  const text = el.querySelector('.sync-text');
+  if (text) {
+    text.textContent = status === 'live' ? 'Live' : status === 'syncing' ? 'Syncing...' : 'Error';
+  }
+}
+
+// Modal functions
+function openOutageModal() {
+  document.getElementById('outage-id').value = '';
+  document.getElementById('outage-modal-title').textContent = 'Add Outage';
+  document.getElementById('outage-title-input').value = '';
+  document.getElementById('outage-type').value = '';
+  document.getElementById('outage-site').value = '';
+  document.getElementById('outage-status').value = 'Upcoming';
+  document.getElementById('outage-start').value = '';
+  document.getElementById('outage-end').value = '';
+  document.getElementById('outage-impact').value = '';
+  document.getElementById('outage-notes').value = '';
+  document.getElementById('outage-delete-btn').style.display = 'none';
+  
+  // Set default start time to now
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  document.getElementById('outage-start').value = now.toISOString().slice(0, 16);
+  
+  openModal('modal-outage');
+}
+
+function editOutage(id) {
+  const outage = outagesCache.find(o => o.Id === id);
+  if (!outage) return;
+  
+  document.getElementById('outage-id').value = id;
+  document.getElementById('outage-modal-title').textContent = 'Edit Outage';
+  document.getElementById('outage-title-input').value = outage.Title || '';
+  document.getElementById('outage-type').value = outage.AssetType || '';
+  document.getElementById('outage-site').value = outage.Site || '';
+  document.getElementById('outage-status').value = outage.Status || 'Upcoming';
+  document.getElementById('outage-start').value = formatDateTimeLocal(outage.StartTime);
+  document.getElementById('outage-end').value = outage.EndTime ? formatDateTimeLocal(outage.EndTime) : '';
+  document.getElementById('outage-impact').value = outage.Impact || '';
+  document.getElementById('outage-notes').value = outage.Notes || '';
+  document.getElementById('outage-delete-btn').style.display = 'inline-block';
+  
+  openModal('modal-outage');
+}
+
+function formatDateTimeLocal(isoString) {
+  if (!isoString) return '';
+  const date = new Date(isoString);
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+  return date.toISOString().slice(0, 16);
+}
+
+function closeOutageModal() {
+  closeModal('modal-outage');
 }
 
 // ─── DARK MODE ────────────────────────────────────────────────────────────────
