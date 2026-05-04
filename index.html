@@ -1514,18 +1514,12 @@ body.dark .as-prog-label{color:var(--text2);}
         <span class="outage-subtitle">Live outages from SharePoint</span>
         <div class="outage-sync-status" id="outage-sync-status">
           <span class="sync-dot"></span>
-          <span class="sync-text">Live</span>
+          <span class="sync-text">Connected</span>
         </div>
       </div>
       <div class="outage-controls">
         <div class="outage-filters" id="outage-filters">
           <button class="outage-filter-btn active" data-filter="all" onclick="setOutageFilter('all')">All</button>
-          <button class="outage-filter-btn" data-filter="upcoming" onclick="setOutageFilter('upcoming')">Upcoming</button>
-          <button class="outage-filter-btn" data-filter="live" onclick="setOutageFilter('live')">Live</button>
-          <button class="outage-filter-btn" data-filter="bess" onclick="setOutageFilter('bess')">BESS</button>
-          <button class="outage-filter-btn" data-filter="solar" onclick="setOutageFilter('solar')">Solar</button>
-          <button class="outage-filter-btn" data-filter="wind" onclick="setOutageFilter('wind')">Wind</button>
-          <button class="outage-filter-btn" data-filter="telemetry" onclick="setOutageFilter('telemetry')">Telemetry</button>
         </div>
         <div class="outage-actions">
           <button class="outage-btn-refresh" onclick="refreshOutages()">↻ Refresh</button>
@@ -1545,17 +1539,18 @@ body.dark .as-prog-label{color:var(--text2);}
           <table class="outage-table" id="table-upcoming">
             <thead>
               <tr>
-                <th>Type</th>
                 <th>Site</th>
                 <th>Start Time</th>
                 <th>End Time</th>
-                <th>Impact</th>
-                <th>Notes</th>
+                <th>Site Values</th>
+                <th>OMS</th>
+                <th>LOG ID</th>
+                <th>Comments</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody id="tbody-upcoming">
-              <tr class="outage-empty"><td colspan="7">Loading outages...</td></tr>
+              <tr class="outage-empty"><td colspan="8">Loading outages...</td></tr>
             </tbody>
           </table>
         </div>
@@ -1571,17 +1566,18 @@ body.dark .as-prog-label{color:var(--text2);}
           <table class="outage-table" id="table-live">
             <thead>
               <tr>
-                <th>Type</th>
                 <th>Site</th>
-                <th>Started</th>
-                <th>Est. End</th>
-                <th>Impact</th>
-                <th>Notes</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Site Values</th>
+                <th>OMS</th>
+                <th>LOG ID</th>
+                <th>Comments</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody id="tbody-live">
-              <tr class="outage-empty"><td colspan="7">No live outages</td></tr>
+              <tr class="outage-empty"><td colspan="8">No live outages</td></tr>
             </tbody>
           </table>
         </div>
@@ -1598,11 +1594,13 @@ body.dark .as-prog-label{color:var(--text2);}
           <table class="outage-table" id="table-completed">
             <thead>
               <tr>
-                <th>Type</th>
                 <th>Site</th>
-                <th>Duration</th>
-                <th>Impact</th>
-                <th>Notes</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Site Values</th>
+                <th>OMS</th>
+                <th>LOG ID</th>
+                <th>Comments</th>
               </tr>
             </thead>
             <tbody id="tbody-completed">
@@ -1619,22 +1617,6 @@ body.dark .as-prog-label{color:var(--text2);}
   <div class="modal" style="width:480px;">
     <h3 id="outage-modal-title">Add Outage</h3>
     <input type="hidden" id="outage-id">
-    
-    <div class="outage-form-row">
-      <label>Outage Name</label>
-      <input type="text" id="outage-title-input" placeholder="e.g., CNDR1 Planned Maintenance">
-    </div>
-    
-    <div class="outage-form-row">
-      <label>Asset Type</label>
-      <select id="outage-type">
-        <option value="">Select type...</option>
-        <option value="BESS">BESS</option>
-        <option value="Solar">Solar</option>
-        <option value="Wind">Wind</option>
-        <option value="Telemetry">Telemetry</option>
-      </select>
-    </div>
     
     <div class="outage-form-row">
       <label>Site</label>
@@ -1664,16 +1646,6 @@ body.dark .as-prog-label{color:var(--text2);}
       </datalist>
     </div>
     
-    <div class="outage-form-row">
-      <label>Status</label>
-      <select id="outage-status">
-        <option value="Upcoming">Upcoming</option>
-        <option value="Live">Live</option>
-        <option value="Completed">Completed</option>
-        <option value="Cancelled">Cancelled</option>
-      </select>
-    </div>
-    
     <div class="outage-form-row two-col">
       <div>
         <label>Start Time</label>
@@ -1686,18 +1658,24 @@ body.dark .as-prog-label{color:var(--text2);}
     </div>
     
     <div class="outage-form-row">
-      <label>Impact</label>
-      <select id="outage-impact">
-        <option value="">Select impact...</option>
-        <option value="Full Outage">Full Outage</option>
-        <option value="Partial">Partial</option>
-        <option value="Maintenance">Maintenance</option>
-      </select>
+      <label>Site Values</label>
+      <input type="text" id="outage-site-values" placeholder="e.g., MW, Equipment details">
+    </div>
+    
+    <div class="outage-form-row two-col">
+      <div>
+        <label>OMS</label>
+        <input type="text" id="outage-oms" placeholder="OMS #">
+      </div>
+      <div>
+        <label>LOG ID</label>
+        <input type="text" id="outage-log-id" placeholder="LOG ID #">
+      </div>
     </div>
     
     <div class="outage-form-row">
-      <label>Notes</label>
-      <textarea id="outage-notes" rows="3" placeholder="Additional details..."></textarea>
+      <label>Comments</label>
+      <textarea id="outage-comments" rows="3" placeholder="Additional details..."></textarea>
     </div>
     
     <div class="m-actions">
@@ -5490,7 +5468,6 @@ function pdNew() {
 let outagesCache = [];
 let outageFilter = 'all';
 let outageSyncInterval = null;
-let outageAutoTransferInterval = null;
 
 // SharePoint configuration - UPDATE THESE VALUES after creating your list
 const SP_SITE_URL = 'https://dsptch-my.sharepoint.com/personal/j_reyes_rnwbl_com';
@@ -5502,7 +5479,6 @@ function initOutageSystem() {
   if (!outageSyncInterval) {
     fetchOutages();
     outageSyncInterval = setInterval(fetchOutages, 30000); // Poll every 30 seconds
-    outageAutoTransferInterval = setInterval(autoTransferOutages, 60000); // Check for transfers every 60 seconds
   }
 }
 
@@ -5511,10 +5487,6 @@ function stopOutageSystem() {
   if (outageSyncInterval) {
     clearInterval(outageSyncInterval);
     outageSyncInterval = null;
-  }
-  if (outageAutoTransferInterval) {
-    clearInterval(outageAutoTransferInterval);
-    outageAutoTransferInterval = null;
   }
 }
 
@@ -5525,7 +5497,7 @@ async function fetchOutages() {
   try {
     // Use SharePoint REST API
     // For personal sites, we use the simpler endpoint format
-    const url = `${SP_SITE_URL}/_api/web/lists/getbytitle('${SP_LIST_NAME}')/items?$select=Id,Title,AssetType,Site,Status,StartTime,EndTime,Impact,Notes,Created,Modified&$orderby=StartTime asc`;
+    const url = `${SP_SITE_URL}/_api/web/lists/getbytitle('${SP_LIST_NAME}')/items?$select=Id,Site,Start_x0020_Time,End_x0020_Time,Site_x0020_Values,OMS,LOG_x0020_ID,Comments,Created,Modified&$orderby=Start_x0020_Time asc`;
     
     const response = await fetch(url, {
       method: 'GET',
@@ -5567,30 +5539,28 @@ async function fetchOutages() {
 // Save outage to SharePoint
 async function saveOutage() {
   const id = document.getElementById('outage-id').value;
-  const title = document.getElementById('outage-title-input').value.trim();
-  const assetType = document.getElementById('outage-type').value;
   const site = document.getElementById('outage-site').value.trim();
-  const status = document.getElementById('outage-status').value;
   const startTime = document.getElementById('outage-start').value;
   const endTime = document.getElementById('outage-end').value;
-  const impact = document.getElementById('outage-impact').value;
-  const notes = document.getElementById('outage-notes').value.trim();
+  const siteValues = document.getElementById('outage-site-values').value.trim();
+  const oms = document.getElementById('outage-oms').value.trim();
+  const logId = document.getElementById('outage-log-id').value.trim();
+  const comments = document.getElementById('outage-comments').value.trim();
   
   // Validation
-  if (!title || !assetType || !site || !startTime) {
-    showToast('Please fill in required fields: Name, Type, Site, Start Time', 'err');
+  if (!site || !startTime) {
+    showToast('Please fill in required fields: Site, Start Time', 'err');
     return;
   }
   
   const outageData = {
-    Title: title,
-    AssetType: assetType,
     Site: site,
-    Status: status,
-    StartTime: new Date(startTime).toISOString(),
-    EndTime: endTime ? new Date(endTime).toISOString() : null,
-    Impact: impact,
-    Notes: notes
+    Start_x0020_Time: new Date(startTime).toISOString(),
+    End_x0020_Time: endTime ? new Date(endTime).toISOString() : null,
+    Site_x0020_Values: siteValues,
+    OMS: oms,
+    LOG_x0020_ID: logId,
+    Comments: comments
   };
   
   try {
@@ -5701,137 +5671,22 @@ async function getRequestDigest() {
   }
 }
 
-// Quick action: Mark outage as Live
-async function setOutageLive(id) {
-  const outage = outagesCache.find(o => o.Id === id);
-  if (!outage) return;
-  
-  try {
-    const url = `${SP_SITE_URL}/_api/web/lists/getbytitle('${SP_LIST_NAME}')/items(${id})`;
-    
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json;odata=nometadata',
-        'Content-Type': 'application/json',
-        'X-RequestDigest': await getRequestDigest(),
-        'IF-MATCH': '*',
-        'X-HTTP-Method': 'MERGE'
-      },
-      credentials: 'include',
-      body: JSON.stringify({ Status: 'Live' })
-    });
-    
-    if (response.ok) {
-      showToast(`${outage.Site} outage is now LIVE`);
-      await fetchOutages();
-    }
-  } catch (error) {
-    // Local fallback
-    outage.Status = 'Live';
-    localStorage.setItem('rnwbl_outages_cache', JSON.stringify(outagesCache));
-    renderOutages();
-    showToast(`${outage.Site} marked as LIVE (local only)`, 'warn');
-  }
-}
-
-// Quick action: Mark outage as Completed
-async function setOutageCompleted(id) {
-  const outage = outagesCache.find(o => o.Id === id);
-  if (!outage) return;
-  
-  try {
-    const url = `${SP_SITE_URL}/_api/web/lists/getbytitle('${SP_LIST_NAME}')/items(${id})`;
-    
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json;odata=nometadata',
-        'Content-Type': 'application/json',
-        'X-RequestDigest': await getRequestDigest(),
-        'IF-MATCH': '*',
-        'X-HTTP-Method': 'MERGE'
-      },
-      credentials: 'include',
-      body: JSON.stringify({ Status: 'Completed' })
-    });
-    
-    if (response.ok) {
-      showToast(`${outage.Site} outage completed`);
-      await fetchOutages();
-    }
-  } catch (error) {
-    // Local fallback
-    outage.Status = 'Completed';
-    localStorage.setItem('rnwbl_outages_cache', JSON.stringify(outagesCache));
-    renderOutages();
-    showToast(`${outage.Site} marked completed (local only)`, 'warn');
-  }
-}
-
-// Auto-transfer: Move Upcoming → Live when start time reached
-async function autoTransferOutages() {
-  const now = new Date();
-  const upcomingToTransfer = outagesCache.filter(o => 
-    o.Status === 'Upcoming' && new Date(o.StartTime) <= now
-  );
-  
-  for (const outage of upcomingToTransfer) {
-    try {
-      const url = `${SP_SITE_URL}/_api/web/lists/getbytitle('${SP_LIST_NAME}')/items(${outage.Id})`;
-      
-      await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json;odata=nometadata',
-          'Content-Type': 'application/json',
-          'X-RequestDigest': await getRequestDigest(),
-          'IF-MATCH': '*',
-          'X-HTTP-Method': 'MERGE'
-        },
-        credentials: 'include',
-        body: JSON.stringify({ Status: 'Live' })
-      });
-      
-      showToast(`🔴 ${outage.Site} outage is now LIVE`, 'warn');
-    } catch (e) {
-      // Update locally if SharePoint fails
-      outage.Status = 'Live';
-    }
-  }
-  
-  if (upcomingToTransfer.length > 0) {
-    localStorage.setItem('rnwbl_outages_cache', JSON.stringify(outagesCache));
-    renderOutages();
-  }
-}
+// Status-based actions disabled - no Status column in SharePoint list
+async function setOutageLive(id) { showToast('Status actions not available', 'warn'); }
+async function setOutageCompleted(id) { showToast('Status actions not available', 'warn'); }
+async function autoTransferOutages() { /* No-op - no Status column */ }
 
 // Render outages to the table
 function renderOutages() {
-  // Filter outages based on current filter
-  let filtered = outagesCache;
-  if (outageFilter !== 'all') {
-    if (['upcoming', 'live'].includes(outageFilter)) {
-      filtered = outagesCache.filter(o => o.Status.toLowerCase() === outageFilter);
-    } else {
-      filtered = outagesCache.filter(o => o.AssetType.toLowerCase() === outageFilter);
-    }
-  }
+  // All outages sorted by start time
+  const sorted = outagesCache.sort((a,b) => new Date(a.Start_x0020_Time || a.StartTime) - new Date(b.Start_x0020_Time || b.StartTime));
   
-  // Separate by status
-  const upcoming = filtered.filter(o => o.Status === 'Upcoming').sort((a,b) => new Date(a.StartTime) - new Date(b.StartTime));
-  const live = filtered.filter(o => o.Status === 'Live').sort((a,b) => new Date(a.StartTime) - new Date(b.StartTime));
-  const completed = filtered.filter(o => o.Status === 'Completed' || o.Status === 'Cancelled').sort((a,b) => new Date(b.Modified) - new Date(a.Modified));
+  // Update count
+  const countEl = document.getElementById('count-upcoming');
+  if (countEl) countEl.textContent = sorted.length;
   
-  // Update counts
-  document.getElementById('count-upcoming').textContent = upcoming.length;
-  document.getElementById('count-live').textContent = live.length;
-  document.getElementById('count-completed').textContent = completed.length;
-  
-  // Render sections
-  renderOutageSection('tbody-upcoming', upcoming, true);
-  renderOutageSection('tbody-live', live, true);
-  renderOutageSection('tbody-completed', completed, false);
+  // Render to table
+  renderOutageSection('tbody-upcoming', sorted, true);
 }
 
 function renderOutageSection(tbodyId, outages, showActions) {
@@ -5839,37 +5694,26 @@ function renderOutageSection(tbodyId, outages, showActions) {
   if (!tbody) return;
   
   if (outages.length === 0) {
-    tbody.innerHTML = `<tr class="outage-empty"><td colspan="${showActions ? 7 : 5}">No outages</td></tr>`;
+    tbody.innerHTML = `<tr class="outage-empty"><td colspan="8">No outages</td></tr>`;
     return;
   }
   
   tbody.innerHTML = outages.map(outage => {
-    const typeClass = `outage-type-${outage.AssetType.toLowerCase()}`;
-    const impactClass = `outage-impact-${outage.Impact ? outage.Impact.toLowerCase().replace(' ', '-') : ''}`;
-    const startTime = formatDateTime(outage.StartTime);
-    const endTime = outage.EndTime ? formatDateTime(outage.EndTime) : '—';
-    const duration = calculateDuration(outage.StartTime, outage.EndTime || new Date().toISOString());
-    
-    const actions = showActions ? `
-      <td class="outage-actions-cell">
-        ${outage.Status === 'Upcoming' ? `<button class="outage-action-btn go" onclick="setOutageLive(${outage.Id})">Go Live</button>` : ''}
-        ${outage.Status === 'Live' ? `<button class="outage-action-btn complete" onclick="setOutageCompleted(${outage.Id})">Complete</button>` : ''}
-        <button class="outage-action-btn" onclick="editOutage(${outage.Id})">Edit</button>
-      </td>
-    ` : '';
-    
-    const timeDisplay = showActions 
-      ? `<td class="outage-time">${startTime}</td><td class="outage-time">${endTime}</td>`
-      : `<td class="outage-time">${duration}</td>`;
+    const startTime = formatDateTime(outage.Start_x0020_Time || outage.StartTime);
+    const endTime = formatDateTime(outage.End_x0020_Time || outage.EndTime);
     
     return `
       <tr>
-        <td><span class="outage-type-badge ${typeClass}">${outage.AssetType}</span></td>
-        <td class="outage-site">${outage.Site}</td>
-        ${timeDisplay}
-        <td class="outage-impact ${impactClass}">${outage.Impact || '—'}</td>
-        <td class="outage-notes" title="${esc(outage.Notes || '')}">${outage.Notes ? outage.Notes.substring(0, 50) + (outage.Notes.length > 50 ? '...' : '') : '—'}</td>
-        ${actions}
+        <td class="outage-site">${outage.Site || '—'}</td>
+        <td class="outage-time">${startTime}</td>
+        <td class="outage-time">${endTime}</td>
+        <td>${outage.Site_x0020_Values || '—'}</td>
+        <td>${outage.OMS || '—'}</td>
+        <td>${outage.LOG_x0020_ID || outage.LOGID || '—'}</td>
+        <td class="outage-notes" title="${esc(outage.Comments || '')}">${outage.Comments ? outage.Comments.substring(0, 50) + (outage.Comments.length > 50 ? '...' : '') : '—'}</td>
+        <td class="outage-actions-cell">
+          <button class="outage-action-btn" onclick="editOutage(${outage.Id})">Edit</button>
+        </td>
       </tr>
     `;
   }).join('');
@@ -5930,7 +5774,7 @@ function updateSyncStatus(status) {
   el.className = 'outage-sync-status' + (status !== 'live' ? ` ${status}` : '');
   const text = el.querySelector('.sync-text');
   if (text) {
-    text.textContent = status === 'live' ? 'Live' : status === 'syncing' ? 'Syncing...' : 'Error';
+    text.textContent = status === 'live' ? 'Connected' : status === 'syncing' ? 'Loading...' : 'Error';
   }
 }
 
@@ -5938,14 +5782,13 @@ function updateSyncStatus(status) {
 function openOutageModal() {
   document.getElementById('outage-id').value = '';
   document.getElementById('outage-modal-title').textContent = 'Add Outage';
-  document.getElementById('outage-title-input').value = '';
-  document.getElementById('outage-type').value = '';
   document.getElementById('outage-site').value = '';
-  document.getElementById('outage-status').value = 'Upcoming';
   document.getElementById('outage-start').value = '';
   document.getElementById('outage-end').value = '';
-  document.getElementById('outage-impact').value = '';
-  document.getElementById('outage-notes').value = '';
+  document.getElementById('outage-site-values').value = '';
+  document.getElementById('outage-oms').value = '';
+  document.getElementById('outage-log-id').value = '';
+  document.getElementById('outage-comments').value = '';
   document.getElementById('outage-delete-btn').style.display = 'none';
   
   // Set default start time to now
@@ -5962,14 +5805,13 @@ function editOutage(id) {
   
   document.getElementById('outage-id').value = id;
   document.getElementById('outage-modal-title').textContent = 'Edit Outage';
-  document.getElementById('outage-title-input').value = outage.Title || '';
-  document.getElementById('outage-type').value = outage.AssetType || '';
   document.getElementById('outage-site').value = outage.Site || '';
-  document.getElementById('outage-status').value = outage.Status || 'Upcoming';
-  document.getElementById('outage-start').value = formatDateTimeLocal(outage.StartTime);
-  document.getElementById('outage-end').value = outage.EndTime ? formatDateTimeLocal(outage.EndTime) : '';
-  document.getElementById('outage-impact').value = outage.Impact || '';
-  document.getElementById('outage-notes').value = outage.Notes || '';
+  document.getElementById('outage-start').value = formatDateTimeLocal(outage.Start_x0020_Time || outage.StartTime);
+  document.getElementById('outage-end').value = formatDateTimeLocal(outage.End_x0020_Time || outage.EndTime);
+  document.getElementById('outage-site-values').value = outage.Site_x0020_Values || '';
+  document.getElementById('outage-oms').value = outage.OMS || '';
+  document.getElementById('outage-log-id').value = outage.LOG_x0020_ID || outage.LOGID || '';
+  document.getElementById('outage-comments').value = outage.Comments || '';
   document.getElementById('outage-delete-btn').style.display = 'inline-block';
   
   openModal('modal-outage');
