@@ -107,9 +107,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--f);font-size:14px;
 .nav-tab:hover{background:var(--bg3);color:var(--text);}
 .nav-tab.active{background:var(--bg3);color:var(--text);box-shadow:var(--shs);border:1px solid var(--border);}
 /* Overdue alert tab — red like an Excel alert tab */
-.nav-tab.tab-alert{background:var(--red)!important;color:#fff!important;border-color:var(--red)!important;box-shadow:0 2px 8px rgba(179,48,0,.35)!important;}
-.nav-tab.tab-alert:hover{background:#cc3300!important;}
-.nav-tab.tab-alert.active{background:var(--red)!important;color:#fff!important;}
+
 .nav-spacer{flex:1;}
 .nav-time{font-family:var(--m);font-size:11px;color:var(--text3);}
 
@@ -663,16 +661,19 @@ body.dark .cl-time{color:var(--text2);}
   border-radius:var(--rl);overflow:hidden;position:relative;
 }
 .schedule-iframe-container iframe{
-  width:100%;height:800px;border:none;display:block;
+  width:100%;height:647px;border:none;display:block;
   background:transparent;
 }
+/* Upcoming Outages sheet is slightly shorter */
+#schedule-embed2 iframe,
+#schedule-srd .schedule-iframe-container:last-child iframe{height:634px;}
 /* Dark-loading overlay — covers the white flash while iframe initialises, then fades */
 .schedule-iframe-container .iframe-veil{
   position:absolute;inset:0;
   background:#0f1117;
   pointer-events:none;
   opacity:1;
-  transition:opacity .6s ease .4s; /* short delay then fade */
+  transition:opacity .6s ease .4s;
   z-index:2;border-radius:var(--rl);
 }
 .schedule-iframe-container .iframe-veil.loaded{opacity:0;}
@@ -684,9 +685,9 @@ body.dark .cl-time{color:var(--text2);}
 body:not(.dark) .schedule-iframe-container{background:#1a1a2e;}
 body:not(.dark) .schedule-iframe-container .iframe-veil{background:#1a1a2e;}
 body:not(.dark) .schedule-iframe-container .iframe-crop{background:#1a1a2e;}
-@media(max-width:900px){.schedule-iframe-container iframe{height:700px;}}
-@media(max-width:600px){.schedule-iframe-container iframe{height:600px;}}
-@media(max-width:450px){.schedule-iframe-container iframe{height:500px;}}
+@media(max-width:900px){.schedule-iframe-container iframe{height:480px !important;}}
+@media(max-width:600px){.schedule-iframe-container iframe{height:400px !important;}}
+@media(max-width:450px){.schedule-iframe-container iframe{height:340px !important;}}
 .schedule-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
 .schedule-view-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;}
 .schedule-view-btn:hover{border-color:var(--text2);color:var(--text);}
@@ -702,7 +703,7 @@ body:not(.dark) .schedule-iframe-container .iframe-crop{background:#1a1a2e;}
 .schedule-view.kiosk-mode .schedule-iframe-container .iframe-crop{background:inherit;}
 .schedule-view.kiosk-mode .schedule-srd-combo{height:100%;}
 /* Combined View - side by side */
-.schedule-srd-combo{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:800px;}
+.schedule-srd-combo{display:grid;grid-template-columns:1fr 1fr;gap:12px;height:647px;}
 @media(max-width:900px){.schedule-srd-combo{grid-template-columns:1fr;height:600px;}}
 @media(max-width:600px){.schedule-srd-combo{grid-template-columns:1fr;height:500px;}}
 .schedule-srd-combo .schedule-iframe-container{max-width:none;margin:0;height:100%;}
@@ -1314,23 +1315,23 @@ body.dark .as-prog-label{color:var(--text2);}
       <div class="schedule-iframe-container" id="schedule-embed1" style="display:none;">
         <div class="iframe-veil" id="veil-embed1"></div>
         <div class="iframe-crop"></div>
-        <iframe id="fr-embed1" frameborder="0" scrolling="no" onload="document.getElementById('veil-embed1').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A2%3AI35&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        <iframe id="fr-embed1" frameborder="0" scrolling="no" onload="document.getElementById('veil-embed1').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AI37&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
       </div>
       <div class="schedule-iframe-container" id="schedule-embed2" style="display:none;">
         <div class="iframe-veil" id="veil-embed2"></div>
         <div class="iframe-crop"></div>
-        <iframe id="fr-embed2" frameborder="0" scrolling="no" onload="document.getElementById('veil-embed2').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM30&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+        <iframe id="fr-embed2" frameborder="0" scrolling="no" onload="document.getElementById('veil-embed2').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM28&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
       </div>
       <div class="schedule-srd-combo" id="schedule-srd">
         <div class="schedule-iframe-container">
           <div class="iframe-veil" id="veil-srd1"></div>
           <div class="iframe-crop"></div>
-          <iframe id="fr-srd1" frameborder="0" scrolling="no" onload="document.getElementById('veil-srd1').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A2%3AI35&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+          <iframe id="fr-srd1" frameborder="0" scrolling="no" onload="document.getElementById('veil-srd1').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={1afbe310-d1bc-407d-838a-528698f0e3d3}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AI37&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
         </div>
         <div class="schedule-iframe-container">
           <div class="iframe-veil" id="veil-srd2"></div>
           <div class="iframe-crop"></div>
-          <iframe id="fr-srd2" frameborder="0" scrolling="no" onload="document.getElementById('veil-srd2').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM30&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
+          <iframe id="fr-srd2" frameborder="0" scrolling="no" onload="document.getElementById('veil-srd2').classList.add('loaded')" src="https://dsptch.sharepoint.com/sites/TonianRenewables-RNWBLOperationsCenter/_layouts/15/Doc.aspx?sourcedoc={5c8f1191-ff95-46c8-b02e-d75e7d808278}&action=embedview&wdAllowInteractivity=False&Item='Sheet1'!A1%3AM28&wdHideGridlines=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0"></iframe>
         </div>
       </div>
     </div>
@@ -1816,10 +1817,8 @@ function refreshScanStatuses(){ renderSites(); renderScanStats(); updateScansTab
 function updateScansTabAlert() {
   const tab = document.getElementById('nav-tab-scans');
   if (!tab) return;
-  const hasOverdue = SITES.some(s => siteStatus(s) === 'overdue');
-  tab.classList.toggle('tab-alert', hasOverdue);
-  const count = SITES.filter(s => siteStatus(s) === 'overdue').length;
-  tab.textContent = hasOverdue ? `Scans (${count})` : 'Scans';
+  tab.classList.remove('tab-alert');
+  tab.textContent = 'Scans';
 }
 function renderScanStats(){
   const ok=SITES.filter(s=>siteStatus(s)==='ok').length, due=SITES.filter(s=>siteStatus(s)==='due').length,
