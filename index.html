@@ -89,6 +89,7 @@ body.dark #dm-flash{
   background:radial-gradient(ellipse at center,rgba(15,17,23,.92) 0%,rgba(15,17,23,0) 65%);
 }
 @keyframes dmFlash{0%{opacity:0}8%{opacity:1}60%{opacity:.6}100%{opacity:0}}
+@keyframes qtPulse{0%{opacity:1}50%{opacity:.6}100%{opacity:1}}
 #dm-flash.flash{animation:dmFlash .55s ease-out forwards;}
 #dm-lightning-canvas{
   position:fixed;inset:0;z-index:10000;pointer-events:none;
@@ -438,7 +439,13 @@ body.dark .card-title{color:var(--text2);}
 .as-meta label{font-size:12px;font-weight:500;color:var(--text2);margin-right:4px;}
 .as-meta input,.as-meta select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-size:13px;color:var(--text);font-family:var(--f);}
 .as-meta input:focus,.as-meta select:focus{outline:none;border-color:var(--blue);}
-.as-site-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;}
+.as-site-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.as-type-btn{padding:5px 13px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;}
+.as-type-btn:hover{border-color:var(--border2);color:var(--text);}
+.as-type-btn.active{border-color:var(--blue);color:var(--blue);background:var(--bbg);}
+.as-type-btn.bess.active{border-color:var(--blue);color:var(--blue);background:var(--bbg);}
+.as-type-btn.solar.active{border-color:var(--amber);color:var(--amber);background:var(--abg);}
+.as-type-btn.wind.active{border-color:var(--green);color:var(--green);background:var(--gbg);}
 .as-tab{padding:5px 13px;border-radius:6px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--f);transition:all .15s;box-shadow:var(--shs);}
 .as-tab:hover{border-color:var(--text2);color:var(--text);}
 .as-tab.active{border-color:var(--accent);color:var(--accent);background:#fdf2f2;}
@@ -483,6 +490,19 @@ select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;pa
 .sw-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:16px;box-shadow:var(--shs);}
 .sw-box-title{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.09em;text-transform:uppercase;margin-bottom:10px;}
 body.dark .sw-box-title{color:var(--text2);}
+.sw-step{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.sw-step:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.sw-step-num{width:24px;height:24px;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:var(--m);flex-shrink:0;}
+.sw-step-num.step-1{background:var(--blue);}
+.sw-step-num.step-2{background:var(--amber);}
+.sw-step-num.step-3{background:var(--green);}
+.sw-step-title{font-size:12px;font-weight:600;color:var(--text);letter-spacing:-.01em;}
+.sw-section{margin-bottom:16px;}
+.sw-section:last-child{margin-bottom:0;}
+.sw-history-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:14px;box-shadow:var(--shs);margin-top:12px;}
+.sw-history-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.sw-history-title{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.09em;text-transform:uppercase;display:flex;align-items:center;gap:6px;}
+.sw-history-title::before{content:'📋';font-size:13px;}
 .sw-tpls{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;}
 .sw-tpl{display:flex;align-items:center;gap:0;padding:0;border-radius:7px;border:1.5px solid var(--border);background:var(--bg3);cursor:pointer;font-family:var(--f);font-size:12px;font-weight:600;transition:all .15s;overflow:hidden;text-align:left;}
 .sw-tpl:hover{border-color:var(--border2);background:var(--bg2);}
@@ -798,79 +818,6 @@ body.dark .as-prog-label{color:var(--text2);}
   background-size:200% 100%;
   animation:as-shimmer 1.2s ease forwards;
 }
-
-/* ── LIVE OUTAGES BOARD ──────────────────────────────────────────────────────── */
-.lob-view{padding:16px 20px;max-width:1600px;margin:0 auto;}
-.lob-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
-.lob-title{display:flex;align-items:center;gap:10px;}
-.lob-title h2{font-size:20px;font-weight:600;color:var(--text);margin:0;}
-.lob-title span{font-size:12px;color:var(--text3);font-family:var(--m);}
-.lob-controls{display:flex;align-items:center;gap:8px;}
-.lob-refresh-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;}
-.lob-refresh-btn:hover{background:var(--bg3);color:var(--text);}
-.lob-kiosk-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;}
-.lob-kiosk-btn:hover{background:var(--bg3);color:var(--text);}
-.lob-live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:lob-pulse 2s ease-in-out infinite;}
-@keyframes lob-pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.85);}}
-.lob-last-sync{font-size:11px;color:var(--text3);font-family:var(--m);}
-
-/* Summary pills */
-.lob-summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
-.lob-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;background:var(--bg2);border:1px solid var(--border);color:var(--text2);}
-.lob-pill-count{font-size:15px;font-weight:700;font-family:var(--m);}
-.lob-pill.wind .lob-pill-count{color:var(--blue);}
-.lob-pill.bess .lob-pill-count{color:var(--amber);}
-.lob-pill.solar .lob-pill-count{color:var(--green);}
-.lob-pill.total .lob-pill-count{color:var(--text);}
-
-/* Filter bar */
-.lob-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-.lob-filter{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;font-family:var(--f);}
-.lob-filter:hover{background:var(--bg3);}
-.lob-filter.active{background:var(--bg3);color:var(--text);border-color:var(--border2);}
-
-/* Table */
-.lob-table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);}
-.lob-table{width:100%;border-collapse:collapse;font-size:13px;}
-.lob-table thead th{padding:9px 13px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);background:var(--bg3);border-bottom:1px solid var(--border);white-space:nowrap;}
-.lob-table tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
-.lob-table tbody tr:last-child{border-bottom:none;}
-.lob-table tbody tr:hover{background:var(--bg3);}
-.lob-table td{padding:10px 13px;vertical-align:middle;color:var(--text);}
-.lob-type-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:5px;font-size:11px;font-weight:700;font-family:var(--m);}
-.lob-type-w{background:var(--bbg);color:var(--blue);}
-.lob-type-b{background:var(--abg);color:var(--amber);}
-.lob-type-s{background:var(--gbg);color:var(--green);}
-.lob-site-chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;font-family:var(--m);background:var(--bg4);color:var(--text);}
-.lob-values{font-family:var(--m);font-size:12px;color:var(--text2);}
-.lob-oms{font-family:var(--m);font-size:11px;color:var(--text3);}
-.lob-log{font-family:var(--m);font-size:12px;font-weight:600;color:var(--blue);}
-.lob-comment{font-size:12px;color:var(--text2);max-width:280px;}
-.lob-time{font-family:var(--m);font-size:11px;color:var(--text2);white-space:nowrap;}
-.lob-time.active-now{color:var(--green);}
-.lob-time.ending-soon{color:var(--amber);}
-.lob-status-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle;}
-.lob-status-active{background:var(--green);}
-.lob-status-upcoming{background:var(--amber);}
-.lob-status-expired{background:var(--text3);}
-
-/* State screens */
-.lob-loading,.lob-error,.lob-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:12px;color:var(--text3);font-size:14px;}
-.lob-spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.lob-error-msg{color:var(--red);font-size:13px;text-align:center;max-width:480px;line-height:1.6;}
-.lob-auth-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:28px 32px;max-width:440px;text-align:center;}
-.lob-auth-box h3{font-size:16px;font-weight:600;color:var(--text);margin:0 0 8px;}
-.lob-auth-box p{font-size:13px;color:var(--text2);margin:0 0 18px;line-height:1.6;}
-.lob-auth-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--f);text-decoration:none;transition:opacity .15s;}
-.lob-auth-btn:hover{opacity:.85;}
-
-/* Kiosk mode */
-.lob-view.kiosk{position:fixed;inset:0;z-index:9999;background:var(--bg);padding:20px 24px;overflow:auto;max-width:none;}
-.lob-view.kiosk .lob-table{font-size:15px;}
-.lob-view.kiosk .lob-table thead th{font-size:11px;padding:11px 16px;}
-.lob-view.kiosk .lob-table td{padding:13px 16px;}
-.lob-view.kiosk .lob-comment{max-width:420px;}
 </style>
 </head>
 <body>
@@ -889,7 +836,6 @@ body.dark .as-prog-label{color:var(--text2);}
   <button class="nav-tab" style="display:none;" onclick="switchView('map',this)">Map</button>
   <button class="nav-tab" onclick="switchView('timezones',this)">Time Zones</button>
   <button class="nav-tab" onclick="switchView('schedule',this)">Schedule</button>
-  <button class="nav-tab" onclick="switchView('outages',this)">⚡ Live Outages</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('notes',this)">Notepad</button>
   <button class="nav-tab" style="display:none;" onclick="switchView('log',this)">Log</button>
   <div class="nav-spacer"></div>
@@ -901,7 +847,12 @@ body.dark .as-prog-label{color:var(--text2);}
 <div id="dm-flash"></div>
 <canvas id="dm-lightning-canvas"></canvas>
 
-<!-- NOTEPAD -->
+<!-- QUICK TIMER ALARM BANNER -->
+<div id="qt-alarm-banner" style="display:none;position:fixed;top:48px;left:0;right:0;z-index:200;background:var(--red);color:#fff;padding:9px 16px;font-size:13px;font-weight:500;display:none;align-items:center;gap:10px;box-shadow:0 2px 12px rgba(0,0,0,.25);">
+  <span style="font-size:16px;">⏰</span>
+  <span style="flex:1;" id="qt-alarm-text"></span>
+  <button onclick="qtDismissBanner()" style="padding:4px 12px;border-radius:5px;border:1.5px solid rgba(255,255,255,.6);background:transparent;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">Dismiss</button>
+</div>
 <div class="view" id="view-notes" style="display:none!important">
   <div class="tpl-grid" id="tpl-grid"></div>
   <div class="notes-layout">
@@ -966,25 +917,21 @@ body.dark .as-prog-label{color:var(--text2);}
         <div id="phonetic-out" style="font-family:var(--m);font-size:14px;color:var(--text);background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;min-height:40px;word-break:break-all;"></div>
         <div style="display:flex;gap:6px;margin-top:8px;">
           <button class="tbtn" onclick="copyPhonetic()">Copy</button>
+          <button class="tbtn" id="phonetic-speak-btn" onclick="speakPhonetic()" title="Read aloud">🔊 Speak</button>
           <button class="tbtn" onclick="clearPhonetic()">Clear</button>
         </div>
       </div>
     </div>
     <div class="card">
-      <div class="card-title">Recurring tasks</div>
-      <div id="rec-list"></div>
-      <div class="add-row">
-        <input id="rec-inp" placeholder="Add recurring task..." onkeydown="if(event.key==='Enter')addRec()">
-        <button onclick="addRec()">+</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Ad hoc tasks</div>
+      <div class="card-title">Quick Timer</div>
       <div id="adhoc-list" style="max-height:260px;overflow-y:auto;"></div>
       <div class="adhoc-row">
         <input id="adhoc-inp" placeholder="Task description..." onkeydown="if(event.key==='Enter')addAdhoc()">
         <input id="adhoc-t" class="t-inp" type="number" min="0" placeholder="min">
         <span class="min-lbl">min</span>
+        <span class="min-lbl" style="color:var(--border2);">or</span>
+        <input id="adhoc-until" class="t-inp" type="time" style="width:88px!important;" title="Set a target clock time instead of duration">
+        <span class="min-lbl">until</span>
         <button class="add-btn" onclick="addAdhoc()">+ Add</button>
       </div>
     </div>
@@ -1312,7 +1259,7 @@ body.dark .as-prog-label{color:var(--text2);}
       <input id="as-operator" list="as-ops-list" placeholder="Name">
       <datalist id="as-ops-list">
         <option>Adam McCauley</option><option>Alexander Conway</option><option>Christopher Hill</option>
-        <option>Jesse Snygg-Carrasco</option><option>Jonathan Osborne</option><option>Mar'Cell Edwards</option>
+        <option>Jesse Snygg-Carrasco</option><option>Jonathan Osborne</option><option>Josh Reyes</option><option>Mar'Cell Edwards</option>
         <option>Morgan Shearer</option><option>Rob Seffern</option><option>Sergio Torres</option>
       </datalist>
     </div>
@@ -1334,6 +1281,12 @@ body.dark .as-prog-label{color:var(--text2);}
     <span class="as-prog-done-badge" id="as-prog-done-badge">✓ All sites complete</span>
   </div>
   <div class="as-site-tabs" id="as-tabs"></div>
+  <div id="as-type-filters" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;margin-top:-4px;">
+    <button class="as-type-btn active" onclick="asSetTypeFilter('all',this)">All</button>
+    <button class="as-type-btn bess" onclick="asSetTypeFilter('BESS',this)">🔋 BESS</button>
+    <button class="as-type-btn solar" onclick="asSetTypeFilter('Solar',this)">☀️ Solar</button>
+    <button class="as-type-btn wind" onclick="asSetTypeFilter('Wind',this)">💨 Wind</button>
+  </div>
   <div id="as-form-wrap"></div>
 </div>
 
@@ -1365,39 +1318,50 @@ body.dark .as-prog-label{color:var(--text2);}
 <div class="view" id="view-swbuilder">
   <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:14px;">
     <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">SoftWrench Log Builder</div>
-    <span style="font-size:12px;color:var(--text3);">Select template → fill name &amp; number → copy</span>
+    <span style="font-size:12px;color:var(--text3);">Follow the steps below to build your log entry</span>
   </div>
   <div class="sw-wrap">
 
     <!-- LEFT PANEL ─────────────────────── -->
     <div>
       <div class="sw-box">
-        <div class="sw-box-title">Template</div>
-
-        <div id="sw-tpls-list"></div>
-        <button class="sw-new-tpl-btn" onclick="swOpenNewTpl()">＋ New template</button>
-
-        <div class="sw-field">
-          <label>Field Tech Name</label>
-          <input id="sw-tech" list="sw-tech-list" placeholder="e.g. Jake Zulaf" oninput="swBuild()">
-          <datalist id="sw-tech-list">
-            <option>Adam McCauley</option><option>Alexander Conway</option><option>Christopher Hill</option>
-            <option>Jake Zulaf</option><option>Jesse Snygg-Carrasco</option><option>Jonathan Osborne</option>
-            <option>Mar'Cell Edwards</option><option>Morgan Shearer</option><option>Rob Seffern</option>
-            <option>Sergio Torres</option><option>Tineiaifi Malala</option><option>Tykeith</option>
-          </datalist>
+        <!-- STEP 1: TEMPLATE -->
+        <div class="sw-step">
+          <div class="sw-step-num step-1">1</div>
+          <div class="sw-step-title">Choose Template</div>
         </div>
-        <div class="sw-field">
-          <label id="sw-num-lbl">Number</label>
-          <input id="sw-num" type="text" placeholder="Select a template first" oninput="swBuild()">
+        <div class="sw-section">
+          <div id="sw-tpls-list"></div>
+          <button class="sw-new-tpl-btn" onclick="swOpenNewTpl()">＋ New template</button>
         </div>
-        <button class="btn-p" style="width:100%;margin-top:2px;" onclick="swSaveHistory()">Save to history</button>
+
+        <!-- STEP 2: DETAILS -->
+        <div class="sw-step">
+          <div class="sw-step-num step-2">2</div>
+          <div class="sw-step-title">Fill Details</div>
+        </div>
+        <div class="sw-section">
+          <div class="sw-field">
+            <label>Field Tech Name</label>
+            <input id="sw-tech" list="sw-tech-list" placeholder="e.g. Jake Zulaf" oninput="swBuild()">
+            <datalist id="sw-tech-list">
+              <option>Adam McCauley</option><option>Alexander Conway</option><option>Christopher Hill</option>
+              <option>Jake Zulaf</option><option>Jesse Snygg-Carrasco</option><option>Jonathan Osborne</option>
+              <option>Mar'Cell Edwards</option><option>Morgan Shearer</option><option>Rob Seffern</option>
+              <option>Sergio Torres</option><option>Tineiaifi Malala</option><option>Tykeith</option>
+            </datalist>
+          </div>
+          <div class="sw-field">
+            <label id="sw-num-lbl">Number</label>
+            <input id="sw-num" type="text" placeholder="Select a template first" oninput="swBuild()">
+          </div>
+        </div>
       </div>
 
       <!-- HISTORY ────────────────────── -->
-      <div style="margin-top:12px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px;margin-bottom:4px;">
-          <span style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.09em;text-transform:uppercase;">Recent</span>
+      <div class="sw-history-box">
+        <div class="sw-history-header">
+          <div class="sw-history-title">Recent Entries</div>
           <button class="tbtn" style="font-size:11px;padding:2px 8px;" onclick="swClearHistory()">Clear</button>
         </div>
         <div id="sw-hist-wrap"><div class="sw-empty">No history yet</div></div>
@@ -1406,12 +1370,20 @@ body.dark .as-prog-label{color:var(--text2);}
 
     <!-- RIGHT PANEL ────────────────────── -->
     <div class="sw-box">
-      <div class="sw-out-hdr">
-        <span>Output — ready to paste into SoftWrench</span>
-        <button class="sw-copy" id="sw-copy-btn" onclick="swCopy()">Copy</button>
+      <!-- STEP 3: OUTPUT -->
+      <div class="sw-step">
+        <div class="sw-step-num step-3">3</div>
+        <div class="sw-step-title">Copy Output</div>
       </div>
-      <div id="sw-out-hdr-badge"></div>
-      <div id="sw-out-body"><div class="sw-empty">Select a template to begin</div></div>
+      <div class="sw-section">
+        <div class="sw-out-hdr">
+          <span>Ready to paste into SoftWrench</span>
+          <button class="sw-copy" id="sw-copy-btn" onclick="swCopy()">Copy</button>
+        </div>
+        <div id="sw-out-hdr-badge"></div>
+        <div id="sw-out-body"><div class="sw-empty">Select a template to begin</div></div>
+        <button class="btn-p" style="width:100%;margin-top:12px;" onclick="swSaveHistory()">💾 Save to History</button>
+      </div>
     </div>
 
   </div>
@@ -1542,33 +1514,7 @@ body.dark .as-prog-label{color:var(--text2);}
   </div>
 </div>
 
-<!-- LIVE OUTAGES BOARD ────────────────────────────────────────────────────────── -->
-<div class="view" id="view-outages">
-  <div class="lob-view" id="lob-view">
-    <div class="lob-header">
-      <div class="lob-title">
-        <h2>Live Outages Board</h2>
-        <span id="lob-sync-label" class="lob-last-sync">—</span>
-        <span class="lob-live-dot" id="lob-dot" style="display:none;"></span>
-      </div>
-      <div class="lob-controls">
-        <button class="lob-refresh-btn" onclick="lobFetch(true)">↻ Refresh</button>
-        <button class="lob-kiosk-btn" onclick="lobToggleKiosk()">⛶ Kiosk</button>
-      </div>
-    </div>
-    <div class="lob-summary" id="lob-summary"></div>
-    <div class="lob-filters" id="lob-filters">
-      <button class="lob-filter active" data-filter="all" onclick="lobSetFilter('all',this)">All</button>
-      <button class="lob-filter" data-filter="active" onclick="lobSetFilter('active',this)">Active Now</button>
-      <button class="lob-filter" data-filter="W" onclick="lobSetFilter('W',this)">Wind</button>
-      <button class="lob-filter" data-filter="B" onclick="lobSetFilter('B',this)">BESS</button>
-      <button class="lob-filter" data-filter="S" onclick="lobSetFilter('S',this)">Solar</button>
-    </div>
-    <div class="lob-table-wrap" id="lob-body">
-      <div class="lob-loading"><div class="lob-spinner"></div><span>Connecting to Microsoft Lists…</span></div>
-    </div>
-  </div>
-</div><span class="toast-icon" id="toast-icon"></span><span id="toast-msg"></span></div>
+<div class="toast" id="toast"><span class="toast-icon" id="toast-icon"></span><span id="toast-msg"></span></div>
 
 <script>
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
@@ -1836,172 +1782,8 @@ function switchView(v, el) {
   if(v==='timezones') initTimeZones();
   if(v==='chron') clRender();
   if(v==='intel') wxFleetInit();
-  if(v==='outages') { lobInit(); }
   try { localStorage.setItem('rnwbl_active_tab', v); } catch(e) {}
 }
-
-// ─── LIVE OUTAGES BOARD ───────────────────────────────────────────────────────
-const LOB_API = "https://dsptch-my.sharepoint.com/personal/j_reyes_rnwbl_com/_api/web/lists/getbytitle('RNWBL Outages')/items"
-              + "?$select=Title,Site,Type,StartTime,EndTime,SiteValues,OMS,LOGID,Comments"
-              + "&$orderby=StartTime asc&$top=200";
-
-let lobData       = [];
-let lobFilter     = 'all';
-let lobKiosk      = false;
-let lobTimer      = null;
-let lobInitDone   = false;
-
-function lobInit() {
-  if (!lobInitDone) { lobInitDone = true; lobFetch(false); }
-}
-
-async function lobFetch(manual) {
-  const body = document.getElementById('lob-body');
-  if (manual) body.innerHTML = '<div class="lob-loading"><div class="lob-spinner"></div><span>Refreshing…</span></div>';
-
-  try {
-    const res = await fetch(LOB_API, {
-      headers: { 'Accept': 'application/json;odata=nometadata' },
-      credentials: 'include'
-    });
-
-    if (res.status === 401 || res.status === 403) {
-      body.innerHTML = `
-        <div class="lob-loading">
-          <div class="lob-auth-box">
-            <h3>Sign in to Microsoft 365</h3>
-            <p>Your session needs to be authenticated with SharePoint to load the live outages list. Click below to open the list — once you're signed in, come back and refresh.</p>
-            <a class="lob-auth-btn" href="https://dsptch-my.sharepoint.com/personal/j_reyes_rnwbl_com/Lists/RNWBL%20Outages" target="_blank">🔑 Sign in to SharePoint</a>
-          </div>
-        </div>`;
-      return;
-    }
-
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-
-    const json  = await res.json();
-    lobData     = (json.value || []).map(lobParseItem);
-    lobRender();
-
-    // Update sync label
-    const now = new Date();
-    document.getElementById('lob-sync-label').textContent =
-      'Last sync ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    document.getElementById('lob-dot').style.display = '';
-
-    // Auto-refresh every 60 s
-    clearTimeout(lobTimer);
-    lobTimer = setTimeout(() => lobFetch(false), 60000);
-
-  } catch(e) {
-    body.innerHTML = `<div class="lob-loading">
-      <div class="lob-error-msg">
-        <strong>Could not reach Microsoft Lists.</strong><br>
-        Make sure you're signed into Microsoft 365 in this browser, then
-        <a href="#" style="color:var(--blue)" onclick="lobFetch(true);return false;">try again</a>.<br><br>
-        <small style="color:var(--text3)">${e.message}</small>
-      </div></div>`;
-  }
-}
-
-function lobParseItem(r) {
-  const start = r.StartTime ? new Date(r.StartTime) : null;
-  const end   = r.EndTime   ? new Date(r.EndTime)   : null;
-  const now   = new Date();
-  let status  = 'upcoming';
-  if (start && end) {
-    if (now >= start && now <= end) status = 'active';
-    else if (now > end)              status = 'expired';
-  }
-  return {
-    title:    r.Title    || '',
-    site:     r.Site     || '',
-    type:     (r.Type    || '').toUpperCase().charAt(0), // W / B / S
-    start,
-    end,
-    values:   r.SiteValues || '',
-    oms:      r.OMS      || '',
-    log:      r.LOGID    || '',
-    comment:  r.Comments || '',
-    status
-  };
-}
-
-function lobSetFilter(f, el) {
-  lobFilter = f;
-  document.querySelectorAll('.lob-filter').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
-  lobRender();
-}
-
-function lobRender() {
-  const body = document.getElementById('lob-body');
-  const sum  = document.getElementById('lob-summary');
-
-  // Filter
-  let rows = lobData.filter(r => r.status !== 'expired'); // default: hide expired
-  const total  = rows.length;
-  const active = rows.filter(r => r.status === 'active').length;
-  const wind   = rows.filter(r => r.type  === 'W').length;
-  const bess   = rows.filter(r => r.type  === 'B').length;
-  const solar  = rows.filter(r => r.type  === 'S').length;
-
-  // Summary pills
-  sum.innerHTML = `
-    <div class="lob-pill total"><span class="lob-pill-count">${total}</span>Active Outages</div>
-    <div class="lob-pill" style=""><span class="lob-pill-count" style="color:var(--green)">${active}</span>Live Now</div>
-    <div class="lob-pill wind"><span class="lob-pill-count">${wind}</span>Wind</div>
-    <div class="lob-pill bess"><span class="lob-pill-count">${bess}</span>BESS</div>
-    <div class="lob-pill solar"><span class="lob-pill-count">${solar}</span>Solar</div>`;
-
-  // Apply active filter
-  if (lobFilter === 'active') rows = rows.filter(r => r.status === 'active');
-  else if (lobFilter === 'W') rows = rows.filter(r => r.type === 'W');
-  else if (lobFilter === 'B') rows = rows.filter(r => r.type === 'B');
-  else if (lobFilter === 'S') rows = rows.filter(r => r.type === 'S');
-
-  if (!rows.length) {
-    body.innerHTML = '<div class="lob-empty">No outages match this filter.</div>';
-    return;
-  }
-
-  const typeLabel = { W:'Wind', B:'BESS', S:'Solar' };
-  const fmtTime = d => d ? d.toLocaleDateString('en-US',{month:'numeric',day:'numeric'})
-                          + ' ' + d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '—';
-
-  const rowsHtml = rows.map(r => {
-    const typeClass = r.type === 'W' ? 'lob-type-w' : r.type === 'B' ? 'lob-type-b' : 'lob-type-s';
-    const dotClass  = r.status === 'active' ? 'lob-status-active' : 'lob-status-upcoming';
-    const timeClass = r.status === 'active' ? 'active-now' : '';
-    const endSoon   = r.end && (r.end - new Date()) < 3600000 && r.status === 'active';
-    return `
-      <tr>
-        <td><span class="lob-type-badge ${typeClass}">${r.type||'?'}</span></td>
-        <td><span class="lob-site-chip">${esc(r.site)}</span></td>
-        <td><span class="lob-status-dot ${dotClass}"></span><span class="lob-time ${timeClass}">${fmtTime(r.start)}</span></td>
-        <td><span class="lob-time ${endSoon?'ending-soon':''}">${fmtTime(r.end)}</span></td>
-        <td class="lob-values">${esc(r.values)}</td>
-        <td class="lob-oms">${esc(r.oms)}</td>
-        <td class="lob-log">${esc(r.log)}</td>
-        <td class="lob-comment">${esc(r.comment)}</td>
-      </tr>`;
-  }).join('');
-
-  body.innerHTML = `
-    <table class="lob-table">
-      <thead><tr>
-        <th>Type</th><th>Site</th><th>Start</th><th>End</th>
-        <th>Site Values</th><th>OMS #</th><th>Log #</th><th>Comments</th>
-      </tr></thead>
-      <tbody>${rowsHtml}</tbody>
-    </table>`;
-}
-
-function lobToggleKiosk() {
-  lobKiosk = !lobKiosk;
-  document.getElementById('lob-view').classList.toggle('kiosk', lobKiosk);
-  document.querySelector('.lob-kiosk-btn').textContent = lobKiosk ? '✕ Exit Kiosk' : '⛶ Kiosk';
-}
-
 
 // ─── TIME ZONE DASHBOARD ──────────────────────────────────────────────────────
 const TZ_ZONES=[
@@ -2104,6 +1886,7 @@ function toggleRec(id){ const t=S.recTasks.find(x=>x.id===id); if(t)t.done=!t.do
 function delRec(id){ S.recTasks=S.recTasks.filter(x=>x.id!==id); save(); renderRec(); }
 function renderRec(){
   const el=document.getElementById('rec-list');
+  if(!el) return;
   el.innerHTML=!S.recTasks.length?'<div class="empty">No recurring tasks</div>':
     S.recTasks.map(t=>`<div class="task-item${t.done?' done':''}">
       <input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleRec(${t.id})">
@@ -2115,30 +1898,129 @@ function renderRec(){
 
 // ─── ADHOC TASKS ──────────────────────────────────────────────────────────────
 let adhocInts={};
+let adhocAlarmed=new Set(); // tracks IDs that have already triggered the alarm
+
+function playQtAlarm(){
+  try {
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    function beep(freq,start,dur){
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type='square'; o.frequency.value=freq;
+      g.gain.setValueAtTime(0.28,ctx.currentTime+start);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+start+dur);
+      o.start(ctx.currentTime+start); o.stop(ctx.currentTime+start+dur+0.05);
+    }
+    beep(880,0,.12); beep(880,.18,.12); beep(1100,.36,.22); beep(1100,.62,.22);
+  } catch(e){}
+}
+
+function qtSpeakAlarm(name){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt=new SpeechSynthesisUtterance(name);
+  utt.rate=0.88; utt.pitch=1;
+  window.speechSynthesis.speak(utt);
+}
+
+function qtShowBanner(name){
+  const b=document.getElementById('qt-alarm-banner');
+  document.getElementById('qt-alarm-text').textContent='TIMER EXPIRED: '+name;
+  b.style.display='flex';
+  b.style.animation='none'; void b.offsetWidth;
+  b.style.animation='qtPulse .5s ease 3';
+}
+
+function qtShowBannerSilent(name){
+  // Show without audio — used on page restore for already-expired timers
+  const b=document.getElementById('qt-alarm-banner');
+  document.getElementById('qt-alarm-text').textContent='TIMER EXPIRED: '+name;
+  b.style.display='flex';
+}
+
+function qtDismissBanner(){
+  // Clear ALL expired timers in one click — no need to also hit X in the tile
+  const expiredIds=S.adhocTasks
+    .filter(t=>!t.done && timerDisplay(t) && timerDisplay(t).exp)
+    .map(t=>t.id);
+  expiredIds.forEach(id=>{
+    if(adhocInts[id]){clearInterval(adhocInts[id]);delete adhocInts[id];}
+    adhocAlarmed.delete(id);
+  });
+  S.adhocTasks=S.adhocTasks.filter(t=>!expiredIds.includes(t.id));
+  save(); renderAdhoc();
+  document.getElementById('qt-alarm-banner').style.display='none';
+}
+
 function addAdhoc(){
   const v=document.getElementById('adhoc-inp').value.trim(); if(!v)return;
-  const min=parseInt(document.getElementById('adhoc-t').value)||0;
-  const task={id:Date.now(),name:v,done:false,timerMin:min>0?min:null,timerStart:min>0?Date.now():null};
+  const untilVal=document.getElementById('adhoc-until').value; // "HH:MM" or ""
+  let min=0, targetLabel=null;
+  if(untilVal){
+    const [h,m]=untilVal.split(':').map(Number);
+    const target=new Date(); target.setHours(h,m,0,0);
+    if(target<=new Date()) target.setDate(target.getDate()+1); // roll to tomorrow if past
+    min=Math.max(1,Math.round((target-new Date())/60000));
+    // Format label as "3:00 AM"
+    targetLabel=target.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+  } else {
+    min=parseInt(document.getElementById('adhoc-t').value)||0;
+  }
+  const task={id:Date.now(),name:v,done:false,timerMin:min>0?min:null,timerStart:min>0?Date.now():null,targetLabel:targetLabel||null};
   S.adhocTasks.push(task);
-  document.getElementById('adhoc-inp').value=''; document.getElementById('adhoc-t').value='';
-  addLog({type:'task',title:'Task added: '+v,detail:min>0?min+'min timer':''});
+  document.getElementById('adhoc-inp').value='';
+  document.getElementById('adhoc-t').value='';
+  document.getElementById('adhoc-until').value='';
+  addLog({type:'task',title:'Task added: '+v,detail:min>0?(targetLabel?'until '+targetLabel:min+'min timer'):''}); 
   save(); renderAdhoc(); if(task.timerMin) startAdhocTimer(task.id);
 }
-function startAdhocTimer(id){ if(adhocInts[id])clearInterval(adhocInts[id]); adhocInts[id]=setInterval(()=>renderAdhoc(),30000); }
-function restoreAdhocTimers(){ S.adhocTasks.forEach(t=>{if(t.timerMin&&t.timerStart&&!t.done)startAdhocTimer(t.id);}); }
+function startAdhocTimer(id){
+  if(adhocInts[id])clearInterval(adhocInts[id]);
+  adhocInts[id]=setInterval(()=>renderAdhoc(),1000);
+}
+function restoreAdhocTimers(){
+  S.adhocTasks.forEach(t=>{
+    if(!t.timerMin||!t.timerStart||t.done) return;
+    const ti=timerDisplay(t);
+    if(ti && ti.exp){
+      // Already expired before page loaded — suppress audio, just show banner silently
+      adhocAlarmed.add(t.id);
+    } else {
+      startAdhocTimer(t.id);
+    }
+  });
+  // Show banner silently for any timers that were expired on load
+  const alreadyExp=S.adhocTasks.filter(t=>!t.done && adhocAlarmed.has(t.id));
+  if(alreadyExp.length>0) qtShowBannerSilent(alreadyExp[alreadyExp.length-1].name);
+}
 function timerDisplay(t){
   if(!t.timerMin||!t.timerStart) return null;
   const rem=(t.timerMin*60000)-(Date.now()-t.timerStart);
-  if(rem<=0) return {label:'Overdue',exp:true};
-  return {label:Math.ceil(rem/60000)+'min left',exp:false};
+  if(rem<=0) return {label:'EXPIRED',exp:true};
+  const m=Math.floor(rem/60000), s=Math.floor((rem%60000)/1000);
+  return {label:String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' left',exp:false};
 }
 function toggleAdhoc(id){
   const t=S.adhocTasks.find(x=>x.id===id); if(!t)return;
   t.done=!t.done;
-  if(t.done){ addLog({type:'task',title:'Task done: '+t.name,detail:''}); if(adhocInts[id]){clearInterval(adhocInts[id]);delete adhocInts[id];} }
+  if(t.done){
+    addLog({type:'task',title:'Task done: '+t.name,detail:''});
+    if(adhocInts[id]){clearInterval(adhocInts[id]);delete adhocInts[id];}
+    adhocAlarmed.delete(id);
+    // hide banner if no other expired timers remain
+    const anyExp=S.adhocTasks.some(x=>!x.done&&timerDisplay(x)&&timerDisplay(x).exp);
+    if(!anyExp) qtDismissBanner();
+  }
   save(); renderAdhoc();
 }
-function delAdhoc(id){ if(adhocInts[id]){clearInterval(adhocInts[id]);delete adhocInts[id];} S.adhocTasks=S.adhocTasks.filter(x=>x.id!==id); save(); renderAdhoc(); }
+function delAdhoc(id){
+  if(adhocInts[id]){clearInterval(adhocInts[id]);delete adhocInts[id];}
+  adhocAlarmed.delete(id);
+  S.adhocTasks=S.adhocTasks.filter(x=>x.id!==id);
+  const anyExp=S.adhocTasks.some(x=>!x.done&&timerDisplay(x)&&timerDisplay(x).exp);
+  if(!anyExp) qtDismissBanner();
+  save(); renderAdhoc();
+}
 function openTaskTimer(id){
   const t=S.adhocTasks.find(x=>x.id===id); if(!t||!t.timerMin)return;
   document.getElementById('ttimer-title').textContent=esc(t.name);
@@ -2151,17 +2033,32 @@ function updateTTimerDisp(id){
   const t=S.adhocTasks.find(x=>x.id===id); if(!t)return;
   const ti=timerDisplay(t); const d=document.getElementById('ttimer-disp');
   if(!ti){d.textContent='No timer';return;}
-  if(ti.exp){d.textContent='OVERDUE';d.style.color='var(--red)';return;}
+  if(ti.exp){d.textContent='EXPIRED';d.style.color='var(--red)';return;}
   const rem=Math.max(0,(t.timerMin*60000)-(Date.now()-t.timerStart));
   d.textContent=String(Math.floor(rem/60000)).padStart(2,'0')+':'+String(Math.floor((rem%60000)/1000)).padStart(2,'0');
   d.style.color='var(--amber)';
 }
 function renderAdhoc(){
   const el=document.getElementById('adhoc-list');
-  el.innerHTML=!S.adhocTasks.length?'<div class="empty">No tasks yet</div>':
-    S.adhocTasks.map(t=>{ const ti=timerDisplay(t); return `<div class="task-item${t.done?' done':''}">
+  if(!el) return;
+
+  // Check for newly expired timers → fire alarm
+  S.adhocTasks.forEach(t=>{
+    if(t.done||!t.timerMin||!t.timerStart) return;
+    const ti=timerDisplay(t);
+    if(ti && ti.exp && !adhocAlarmed.has(t.id)){
+      adhocAlarmed.add(t.id);
+      playQtAlarm();
+      qtShowBanner(t.name);
+      // Speak the task name after the chime finishes (~950ms)
+      setTimeout(()=>qtSpeakAlarm(t.name), 950);
+    }
+  });
+
+  el.innerHTML=!S.adhocTasks.length?'<div class="empty">No timers set</div>':
+    S.adhocTasks.map(t=>{ const ti=timerDisplay(t); return `<div class="task-item${t.done?' done':''}${ti&&ti.exp&&!t.done?' style="border-color:var(--red);background:var(--rbg);"':''}">
       <input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleAdhoc(${t.id})">
-      <span class="task-label">${esc(t.name)}</span>
+      <span class="task-label"${ti&&ti.exp&&!t.done?' style="color:var(--red);font-weight:600;"':''}>${esc(t.name)}${t.targetLabel&&!t.done?`<span style="font-size:10px;color:var(--text3);margin-left:5px;">until ${esc(t.targetLabel)}</span>`:''}</span>
       ${ti?`<span class="timer-badge${ti.exp?' exp':''}" onclick="openTaskTimer(${t.id})">${ti.label}</span>`:''}
       <button class="task-del" onclick="delAdhoc(${t.id})">✕</button>
     </div>`; }).join('');
@@ -2758,7 +2655,7 @@ function clCopyHandoff() {
 const CL_SITE_TYPES = {
   // BESS
   CNDR1:'BESS',PRGN1:'BESS',PRGV1:'BESS',HARQ2:'BESS',KUNA1:'BESS',GLTA1:'BESS',COSO1:'BESS',DBLO1:'BESS',
-  BYPS1:'BESS',CTLF1:'BESS',CTLF:'BESS',PDMT1:'BESS',MRCP1:'BESS',FRDN1:'BESS',ANGF1:'BESS',AVLN1:'BESS',TSMS1:'BESS',
+  BYPS1:'BESS',CTLF1:'BESS',CTLF:'BESS',PDMT1:'BESS',MRCP1:'BESS',MRCP:'BESS',FRDN1:'BESS',ANGF1:'BESS',AVLN1:'BESS',TSMS1:'BESS',
   // Solar
   HARQ1:'Solar',NCLS1:'Solar',AVLN2:'Solar',BLKW1:'Solar',LSTH2:'Solar',NSTR1:'Solar',
   FRMV1:'Solar',HNFD1:'Solar',LSTH1:'Solar',PRTV1:'Solar',TLRE1:'Solar',TRPC1:'Solar',
@@ -4047,6 +3944,7 @@ let asVals = {};
 let asDone = {};        // {siteId: true} manually marked complete
 let asCustom = null;    // null = not yet loaded; [] or array = overrides AS_SITES
 let asActiveSite = '';
+let asTypeFilter = 'all'; // 'all' | 'BESS' | 'Solar' | 'Wind'
 
 // Effective site list: custom overrides defaults when set AND non-empty
 function asSites() { return (asCustom !== null && asCustom.length > 0) ? asCustom : AS_SITES; }
@@ -4161,14 +4059,60 @@ function asUpdateProgress() {
   wrap.classList.toggle('all-done', allDone);
 }
 
+// Returns asset type for an AS_SITES site object
+function asGetSiteType(site) {
+  if (!site || !site.id) return 'General';
+  const id = site.id.toUpperCase();
+  if (CL_SITE_TYPES[id]) return CL_SITE_TYPES[id];
+  // Fallback: scan the label for keywords
+  const lbl = (site.label || '').toUpperCase();
+  if (lbl.includes('BESS')) return 'BESS';
+  if (lbl.includes('SOLAR') || lbl.includes('PV')) return 'Solar';
+  if (lbl.includes('WIND')) return 'Wind';
+  return 'General';
+}
+
+function asSetTypeFilter(type, el) {
+  asTypeFilter = type;
+  document.querySelectorAll('.as-type-btn').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  // If current site isn't in the new filter, jump to first matching site
+  if (type !== 'all') {
+    const sites = [...asSites()]
+      .filter(s => s.id !== 'ROCC1')
+      .sort((a, b) => a.id.localeCompare(b.id));
+    const inFilter = sites.filter(s => asGetSiteType(s) === type);
+    const currentStillValid = inFilter.some(s => s.id === asActiveSite);
+    if (!currentStillValid && inFilter.length > 0) {
+      asActiveSite = inFilter[0].id;
+      try { localStorage.setItem('rnwbl_asactive', asActiveSite); } catch(e) {}
+    }
+  }
+
+  asRenderTabs();
+  asRenderForm();
+}
+
 function asRenderTabs() {
-  document.getElementById('as-tabs').innerHTML = asSites().map(s=>{
-    const done=asSiteComplete(s.id), pct=asSiteFilledPct(s.id);
-    const style=done?'border-color:var(--green);color:var(--green);background:var(--gbg);'
-                :pct>0?'border-color:var(--amber);color:var(--amber);background:var(--abg);':'';
-    const icon=done?' ✓':pct>0?' …':'';
-    const isActive=s.id===asActiveSite;
-    return `<button class="as-tab${isActive?' active':''}" style="${isActive?'':style}" onclick="asSwitch('${esc(s.id)}')">${esc(s.id)}${icon}</button>`;
+  // Sort alphabetically by id, but keep ROCC1 pinned first
+  let sites = [...asSites()];
+  const rocc = sites.filter(s => s.id === 'ROCC1');
+  const rest = sites.filter(s => s.id !== 'ROCC1').sort((a, b) => a.id.localeCompare(b.id));
+  sites = [...rocc, ...rest];
+
+  // Apply type filter
+  const filtered = asTypeFilter === 'all'
+    ? sites
+    : sites.filter(s => s.id === 'ROCC1' || asGetSiteType(s) === asTypeFilter);
+
+  document.getElementById('as-tabs').innerHTML = filtered.map(s => {
+    const done = asSiteComplete(s.id), pct = asSiteFilledPct(s.id);
+    const style = done ? 'border-color:var(--green);color:var(--green);background:var(--gbg);'
+                : pct > 0 ? 'border-color:var(--amber);color:var(--amber);background:var(--abg);' : '';
+    const icon = done ? ' ✓' : pct > 0 ? ' …' : '';
+    const isActive = s.id === asActiveSite;
+    return `<button class="as-tab${isActive ? ' active' : ''}" style="${isActive ? '' : style}" onclick="asSwitch('${esc(s.id)}')">${esc(s.id)}${icon}</button>`;
   }).join('');
   asUpdateProgress();
 }
@@ -5728,6 +5672,21 @@ function convertPhonetic(){
     else out.push(ch);
   }
   document.getElementById('phonetic-out').textContent = out.join(' ');
+}
+function speakPhonetic(){
+  const text = document.getElementById('phonetic-out').textContent;
+  if(!text) return;
+  if(!window.speechSynthesis){ alert('Speech not supported in this browser.'); return; }
+  window.speechSynthesis.cancel(); // stop any current speech
+  const utt = new SpeechSynthesisUtterance(text.replace(/•/g, ' '));
+  utt.rate = 0.88;   // slightly slower — clearer for ops use
+  utt.pitch = 1;
+  const btn = document.getElementById('phonetic-speak-btn');
+  btn.textContent = '🔊 Speaking…';
+  btn.disabled = true;
+  utt.onend = () => { btn.textContent = '🔊 Speak'; btn.disabled = false; };
+  utt.onerror = () => { btn.textContent = '🔊 Speak'; btn.disabled = false; };
+  window.speechSynthesis.speak(utt);
 }
 function copyPhonetic(){
   const text = document.getElementById('phonetic-out').textContent;
