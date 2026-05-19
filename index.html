@@ -6,6 +6,7 @@
 <title>RNWBL — Ops Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
 :root{
@@ -571,6 +572,18 @@ body.dark .cl-time{color:var(--text2);}
 .cl-del:hover{color:var(--red);opacity:1;background:var(--rbg);}
 .cl-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px;max-width:900px;}
 .cl-starred-count{font-size:10px;color:var(--amber);background:var(--abg);padding:2px 8px;border-radius:10px;font-weight:600;border:1px solid #e8c84a;}
+.cl-section-lbl{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.09em;text-transform:uppercase;}
+.cl-clear-btn{color:var(--red)!important;opacity:.7;}
+.cl-clear-btn:hover{opacity:1;background:var(--rbg)!important;border-color:var(--red)!important;}
+.cl-pg-header{margin-bottom:16px;}
+.cl-pg-title{font-size:17px;font-weight:600;letter-spacing:-.02em;color:var(--text);}
+.cl-pg-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+.cl-handoff-section{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);max-width:900px;}
+.cl-handoff-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.cl-handoff-hint{font-size:11px;color:var(--text3);margin-left:8px;}
+.cl-copy-handoff-btn{padding:8px 18px;border-radius:7px;border:none;background:var(--green);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--f);transition:all .15s;}
+.cl-copy-handoff-btn:hover{filter:brightness(1.08);}
+.cl-img-btn{font-size:11px;padding:6px 12px;}
 /* Handoff draft preview */
 .cl-handoff-preview{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);padding:0;overflow:hidden;box-shadow:var(--shs);}
 .cl-hd-empty{padding:16px;color:var(--text3);font-size:12px;font-style:italic;}
@@ -1377,10 +1390,13 @@ body.dark .as-prog-label{color:var(--text2);}
 
 <!-- OPERATOR LOG ─────────────────────────────────────────────────────────────── -->
 <div class="view" id="view-chron">
-  <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:14px;">
-    <div style="font-size:17px;font-weight:600;letter-spacing:-.02em;">Operator Log</div>
-    <span style="font-size:12px;color:var(--text3);">Chronological shift event feed</span>
+
+  <div class="cl-pg-header">
+    <div class="cl-pg-title">Operator Log</div>
+    <div class="cl-pg-sub">Chronological shift feed · starred entries auto-populate handoff</div>
   </div>
+
+  <!-- Entry bar -->
   <div class="cl-input-bar">
     <select id="cl-cat" title="Category">
       <option value="Normal">Normal</option>
@@ -1391,34 +1407,39 @@ body.dark .as-prog-label{color:var(--text2);}
       <option value="Monitor">👁 Monitor</option>
     </select>
     <select id="cl-site" style="max-width:160px;" title="Site (resets after each entry)"></select>
-    <input id="cl-text" placeholder="Log entry… Enter to submit" onkeydown="if(event.key==='Enter')clAdd()">
+    <input id="cl-text" placeholder="What happened? Press Enter to log." onkeydown="if(event.key==='Enter')clAdd()">
     <button class="cl-log-btn" onclick="clAdd()">Log It</button>
   </div>
+
+  <!-- Feed header -->
   <div class="cl-header-row">
     <div style="display:flex;align-items:center;gap:8px;">
-      <span style="font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;">Shift Feed</span>
+      <span class="cl-section-lbl">Shift Feed</span>
       <span class="cl-starred-count" id="cl-starred-count" style="display:none;"></span>
     </div>
-    <div style="display:flex;gap:6px;">
-      <button class="tbtn" style="font-size:11px;" onclick="clCopyHandoff()">Copy ★ for passdown</button>
-      <button class="tbtn" style="font-size:11px;color:var(--red);" onclick="clClear()">Clear shift</button>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <button class="tbtn" style="font-size:11px;" onclick="clCopyHandoff()">Copy passdown</button>
+      <button class="tbtn cl-clear-btn" style="font-size:11px;" onclick="clClear()">Clear shift</button>
     </div>
   </div>
+
   <div class="cl-feed" id="cl-feed"><div class="empty">No entries yet — log the first event above</div></div>
 
   <!-- Shift Handoff Draft -->
-  <div style="margin-top:20px;padding-top:16px;border-top:2px solid var(--border);max-width:900px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+  <div class="cl-handoff-section">
+    <div class="cl-handoff-header">
       <div>
-        <span style="font-size:13px;font-weight:700;color:var(--text);">Shift Handoff Draft</span>
-        <span style="font-size:11px;color:var(--text3);margin-left:8px;">★ starred · Alarm · Curtailment · grouped by asset type</span>
+        <span class="cl-section-lbl">Handoff Draft</span>
+        <span class="cl-handoff-hint">★ starred · alarms · curtailments · grouped by type</span>
       </div>
-      <div style="display:flex;gap:6px;">
-        <button class="tbtn" style="font-size:11px;" onclick="clCopyHandoff()">📋 Copy Handoff</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="tbtn cl-img-btn" id="cl-img-btn" onclick="clSaveAsImage(event)" title="Copy or save handoff as image">📸 Image</button>
+        <button class="cl-copy-handoff-btn" onclick="clCopyHandoff()">Copy Handoff</button>
       </div>
     </div>
     <div id="cl-preview" class="cl-handoff-preview"></div>
   </div>
+
 </div>
 
 <!-- MAP VIEW ────────────────────────────────────────────────────────────────── -->
@@ -2633,6 +2654,66 @@ function clCopyHandoff() {
 }
 
 // Classify a site name → 'BESS' | 'Solar' | 'Wind' | 'General'
+async function clSaveAsImage(e) {
+  if (typeof html2canvas === 'undefined') { showToast('Image library not loaded yet'); return; }
+  const el = document.getElementById('cl-preview');
+  if (!el || !el.children.length) { showToast('No handoff content yet'); return; }
+
+  const btn = document.getElementById('cl-img-btn');
+  btn.textContent = '⏳ Generating…'; btn.disabled = true;
+
+  // Build a clean off-screen snapshot with a header stamp
+  const snap = document.createElement('div');
+  const now = new Date().toLocaleString([], {weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  const isDark = document.body.classList.contains('dark');
+  const bg  = isDark ? '#1e2228' : '#ffffff';
+  const txt = isDark ? '#e2e8f0' : '#1a202c';
+  const sub = isDark ? '#94a3b8' : '#64748b';
+  const bdr = isDark ? '#334155' : '#e2e8f0';
+
+  snap.style.cssText = `position:fixed;left:-9999px;top:0;background:${bg};padding:24px 28px;width:560px;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;border-radius:12px;`;
+  snap.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid ${bdr};">
+      <div style="font-size:15px;font-weight:700;color:${txt};">RNWBL — Shift Handoff</div>
+      <div style="font-size:11px;color:${sub};">${now}</div>
+    </div>
+    <div style="font-size:12.5px;line-height:1.65;color:${txt};">${el.innerHTML}</div>`;
+  document.body.appendChild(snap);
+
+  try {
+    const canvas = await html2canvas(snap, {
+      backgroundColor: bg, scale: 2, useCORS: true, logging: false, width: 560
+    });
+    document.body.removeChild(snap);
+
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+
+    // Try clipboard first, fallback to download
+    let clipped = false;
+    try {
+      if (navigator.clipboard?.write && window.ClipboardItem) {
+        await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+        clipped = true; showToast('Handoff copied as image — paste anywhere ✓');
+      }
+    } catch(_) {}
+
+    if (!clipped) {
+      const url = URL.createObjectURL(blob);
+      const a = Object.assign(document.createElement('a'), {
+        href: url, download: `handoff-${new Date().toISOString().slice(0,10)}.png`
+      });
+      a.click(); URL.revokeObjectURL(url);
+      showToast('Handoff saved as PNG ✓');
+    }
+  } catch(err) {
+    if (document.body.contains(snap)) document.body.removeChild(snap);
+    showToast('Image capture failed');
+  } finally {
+    btn.textContent = '📸 Image'; btn.disabled = false;
+  }
+}
 const CL_SITE_TYPES = {
   // BESS
   CNDR1:'BESS',PRGN1:'BESS',PRGV1:'BESS',HARQ2:'BESS',KUNA1:'BESS',GLTA1:'BESS',COSO1:'BESS',DBLO1:'BESS',
